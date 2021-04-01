@@ -1,0 +1,22 @@
+<div id="display-list-area">
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        getList('all');
+    });
+
+    function getList(type) {
+        $.get({
+            url: "/display/list/"+type,
+            success: function (html, status, xhr) {
+                $("#display-list-area").empty();
+                $("#display-list-area").append(html);
+            },
+            error: function (xhr, status, err) {
+                console.log(err);
+            }
+        });
+    }
+</script>

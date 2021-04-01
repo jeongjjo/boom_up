@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+
+        <link rel="stylesheet" href="/css/write.css?2020072101" />
+
+        <script src="https://cdn.tiny.cloud/1/uf02vwdt19nk0069xo3pydlr5qlbrzgx2a5p8mry2941hy9d/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            
+            <div id="idTempPostArea" class="input-group py-2 px-3 detail-div-line <%= tempcount > 0?'':'hidden'  %>">
+                <div><span>▶︎</span><span onclick="goTempBoard();" class="text-primary"> [임시저장] </span><%= tempcount%><%= __('TEMPCOUNTMSG')%></div>
+            </div>
+            <div class="container-fluid py-2 px-3 m-0" style="height:var(--app-height) !important;">
+                <!--form-->
+                <form action="/content" id="login-form" method="<%= method %>" class="h-100" role="form" enctype="multipart/form-data">
+                    <input type="hidden" name="id" id="id" value="<%= data != null ? data._id : ""%>" />
+                    <input type="hidden" name="hashtag" id="hashtag" value="<%= data != null ? data.hashtag : ""%>" />
+
+                    <div class="d-flex flex-column h-95">
+                        <div class="flex-shrink-1">
+                            <div class="input-group mb-2">
+                                <select class="custom-select write-input-line " id="lineupkey" name="lineupkey">
+                                    <option value=""><%= __('WRITE_SELECTLINEUP')%></option>
+                                    <% for (var i=0; i < lineup.length; i++) { %>
+                                    <option value="<%= lineup[i].lineupKey %>" <% if(data != null && lineup[i].lineupKey == data.lineupKey) { %> selected <% } %>><%= lineup[i].lineup %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="d-flex align-items-center ">
+                                <input type="text" name="title" onkeyup="wordCheck(this)" class="form-control write-input-line" aria-describedby="inputGroup-sizing-default" placeholder="<%= __('WRITE_TITLETYPING')%>" value="<%= data != null ? data.title : ""%>">
+                                <% if(_isInApp){ %>
+                                <button type="button" class="btn icon-attach-media write-bottom-button hidden" onclick="onImageChange(this)"></button>
+                                <% } else {  %>
+                                <button type="button" class="btn icon-attach-media write-bottom-button hidden" id="pickfiles"></button>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="my-2 ml-2">
+
+                        </div>
+                        <div class="flex-grow-1 terms m-0 p-0 h-100 editorReadyParent" style="border:0px">
+                            <div class="input-group write-textareaX h-100 editorReady invisible">
+                                <textarea id='article-editor' name="content" class="h-100 w-100 validate"><%= data != null ? data.content : ""%></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex-shrink-1 mt-2">
+                            <div class="d-inline-block custom-control custom-radio">
+                                <input type="radio" name="contentType" id="jb-radio-1" class="custom-control-input" checked="checked" value="creation">
+                                <label class="custom-control-label" for="jb-radio-1"><%= __('CREATIVEWRITING')%></label>
+                            </div>
+                            <div class="d-inline-block custom-control custom-radio">
+                                <input type="radio" name="contentType" id="jb-radio-2" class="custom-control-input" value="link">
+                                <label class="custom-control-label" for="jb-radio-2"><%= __('SCOOPUPWRITING')%></label>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 mb-3 ">
+                            <ul class="p-0 m-0 position-relative keyboard-show-hidden-item" id="imagearea">
+                                <% if (data != null && data.image && data.image.length > 0) { %>
+                                <% for(var i = 0; i < data.image.length; i++) { %>
+                                <% if(data.image[i].indexOf("$REMOVE") == -1) { %>
+                                <li class="temp_img">
+                                    <div class="btn-close" onclick="photoDelete(<%=i%>, this);"><i class="icon-x"></i></div>
+                                    <input type="radio" name="name" id="cb<%=i%>" class="clone_input hidden" <%=(data.representationImage && data.image[i][0] == data.representationImage[0]) ? 'checked="checked"' : '' %> value="<%=i%>" /> <!-- url -->
+                                    <label for="cb<%=i%>" class="mx-2 thumbnail">
+                                        <img class="clone_img thumbnail_image" src="<%=getPhotoEx(data.image[i],3,1)%>" />
+                                    </label>
+                                </li>
+                                <% } %>
+                                <% } %>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="height: 10px; background-color: #f6f6f6;" class="mb-5"></div>
+                    <div class="mb-5">
+                        <div class="ml-2 font-weight-normal"><%= __('ADDKEYWORD')%></div>
+                        <%- include('../setting/keywordCKList',{myviewYN:false}) -%>
+                    </div>
+                </form>
+                <!--form-->
+            </div>
+            <!-- Content -->
+
+            <%- include('temp') -%>
+        </div>
+        <div class="hidden">
+            <li id="temp_img" class="temp_img">
+                <div class="btn-close"><i class="icon-x"></i></div>
+                <input type="radio" name="name" class="clone_input hidden" />
+                <label for="cb1" class="mx-2 thumbnail">
+                    <img class="clone_img thumbnail_image" />
+                </label>
+            </li>
+        </div>
+        <%-include('../_layouts/layout_bodyscript')%>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/additional-methods.min.js" integrity="sha256-vb+6VObiUIaoRuSusdLRWtXs/ewuz62LgVXg2f1ZXGo=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/localization/messages_ko.min.js" integrity="sha256-2MPaDIgwuO0zMFW6Rlrc857sIWkxu1mP23Lv+t0L6Rs=" crossorigin="anonymous"></script>
+
+        <script src="/js/tinymce.inkiup.min.js"></script>
+        <script src="/js/plupload/plupload.full.min.js"></script>
+
+        <script type="text/javascript">
+            var g_type = "";
+        <%if (!_isInApp) {%>
+            var uploader = new plupload.Uploader({
+                runtimes: 'html5,html4',
+                browse_button: 'pickfiles',
+                url: "/api/attach",
+                resize: {
+                    width: 1280,
+                    quality: 95
+                },
+                filters: {
+                    max_file_size: '100mb',
+                    mime_types: [
+                        { title: "file", extensions: "jpg,gif,png,jpeg,JPG,GIF,PNG,JPEG" },
+                        { title: "Video Files", extensions: "avi,mp4,MP4,AVI" }
+                    ]
+                },
+                init: {
+                    FilesAdded: function (up, files) {
+                        uploader.start();
+                        return false;
+                    },
+                    FileUploaded: function (up, file, response) {
+                        onResultData(JSON.parse(response.response).data);
+                    },
+                    Error: function (up, err) {
+                        console.log(err);
+                        if (err.code == -600) {
+                            onPopup("alert", "<%= __('UPLOADMSG')%>", function (cb) { });
+                        }
+                    }
+                }
+            });
+                uploader.init();
+        <%}%>
+
+                $.validator.messages = {
+                required: "<%= __('VALIDATOR_REQUIRED')%>",
+                remote: "<%= __('VALIDATOR_REMOTE')%>",
+                email: "<%= __('VALIDATOR_EMAIL')%>",
+                url: "<%= __('VALIDATOR_URL')%>",
+                date: "<%= __('VALIDATOR_DATE')%>",
+                dateISO: "<%= __('VALIDATOR_DATEISO')%>",
+                number: "<%= __('VALIDATOR_NUMBER')%>",
+                digits: "<%= __('VALIDATOR_DIGITS')%>",
+                equalTo: "<%= __('VALIDATOR_EQUALTO')%>",
+                maxlength: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                minlength: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                rangelength: $.validator.format("<%= __('VALIDATOR_RANGELENGTH')%>"),
+                range: $.validator.format("<%= __('VALIDATOR_RANGE')%>"),
+                max: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                min: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                step: $.validator.format("<%= __('VALIDATOR_STEP')%>")
+            };
+
+            $.validator.addMethod("byteRangeLength", function (value, element, param) {
+                var length = value.length;
+                for (var i = 0; i < value.length; i++) { if (value.charCodeAt(i) > 127) { length++; } }
+                return this.optional(element) || (length >= param[0] && length <= param[1]);
+            }, $.validator.format("<%= __('VALIDATOR_BYTELENGTH')%>"));
+
+            var type = "<%= method %>";
+            var concernKeyword = <%-JSON.stringify(data && data.concernKeywordId ? data.concernKeywordId || [] : []) %>;
+            blockUI('div.editorReadyParent');
+
+            $(function () {
+                cklist();
+                setHeader('cancel', 'tempsave');
+                initEditor('textarea#article-editor', {
+                    placeholder: "<%= __('WRITE_PLACEHOLDERCONTENT')%>",
+                    setup: function (editor) {
+                        editor.on('init', function (e) {
+                            tinyMCE.activeEditor.getBody().innerHTML=$('#article-editor').text();
+                            $('div.editorReady').removeClass('invisible');
+                            unblockUI('div.editorReadyParent');
+                            checkPrevEditing();
+                        });
+                        editor.ui.registry.addButton('iiimg', {
+                            icon: 'image',
+                            onAction: () => onImageChange(null)
+                        });
+                    },
+                    mediaembed_content_css: location.origin+'/css/write.css?2020072101',
+                    file_picker_callback: function (callback, value, meta) {
+                    }
+                });
+
+                $("i.left-cancel").removeClass("hidden").css("font-style", "normal")
+                $("header .right").addClass("header-tempright-width").removeClass("header-side-width");
+
+                setTimeout(function (e) {
+                    if (concernKeyword && concernKeyword.length > 0) {
+                        for (var i = 0; i < concernKeyword.length; i++) {
+                            $("#ck-" + concernKeyword[i]).addClass("selected");
+                        }
+                    }
+                }, 1000);
+
+
+                $("#login-form").submit(function () {
+                    // update underlying textarea before submit validation
+                    cashePageClearAll();
+                    tinyMCE.triggerSave(true, true);
+                }).validate({
+                    ignore: ':hidden:not(.validate)',
+                    rules: {
+                        lineupkey: {
+                            required: true
+                        },
+                        title: {
+                            required: true,
+                            byteRangeLength: [2, 256]
+                            // minlength: 4,
+                            // maxlength: 128
+                        },
+                        content: {
+                            required: true,
+                            minlength: {
+                                param: 3,
+                                depends: function (e) {
+                                    return getEditorContent().length < 3;
+                                }
+                            }
+                        }
+                    },
+                    messages: {
+                        lineupkey: {
+                            required: "<%= __('WRITE_SELECTLINEUP')%>"
+                        },
+                        title: {
+                            required: "<%= __('WRITE_TITLETYPING')%>",
+                            minlength: "<%= __('WRITE_MINTITLE')%>",
+                            maxlength: "<%= __('WRITE_MAXTITLE')%>"
+                        },
+                        content: {
+                            required: "<%= __('WRITE_PLACEHOLDERCONTENT')%>",
+                            minlength: "<%= __('WRITE_MINCONTENT')%>"
+                        }
+                    }, errorPlacement: function errorPlacement(error, element) {
+                        var $parent = $(element).addClass('is-invalid').parents('.input-group').next('.warn_area');
+                        if ($parent.length < 1) $parent = $(element).addClass('is-invalid').parents('.input-group').find('.warn_area');
+
+                        // Do not duplicate errors
+                        if ($parent.find('.jquery-validation-error').length) {
+                            return;
+                        }
+
+                        if (error.length > 0) $parent.find('.warn_text').text(error.text());
+                        $parent.removeClass('hidden');
+                    },
+                    highlight: function (element) {
+
+                    },
+                    unhighlight: function (element) {
+                        // $(element).parents('.form-group').find('.is-invalid').removeClass('is-invalid');
+                        var $parent = $(element).removeClass('is-invalid').addClass('is-valid').parents('.input-group').next('.warn_area');
+                        if ($parent.length < 1) $parent = $(element).removeClass('is-invalid').addClass('is-valid').parents('.input-group').find('.warn_area');
+                        $parent.addClass('hidden');
+                    },
+                    submitHandler: function (form) {
+                        blockPage();
+
+                        var formData = objectifyForm(form);
+                        var reprArray = [];
+                        if (attachList && attachList.length > 0) {
+                            formData.images = attachList;
+                            var reprIdx = +($('#imagearea li input[type="radio"]:checked').val() || 0);
+                            formData.reprImage = attachList[reprIdx];
+                        } else {
+                            formData.images = [];
+                            formData.reprImage = null;
+                        }
+
+                        var selectdata = []
+                        $("#idConcernKeywordList span[name='cklistItem']").each((i, item) => {
+                            if ($(item).hasClass("selected")) {
+                                var ckid = $(item).data("ckid")
+                                var text = $(item).text()
+                                selectdata.push({ "id": ckid, "text": text })
+                            }
+                        });
+                        formData.concernKeyword = selectdata;
+                        formData.content = getEditorContent();
+                        var method = "";
+                        var url = "";
+                        unblockPage();
+                        if (g_type == "temp") {
+                            method = "post";
+                            url = "/tempcontent";
+                        } else {
+                            method = form.getAttribute('method');
+                            url = form.getAttribute('action');
+                        }
+
+                        if (!formData.reprImage || formData.reprImage.length < 1) {
+                            var imgs = getEditorContentQS('img[src],video[poster]');
+                            if (imgs && imgs.length > 0 && (imgs[0].src || imgs[0].poster)) {
+                                formData.reprImage = [imgs[0].src || imgs[0].poster, imgs[0].src || imgs[0].poster];
+                            }
+                        }
+
+                        $.ajax({
+                            type: method,
+                            url: url,
+                            processData: false,
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            data: JSON.stringify(formData),
+                            success: function (data, status, xhr) {
+                                unblockPage()
+                                if (data.result === "ok") {
+                                    _written = true;
+
+                                    if (g_type != "temp") {
+                                        if (type == "PUT") {
+                                            location.href = "/detail/<%=pathhash%>/" + $("#id").val() + "/true";
+                                        } else {
+                                            if (data.id == null) { location.href = "/"; }
+                                            else { location.href = "/detail/<%=pathhash%>/" + data.id + "/true"; }
+                                        }
+                                    } else {
+                                        onTempPost()
+                                        onPopup("alert", "<%= __('TEMPREGISTMSG')%>", function (cb) { });
+                                    }
+
+                                } else if (data.result === "exist") {
+                                    onPopup("alert", "<%= __('WRITE_DUPLICATE')%>", function (cb) { });
+                                } else if (data.result === "banword") {
+                                    onPopup("alert", "<%= __('WRITE_BANWORD')%>", function (cb) { });
+                                } else {
+                                    var msg = "<%= __('WRITEFAIL')%>";
+                                    onPopup("alert", msg, function (cb) { });
+                                }
+                            },
+                            error: function (xhr, status, err) {
+                                unblockPage()
+                            }
+                        });
+                        return false;
+                    }
+                });
+
+                $("header i.left-cancel").attr("onclick", "goBackBefore()")
+            });
+
+            function wordCheck(obj) {
+                if ($(obj).val().trim() == "") {
+                    $(obj).val($(obj).val().trim());
+                }
+            }
+            function goBackBefore() {
+                var t = tinyMCE.get(_editorID).getContent();
+
+                if (t != "") {
+                    onPopup("confirm", "작성중인 글이 있습니다<br>계속 진행 하시겠습니까?", function (cb) { if (cb == 1) { goBack(); } });
+                } else {
+                    goBack();
+                }
+            }
+
+            var _written = false;
+            $(window).on('beforeunload', function (e) {
+                if (_written) {
+                    pdata.setObject('_write+' + type, null);
+                    return;
+                }
+                var cate = document.querySelector('select[name=lineupkey]').value;
+                var title = document.querySelector('input[name=title]').value;
+                var content = getEditorContent();
+                var reprIdx = +($('#imagearea li input[type="radio"]:checked').val() || 0);
+
+                if ((title && title.length > 2) || content.replace(/<br.*>/ig, '').length > 2)
+                    pdata.setObject('_write+' + type, {
+                        cate: cate,
+                        title: title,
+                        content: content,
+                        attachList: attachList,
+                        reprIdx: reprIdx
+                    });
+            });
+
+            function checkPrevEditing() {
+                var tmp = pdata.getObject('_write+' + type);
+                if (tmp && tmp.title && tmp.title.length > 0 && tmp.content.replace(/<br.*>/ig, '').length > 2) {
+                    onPopup('confirm', "<%- __('WRITE_HASPREVCONTENT')%>", (r) => {
+                        if (r) {
+                            document.querySelector('select[name=lineupkey]').value = tmp.cate;
+                            document.querySelector('input[name=title]').value = tmp.title;
+                            if(tinyMCE.activeEditor.getContent()==="") tinyMCE.activeEditor.setContent('&nbsp;');
+                            tinyMCE.activeEditor.getBody().innerHTML=tmp.content;
+
+                            tmp.attachList.map((att, idx) => {
+                                attachList.push(att);
+                                var clone = $("#temp_img").clone().removeAttr("id");
+                                $('.btn-close', clone).on('click', e => photoDelete(idx));
+                                $(".clone_img", clone).attr("src", tmp.attachList[idx][1]).parent().attr("for", "cb" + idx);
+                                $(".clone_input", clone).attr("id", "cb" + idx).val(idx).prop('checked', idx === tmp.reprIdx);
+                                clone.insertBefore($('#imagearea li:last-child'));
+
+                                $("#imagearea").append(clone);
+                            });
+
+                        }
+                    });
+                }
+            }
+
+            function onRegist() {
+                //임시저장후 바로 글등록 버튼 클릭시 선택없음이면 카테고리 선택하도록 
+                if($("#lineupkey").val()=="no"){
+                    $("#lineupkey").val("").prop("selected",true);
+                }
+                
+                g_type = "";
+                $("#login-form").submit();
+            }
+
+            function onTempRegist() {
+                var option = $("<option value='no'>선택없음</option>");
+                if ($("#lineupkey").val() == "") {
+                    $("#lineupkey").append(option).val('no');
+                }
+                if ($("input[name='title']").val() == "") {
+                    $("input[name='title']").val("제목없음")
+                }
+
+                g_type = "temp";
+                $("#login-form").submit();
+            }
+
+            function onImageChange($this) {
+                var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (navigator.userAgent.endsWith('InkiupApp')) {
+                    !isIOS && blockPage();
+                    window.Attach && window.Attach.postMessage(JSON.stringify({ count: 10, video: true, iwidth: 1280, iheight: 3600, iqual: 95, vqual: 2, vdur: -1, vaud: true }));
+                } else {
+                    $('#pickfiles').trigger('click');
+                }
+            }
+
+            var attachList = <%-JSON.stringify(data && data.image ? data.image || [] : []) %>; // 서버에 보낼 첨부파일 목록
+            var totalAttachSize = 0;
+
+            var imagecount = 0;
+            function onResultData(data) {
+                if (data != null && data.length > 0) {
+                    var err = null;
+                    data.map(att => {
+                        // TODO : 여기서 첨부파일 총용량을 먼저 계산 후에 MAX를 넘어가면 제한해야함.(액션 : 첨부파일 목록(attachList에 추가 안 함 및 에디터에 첨부 안 함))
+
+                        if (att.err) {
+                            err = att.err;
+                        } else {
+                            var idx = attachList.length; // 인덱스
+                            attachList.push(att.images);
+                            totalAttachSize += att.size; // 첨부파일 총용량 계산
+                            var clone = $("#temp_img").clone().removeAttr("id");
+                            $('.btn-close', clone).on('click', e => photoDelete(idx));
+                            $(".clone_img", clone).attr("src", att.images[1]).parent().attr("for", "cb" + idx);
+                            $(".clone_input", clone).attr("id", "cb" + idx).val(idx);
+                            clone.insertBefore($('#imagearea li:last-child'));
+
+                            $("#imagearea").append(clone);
+                            var html = '';
+                            if (/\.(mp4|avi)$/i.test(att.images[0])) {
+                                html = `<video poster="${att.images[1]}" playsinline controls loop="loop" class="_contentImageView h-100"><source src="${att.images[0]}"/></video>`;
+                            } else if (/\.(mp4|avi)$/i.test(att.images[0])) {
+                                html = `<audio class="_contentImageView" controls><source src="${att.images[1]}"/></audio>`;
+                            } else {
+                                html = `<img class="_contentImageView" src="${att.images[0]}"/>`;
+                            }
+
+                            if(tinyMCE.activeEditor.getContent()==="") tinyMCE.activeEditor.setContent('&nbsp;');
+                            _addEditorContentCurrentPos(Date.now() + '_' + idx, html);
+                        }
+                    });
+
+                    // 대표이미지가 없으면 첫번째 첨부파일으로 선택
+                    if ($('#imagearea li input[type="radio"]:checked').parent().not(".hidden").length < 1) {
+                        $('#imagearea li:not(.hidden) input[type="radio"]').first().prop('checked', true);
+                    }
+
+                    if (err && err === 'EINVALID') {
+                        onPopup("alert", "<%= __('ATTACH_INVALID')%>", function (cb) { });
+                    } else if (err && err === 'EOVERSIZE') {
+                        onPopup("alert", "<%= __('ATTACH_OVERSIZE')%>", function (cb) { });
+                    }
+                }
+            }
+
+            function photoDelete(idx, $this) {
+
+                if (idx < 0 || idx >= attachList.length) return;
+                var tmp = attachList[idx];
+                if (tmp && tmp.length > 0)
+                    onPopup('confirm', "첨부된 이미지를 삭제하시겠습니까?\n주의! 내용에서도 삭제됩니다.", (r) => {
+                        if (r) {
+                            $(`#imagearea li > label[for="cb${idx}"]`).parent().addClass('hidden');
+                            $(`#imagearea li > input#cb${idx}:checked`).prop('checked', false);
+                            attachList[idx].push('$REMOVE');
+                            //attachList.splice(idx, 1);
+                            if (tmp[0].indexOf(".mp4") != -1 || tmp[0].indexOf(".avi") != -1 || tmp[0].indexOf(".MP4") != -1 || tmp[0].indexOf(".AVI") != -1) {
+                                _removeEditorContent(`video[src="${tmp[0]}"]`);
+                            } else {
+                                _removeEditorContent(`img[src="${tmp[0]}"]`);
+                            }
+
+                            if ($('#imagearea li input[type="radio"]:checked').length < 1) {
+                                $('#imagearea li:not(.hidden) input[type="radio"]').first().prop('checked', true);
+                            }
+                        }
+                    });
+            }
+
+            function goTempBoard() {
+                $("#temp-list").removeClass("hidden");
+                getTempList();
+            }
+
+            function onTempPost() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/temppost',
+                    data: {},
+                    success: function (data) {
+                        $("#idTempPostArea").empty();
+                        $("#login-form")[0].reset();
+
+                        var tag = "<div><span>▶︎</span><span onclick='goTempBoard();' class='text-primary'> [임시저장] </span>" + data.tempcount + "<%= __('TEMPCOUNTMSG')%></div>";
+                        $("#idTempPostArea").removeClass("hidden").append(tag)
+                    }, error: function (error) {
+                        //오류처리 팝업창 띄우기 코딩
+                        console.log(error);
+                    }
+                });
+            }
+
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

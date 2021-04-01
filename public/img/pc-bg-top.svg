@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1920 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <path id="cloud" d="M1426,184L1439,184C1443.41,184 1447,187.585 1447,192C1447,196.415 1443.41,200 1439,200L1380,200C1375.59,200 1372,196.415 1372,192C1372,187.585 1375.59,184 1380,184L1405,184L1405,168L1388,168L1388,152L1463,152L1463,168L1426,168L1426,184Z" style="fill:white;fill-opacity:0.8;"/>
+    <path id="cloud1" serif:id="cloud" d="M570,140L605,140C611.071,140 616,144.929 616,151C616,157.071 611.071,162 605,162L508,162C501.929,162 497,157.071 497,151C497,144.929 501.929,140 508,140L543,140L543,118L515,118L515,96L638,96L638,118L570,118L570,140Z" style="fill:rgb(167,215,231);fill-opacity:0.3;"/>
+    <path id="cloud2" serif:id="cloud" d="M1707,99L1742,99C1748.07,99 1753,103.929 1753,110C1753,116.071 1748.07,121 1742,121L1645,121C1638.93,121 1634,116.071 1634,110C1634,103.929 1638.93,99 1645,99L1680,99L1680,77L1652,77L1652,55L1775,55L1775,77L1707,77L1707,99Z" style="fill:white;fill-opacity:0.6;"/>
+    <path id="Rounded-Rectangle-4" serif:id="Rounded Rectangle 4" d="M1249,111L1300,123C1301.1,123 1302,123.895 1302,125L1302,200L1247,200L1247,113C1247,111.895 1247.89,111 1249,111Z" style="fill:rgb(231,233,237);"/>
+</svg>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+
+     
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid p-0 m-0 req-list"> 
+                <!--profile-->
+                
+                <div id="requestList" class="pl-4 pr-4 pt-2 pb-2">
+                    <!--nodata-->
+                    <div id="idNoData" class="nodata_req p-4 <% if (data && data.length > 0){%> displayNone <%}%>">
+                        <div>
+                        <i class="icon-excl-area-sm icon-excl"></i>
+                        </div>
+                        <div class="p-2"><%= __('INQUIRE_NOREQUEST')%></div>
+                    </div>
+                    <!--nodata-->
+                    
+                    <div class="text-center my-3"><i onclick="onReq()" class="icon-plus req_add"></i></div>
+                    <%
+                        for(var i=0;i < data.length;i++){
+                    %>
+                        <div name="listItem" id="<%=data[i]._id%>" class="mb-4">
+                            <div class="req_question">
+                                <div class="d-flex">
+                                    <span class="flex-grow-1"><h6><b><%=data[i].title%></b></h6></span>
+                                    <span class="ml-2"><button type="button" data-id="<%=data[i]._id%>" class="close" onclick="onDelete(this)">&times;</button></span>
+                                </div>
+                                <p><%-data[i].request.replace("\n","<br>")%></p>
+                                <small><%=convertTS2Date(data[i].reqRegDate)%> <%= __('INQUIRE_REQWRITE')%>  </small>
+                            </div>
+                            <div class="req_answer">
+                                <% if( !data[i].confirm||data[i].confirm!="S" || !data[i].response || data[i].response=="" ){ %>
+                                <p><%= __('INQUIRE_NORESPONSE')%></p>
+                                <% } else{ %>
+                                    <p><%-data[i].response.replace("\n","<br>")-%></p>
+                                    <small><%=convertTS2Date(data[i].resRegDate)%> <%= __('INQUIRE_REQWRITE')%>  </small>
+                                <% } %>
+                                
+                            </div>
+                        </div>
+                    <%  }  %>
+                    </div>
+                       
+                  </div>
+                <!--profile-->
+
+            </div>
+            <div style="height:7em"><div>
+            <!-- content -->
+            <%-include('../_parts/_footer')%>
+        
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+
+        <script type="text/javascript">
+            (function () {
+                setHeader('back','')
+                $("#idHeaderLeft").attr('onclick', '').unbind('click');
+                $("#idHeaderLeft").on("click",function(){
+                    //location.href="/setting/main"
+                    history.back();
+                })
+            })();
+            function onReq(){
+                location.href="req"
+            }
+
+            function onDelete(obj){
+                onPopup("confirm", "<%= __('INQUIRE_REQDELETE')%>", function(cb){
+                    if(cb==1){
+                        var id=$(obj).data();
+                        $.ajax({
+                            type: 'DELETE',
+                            url: '/setting/reqdelete',
+                            data: id,
+                            success: function (ret) {
+                                console.log(ret);
+                                if(ret.result=="ok"){
+                                    $("#"+ret.data[0].id).remove();
+                                    if($("#requestList div[name='listItem']").length==0){
+                                        $("#requestList div#idNoData").removeClass("displayNone")
+                                    }
+                                }else{
+                                    onPopup("alert", "<%- __('INQUIRE_REGERROR')%>", function(cb){ });
+                            return
+                                }
+                            }, error: function (error) {
+                                //오류처리 팝업창 띄우기 코딩
+                                console.log(error);
+                            }
+                        });
+                    }
+                });
+                
+            }
+            
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

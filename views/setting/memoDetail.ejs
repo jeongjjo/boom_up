@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+
+
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid p-0 m-0 ">
+                <!--profile-->
+                <div class="pf-userinfo text-center pt-5 pb-4">
+                    <% if(user.photo  != null && user.photo != ''){%>
+
+                    <img class="pf-img-profile" alt="..." src="<%=getPhotoEx(user.photo,2,0,'/img/pro-image.png')%>">
+                    <%} else {%>
+                    <i class="icon-my-footer profile-noimage "></i>
+                    <%} %>
+
+                    <p class="m-0 font-weight-bold pt-2"><%= user.nickname %> <i class="icon-block block_icon_small <%=  blocked ? '' : 'hidden' %> "></i></p>
+                </div>
+                <div class="edit_memo_div mt-2 write-input-line">
+                    <input type="text" class="form-control rounded-0" value="<%= list != null ? list.memo : '' %>" placeholder="<%= __('MEMO_PLACEHOLDER')%>" id="usermemo">
+                </div>
+                <div class='p-2  '>
+
+                </div>
+                <!--profile-->
+            </div>
+
+            <!-- content -->
+
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+
+        <script type="text/javascript">
+            (function () {
+                setHeader('back', 'save')
+                $("header .right").addClass("header-right-width").removeClass("header-side-width");
+            })();
+
+            function onRegist() {
+                
+                if($('#usermemo').val() != '' && $('#usermemo').val().trim().length > 0) {
+                    $.ajax({
+                        processData: false,
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            id: "<%= user._id%>",
+                            memo: $('#usermemo').val().trim()
+                        }),
+                        method: 'put',
+                        url: '/setting/memo',
+                        success: function (ret, status, xhr) {
+                            if(ret.result=="ok"){
+                                location.href="/setting/memo";
+                            }else{
+
+                            }
+                        },
+                        error: function (xhr, status, err) {
+                        },
+                        complete: function () {
+                        }
+                    })
+                }
+            }
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

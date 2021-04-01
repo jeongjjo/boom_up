@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('./_layouts/header') -%>
+        <link rel="stylesheet" href="/css/write.css?2020072101" />
+        <%- include('./_layouts/layout_bodyscript') -%>
+    </head>
+
+    <body>
+        <%- include('./_layouts/layout_bodystart') -%>
+        <div class="app header footer">
+            <%-include('./_parts/_header')%>
+            <!-- Content -->
+            <div class="d-flex vh-100 align-items-center"">
+
+                <div class="flex-grow-1 flex-fill text-center ml-3 mr-3 list-postdesc-title">
+                    <%=err%>
+                </div>
+            </div>
+            <!-- Content -->
+        </div>
+
+        <%- include('./_parts/_footer') -%>
+
+        <script type="text/javascript">
+            $(function () {
+                setHeader('back');
+            });
+        </script>
+        <%- include('./_layouts/layout_bodyend') -%>
+    </body>
+
+</html>

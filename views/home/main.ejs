@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%- include('../_layouts/header')-%>
+        <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_bodystart') -%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="container pl-0 pr-0">
+                <div class="position-fixed" style="z-index: 1000;" ontouchmove="event.stopPropagation()" id="main-category-area">
+                    <div class="d-flex bg-white flex-row mainmenu-line">
+                        <!-- flex-fill 제거-->
+                        <div class="category-arrow-left hidden" id="category_left" onclick="moveCategory('left');"><i class="icon-arrow-left"></i></div>
+                        <div class="cagegory-check pt-2 pb-2 pl-2 pr-2 font-weight-bold text-center <% if (!_isAuthed) {%>hidden<%}%>" id="menu-myinkiup" onclick="location.href = '/?k=myinkiup&f='+g_fliter+'&ts='+moment().valueOf();" style="margin-left: 4px;"><%= __('MENU_MYINKIUP')%></div>
+                        <div class="cagegory-check pt-2 pb-2 pl-2 pr-2 mainmenu-line-botton text-center" id="menu-inkiup" onclick="location.href = '/?k=inkiup&f='+g_fliter+'&ts='+moment().valueOf();"><%= __('MENU_INKIUP')%></div>
+                        <!-- <div class="cagegory-check pt-2 pb-2 pl-4 pr-4 text-center" id="menu-event" onclick="location.href = '/?k=event&f='+g_fliter+'&ts='+moment().valueOf();"><%= __('EVENT')%></div> -->
+                        <% for (var i=0; i < lineup.length; i++) { %>
+                        <div class="cagegory-check pt-2 pb-2 pl-2 pr-2 text-center" id="menu-<%= lineup[i].lineupKey %>" onclick="location.href = '/?k=<%= lineup[i].lineupKey %>&f='+g_fliter+'&ts='+moment().valueOf();"><%= lineup[i].lineup %></div>
+                        <% } %>
+                        <div class="category-arrow-right" id="category_right" onclick="moveCategory('right');"><i class="icon-arrow-right"></i></div>
+                    </div>
+
+                    <div class="bg-light">
+                        <div class="d-inline-block ml-3" id="filter_img" data-checked="all" onclick="onFilterClick(this);">
+                            <img src="/img/selectfilter.png" />
+                        </div>
+                        <select class="custom-select write-input-line bg-light main-select-width main-font-size" id="list_filter" onchange="onFilterChange(this);">
+                            <option value="all">전체 인끼</option>
+                            <option value="day">일간 인끼</option>
+                            <option value="new">최신순</option>
+                        </select>
+                    </div>
+
+                    <% if(notice.length>0) {%>
+                    <div class="swiper-container swiper-container-menu notice-line" id="notice-area">
+                        <div class="swiper-wrapper">
+                            <% for (var i=0; i < notice.length; i++) { %>
+                            <% if (notice[i].lineupKey == "entire") { %>
+                            <div class="swiper-slide notice-area px-3 main-font-size entire-line w-100 d-flex" onclick="ongoNoticeDatail('<%= notice[i]._id%>');">
+                                <span class="flex-grow-1 overflow-hidden mr-2">
+                                    <span class="text-primary">[공지] &nbsp; </span>
+                                    <span class="overflow-hidden"><%= notice[i].title%></span>
+                                </span>
+                                <span class="flex-shrink-1 rounded-circle" onclick="event.stopPropagation();onDeleteNotice(this, 'entire', '', '');"><i class="icon-x-footer"></i></span>
+                            </div>
+                            <% } %>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="bg-white flex-row notice-line text-center" id="lineupnotice-area">
+                        <% for (var i=0; i < notice.length; i++) { %>
+                        <% if (notice[i].lineupKey != "entire") { %>
+                        <div class="swiper-slide p-2 hidden notice-area pr-3 pl-3 main-font-size category-line" id="notice_<%= notice[i].lineupKey%>" onclick="ongoNoticeDatail('<%= notice[i]._id%>');">
+                            <span class="text-primary">[공지] &nbsp;</span> <%= notice[i].title%>
+                            <span class="rounded-circle mr-2" style="position: absolute; right: 0;" onclick="event.stopPropagation();onDeleteNotice(this, 'category', '<%= notice[i].lineupKey%>', '<%= notice[i].title%>');"><i class="icon-x-footer"></i></span>
+                        </div>
+                        <% } %>
+                        <% } %>
+                    </div>
+                    <% } %>
+                </div>
+
+
+                <div class="main-list" id="main_list">
+                    <%- include('../board/layout_list', {board: typeof board !== 'undefined' ? board : null}) -%>
+                </div>
+            </div> 
+            <!-- Content -->
+        </div>
+        <%- include('../_parts/_footer') -%>
+        <% if (_isAuthed) {} else {%>
+        
+        <% } %>
+        <%- include('../_layouts/layout_bodyscript') -%>
+
+        <%if(_isInApp){%>
+        <script type="text/javascript">
+            if (window.Utils && window.Utils.postMessage) { var iur = "<%-_invalidUrlRegex.replace(/\\/g,"\\\\")%>"; var prev = pdata.getObject("_iur"); if (iur !== prev) { window.Utils.postMessage(JSON.stringify({ type: 'invalidurl', regex: iur })); pdata.setObject("_iur", iur); } }
+        </script>
+        <%}%>
+
+            <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+            <script type="text/javascript">
+                var _auth = <%= _isAuthed %>;
+                var ismine = "<%= isMine %>";
+                var maintype = "inkiup";
+                var g_fliter = "<%= setting %>"//"allrank";setting
+                var limit = 20; 
+                var lineupList = <%-JSON.stringify(notice ? notice || [] : []) %>;
+
+                var _getNotificationCountTimeout = null;
+
+                var moreDelayFlag = false;
+                
+                function getNotificationCount() {
+        <% if (_isAuthed) {%>
+                        clearTimeout(_getNotificationCountTimeout);
+                        _getNotificationCountTimeout = setTimeout(() => {
+                            let $alert = $("header .icon-alert");
+                            $alert.removeClass("new");
+                            let req = $alert.data("req");
+                            if (req) {
+                                return;
+                            }
+                            $alert.data("req", $.ajax({
+                                type: 'GET',
+                                url: '/notification/count',
+                                success: function (data) {
+                                    data = data.data || 0;
+                                    if (data > 0) {
+                                        $alert.addClass("new");
+                                    }
+                                    $alert.data("req", null);
+                                }, error: function (error) {
+                                    console.log(error);
+                                    $alert.data("req", null);
+                                }
+                            }));
+                        }, 500);
+        <% } %>
+        }
+
+                $(function () {
+                    
+                    var mwidth = $(".mainmenu-line").width();
+                    mwidth = mwidth+"px";
+                    $(".notice-area").each(function (i){
+                        $(this).css("width", mwidth);
+                    });
+                    setHeader('', 'alert');
+
+                    var footerObj = $("#mainFilter ");
+                    var filter = getQueryString('f');
+                    var filterName = "";
+                    if (filter) {
+                        filterName = getFilterName(filter)
+                    } else {
+                        filterName = "일간 인끼"
+                    }
+                    $(".icon-home-footer").addClass("font-weight-bold");
+                    /*const ptr = PullToRefresh.init({
+                    mainElement: '.app',
+                    onRefresh() {
+                    onLoadContents(true);
+                    }});*/
+                    var option = {
+                        main: "#main_list",
+                        onPullToRefresh: () => {
+                            onLoadContents(true);
+                        },
+                        onScrollHeightResize: () => {
+                            getNotificationCount && getNotificationCount();
+                        }
+                    };
+                    //더보기 이벤트로 바꿈
+                    /*
+                    option['onSwipe'] = (t) => {
+                            //console.log(t);
+                            var $el = null;
+                            switch(t) {
+                                case 'left':
+                                    $el = $("div.mainmenu-line-botton").prev();
+                                    break;
+                                case 'right':
+                                    $el = $("div.mainmenu-line-botton").next();
+                                    break;
+                            }
+                            if ($el.is(':visible')) {
+                                $el.trigger('click');
+                            }
+                        }
+                    */
+                    if ((getQueryString('s') || null) == null) {
+                        option['onMore'] = () => {
+                            $("#miniloading").removeClass("hidden");
+                            getContent(false, false, false, function() {
+                                $("#miniloading").addClass("hidden");
+                            });
+                        };
+                    }
+                    
+                    $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).naaEvent(option);
+
+                    $("#text_filter", footerObj).text(filterName);
+                    $(".icon-message", footerObj).removeClass("icon-message").addClass("icon-filter");
+                    //하단 필터 기능을 쪽지로 바꾸는 기능은 숨기기로 함 20200408
+                    footerObj.removeClass("displayNone");
+
+                    //setTimeout(function(e){
+                        var swiper = new Swiper('.swiper-container-menu', {
+                            direction: 'vertical',
+                            autoplay: {
+                                delay: 3000,
+                            }
+                        });
+                    //}, 1000);
+                    
+
+                    init();
+
+                    $(".mainmenu-line").scroll(function (e) {
+                        if ((this.scrollLeft + this.clientWidth) >= (this.scrollWidth)) {
+
+                            $("#category_right").addClass("hidden");
+                            $("#category_left").removeClass("hidden");
+                        } else if (this.scrollLeft <= 0) { 
+                            $("#category_left").addClass("hidden"); $("#category_right").removeClass("hidden"); 
+                        } else {
+                            $("#category_left").removeClass("hidden"); $("#category_right").removeClass("hidden"); 
+                        }
+                    });
+
+                    <% if(popen){ %>
+                        history.pushState(null, null, "/");
+                        lmOpen()
+                    <% } %>
+
+                });
+                    
+                function ongoNoticeDatail(id) {
+                    location.href = "/left/noticedetail/" + id;
+                }
+                
+                function onGoEventDetail($this, id) {
+                    location.href = "/eventdetail/" + id;
+                }
+                
+                function onGoPostDetail($this, id) {
+                    var url = window.location.href;
+                    var parameters = (url.slice(url.indexOf('?') + 1, url.length)).split('&');
+                    var keyvalue 
+                    var category="inkiup"
+                    for (var i=0; i<parameters.length;i++){
+                        keyvalue = parameters[i].split('=');
+                        //console.log(keyvalue,keyvalue.length)
+                        if(keyvalue[0]=="k"){
+                            category=keyvalue[1]
+                        }
+                    }
+                
+                    var pathHash = category 
+                    location.href = '/detail/' + (pathHash || 'inkiup-'+g_fliter) + "/" + id;
+                }
+
+                function onGoPostDetailComment($this, id) {
+                    var pathHash = window.location.hash.replace("#", "");
+                    location.href = '/detail/' + (pathHash || 'inkiup-'+g_fliter) + "/" + id+"?cyn=Y"; 
+                }
+                
+                function moveCategory(type) {
+                    if (type == "left") {
+                        $(".mainmenu-line").animate({ scrollLeft: 0 }, 500);
+                    } else {
+                        $(".mainmenu-line").animate({ scrollLeft: $(".mainmenu-line").width() }, 500); 
+                    }
+                }
+                
+                function init() {
+                    $("#lineupnotice-area").hide();
+                    onLoadContents(false, <%- typeof board !== 'undefined' ? true : false %>);
+                }
+                
+                function goinkiup($this) {
+                    var v = $($this).data("lineupkey");
+                    $("#" + v).trigger("click");
+                }
+
+                function onLoadContents(reset, inited = false) {
+                    
+                    var type = getQueryString('k') || 'inkiup';
+                    g_fliter = getQueryString('f') || g_fliter;//"allrank";
+                    //console.log(g_fliter);
+                    var a = $(".mainmenu-line").outerWidth(); 
+                    var b = $("#menu-" + type).offset().left - $(".mainmenu-line").offset().left; 
+                    var c = $(".mainmenu-line").scrollLeft(); 
+                    var moving = b + c;
+                    var d = (a/2);
+                    $(".mainmenu-line").animate({ scrollLeft: (moving-d) }, 200);
+                    
+                    
+                    switch (type) {
+                        case 'event': {
+                            $("#notice-area").hide();
+                            $("#lineupnotice-area").hide();
+                            break;
+                        }
+                        case 'inkiup':
+                        case 'myinkiup': {
+                            $("#notice-area").show();
+                            $("#lineupnotice-area").hide();
+                            if($(".swiper-slide").length == 0) {
+                                $("#notice-area").hide();
+                            }
+                            break;
+                        }
+                        default: {
+                            if ($("[id=notice_" + type + "]").length > 0) {
+                                // $("#notice-area").show();
+                                $("#lineupnotice-area").show();
+                                $("[id^=notice_]").addClass("hidden");
+                                $("[id=notice_" + type + "]").removeClass("hidden");
+                                // if($(".swiper-slide").length == 0) {
+                                //     if($("[id^=notice_]").length == 0) $("#main_list").addClass("no-notice-list");
+                                    $("#notice-area").hide();
+                                // }
+                            } else {
+                                // $("#notice-area").show();
+                                $("#lineupnotice-area").hide();
+                                // if($(".swiper-slide").length == 0) {
+                                    $("#notice-area").hide();
+                                // }
+                            }
+                            
+                            break;
+                        }
+                    }
+                    $("[id|=menu]").removeClass("mainmenu-line-botton");
+                    $("#menu-" + type).addClass("mainmenu-line-botton");
+                    maintype = type;
+                    
+                    switch(g_fliter) {
+                        case "24rank" :
+                            $("#list_filter").val("day");
+                            $("#filter_img").attr("data-checked", "day");
+                        break;
+                        case "allrank" :
+                            $("#list_filter").val("all");
+                            $("#filter_img").attr("data-checked", "all");
+                        break;
+                        case "24newest" :
+                            $("#list_filter").val("new");
+                            $("#filter_img").attr("data-checked", "new");
+                        break;
+                    }
+
+                    blockPage();
+                    getContent(g_fliter, reset === true ? true : false, inited);
+
+                    var c = getCookie("entire-"+ismine);
+                    if(c && c == "Y") {
+                        $("#notice-area").remove();
+                        var h = $("#main-category-area").height();
+                        $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                    }
+                    var c1 = getCookie(type+"-"+ismine);
+                    if(c1 && c1 == "Y") {
+                        $("#lineupnotice-area").remove();
+                        var h = $("#main-category-area").height();
+                        $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                    }
+
+                    setTimeout(function(e) {
+                        var h = $("#main-category-area").height();
+                        $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                    }, 400);
+
+                    //카테고리 갯수가 적을 경우 화살표 히든처리
+                    var categorySize = 0;
+                    setTimeout(function (e) {
+                        $(".cagegory-check").each(function(i) {
+                        if($(this).is(":visible")) {
+                            categorySize = (categorySize + $(this).outerWidth())
+                        }
+                        });
+                        if (Math.floor((categorySize - 4)) <= $(".mainmenu-line").outerWidth()) {
+                            $(".category-arrow-left").addClass("hidden");
+                            $(".category-arrow-right").addClass("hidden");
+                        }
+                    }, 400);
+                    
+                }
+                
+                var shareRankCount = 10;
+
+                function getContent(fliter, reset, inited, callback) {
+                    if(moreDelayFlag === true) {
+                        return
+                    } else {
+                        moreDelayFlag = true;
+                        g_fliter = fliter || g_fliter;
+                        
+                        getBoardList({
+                            kind: maintype,
+                            sort: g_fliter,
+                            limit: limit,
+                            reset: reset, 
+                            inited: inited
+                        }, () => {
+                            // 공유하기 기능 추가
+                            /*
+                            if ($('#share-inkiup-8-ranking').length <= 0 && (g_fliter == "24rank" || g_fliter == "allrank") && maintype != "myinkiup" && (getQueryString('s') || null) == null) {
+                                var $rank8 = $("#board-list-area div[id|=board-area]:eq("+(shareRankCount-1)+")");
+                                if ($rank8.length > 0) {
+                                    $rank8.after('<div class="list-post d-flex justify-content-center"><button id="share-inkiup-8-ranking" class="btn rounded-pill px-4" style="background-color:var(--inkiup-primary-color); color:#fff; font-size:0.9em;" onclick="event.stopPropagation(); share8rank();"><i class="icon-copy mr-2"></i>'+'<%= __("INKIRANKSHARE")%>'.replace(' 8 ', ' '+ shareRankCount + ' ')+'</button></div>')
+                                }
+                            }
+                            */
+                            unblockPage();
+                            moreDelayFlag = false;
+                            if(typeof callback === "function") {
+                                callback();
+                            }
+                            
+                        });
+                    }
+                    
+                }
+
+                function share8rank() {
+                    var category=$("#main-category-area .mainmenu-line-botton").text()
+                    var cnt = shareRankCount;
+                    var boards = ""+cnt;
+                    var description = "인끼업 ["+category+"] Top RANK - " + moment().format('MM월 DD일 HH시') + "\r\n\r\n";
+                    var listcnt=$("#board-list-area div[id|=board-area]").length
+
+                    if(listcnt<10){
+                        onPopup("alert", "공유할 글 목록이 충분하지 않으니<br>필터를 변경해주세요.", function(cb){
+                            if(cb==1){
+                                
+                            }
+                        });
+                        return;
+                    }
+                    for (var i = 0; i < cnt; i++) {
+                        var $b = $("#board-list-area div[id|=board-area]:eq("+i+")");
+                        var id = $b.prop('id').replace('board-area-', '');
+                        description += (i+1) + '위 - ' + $b.find('.main-data-title').text().replace(/(^\s*)|(\s*$)/gi, "") + ' \r\n' + location.origin + '/detail/' + maintype + '/' + id + ' \r\n';
+                        boards += id;
+                    }
+                    var url = '/?k=' + maintype + '&f=' + g_fliter + '&s=' + boards;
+                    if (typeof ClipboardJS !== 'undefined') {
+                        $('#copypasteModal').on('show.bs.modal', function (event) {
+                            var modal = $(this);
+                            modal.find('#copy-url').val(description + '\r\n\r\n출처 : ' + location.origin);
+                        }).on('shown.bs.modal', function (event) {
+                            var modal = $(this);
+                            if (typeof ClipboardJS !== 'undefined') {
+                                var clipboard = new ClipboardJS('.btnCnP');
+                                clipboard.on('success', function (e) {
+                                    $('#copypasteModal').modal('hide');
+                                    _cid = $("input[name=id]").val();
+                                });
+                                clipboard.on('error', function (e) {
+                                    $('#copypasteModal').modal('hide');
+                                });
+                            }
+                        }).modal();
+                    }
+                }
+
+                function scroll() {
+                }
+
+                function callbackPopup(val, id) {
+
+                }
+
+                function onFilterChange($this) {
+                    var v = $("#list_filter").val();
+                    //console.log(v);
+                    MenuOn(v, (val, tex) => {
+                        //console.log(val, tex);
+                    });
+                }
+
+                function onCloseNotice($this, type) {
+                    $($this).parents(".notice-area").remove();
+
+                    if(type == "entire") {
+                        $("#notice-area").remove();
+                    } else {
+                        $("#lineupnotice-area").hide();
+                    }
+
+                    var h = $("#main-category-area").height();
+                    $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                }
+
+                function onDeleteNotice($this, type, key, title) {
+                    switch(type) {
+                        case "entire" :
+                        onPopup("confirm", '<%= __('MAINNOTICEMSG')%>', function (cb) {
+                            if (cb == 1) {
+                                $("#notice-area").remove();
+                                var h = $("#main-category-area").height();
+                                $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                                setCookie("entire-"+ ismine, "Y", 1);
+                            }
+                        });
+                        break;
+                        case "category" :
+                        var msg = '<%= __('MAINNOTICEMSG1')%>';
+                        onPopup("confirm", msg, function (cb) {
+                            if (cb == 1) {
+                                $($this).parents(".category-line").remove();
+                                $("#lineupnotice-area").remove();
+                                var h = $("#main-category-area").height();
+                                $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                                setCookie(key+"-"+ ismine, "Y", 1);
+                            }
+                        });
+                        break
+                    }
+                }
+
+                function onFilterClick($this) {
+                    var c = $($this).attr("data-checked");
+                    //console.log("onFilterClick   ///   " + c);
+                    switch(c) {
+                        case "all" :
+                            $("#list_filter").val("day").trigger("change");
+                        break;
+                        case "day" :
+                            $("#list_filter").val("new").trigger("change");
+                        break;
+                        case "new" :
+                            $("#list_filter").val("all").trigger("change");
+                        break;
+                    }
+                    
+                }
+            </script>
+        <%- include('../_layouts/layout_bodyend') -%>
+    </body>
+
+</html>

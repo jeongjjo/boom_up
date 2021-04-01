@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid p-0 m-0">
+                <div class="card border-0">
+                    <!--list-->
+                    <div class="card-body p-3">
+                        <% if( list.subscribeLineup == null || list.subscribeLineup.length == 0  ) { %>
+                        <!--nodata-->
+                        <div class="nodata p-4 ">
+                            <div>
+                                <i class="icon-excl-area-sm icon-excl"></i>
+                            </div>
+                            <div class="p-2">
+                                <%= __('PROFILE_NO_LINEUP')%>
+                            </div>
+                        </div>
+                        <!--nodata-->
+
+                        <% }  else { %>
+                        <% for (var x=0; x<list.subscribeLineup.length ; x++ ){ %>
+                        <!--repeat-->
+                        <div class="d-flex justify-content-between px-3 py-4 border-bottom-only">
+                            <div class="list_nickname"><%= list.subscribeLineup[x].lineup %></div>
+                            <button type='button' class="btn btn-text-normal btn-sm list_btn_text" onclick='onSubLineup(this)'  data-nm="<%=list.subscribeLineup[x].lineup%>" data-key="<%=list.subscribeLineup[x].lineupKey%>" data-now='i'>
+                                <%= __('SUB_ING')%>
+                            </button>
+                        </div>
+                        <!--repeat-->
+                        <% }    %>
+                        <% }    %>
+                    </div>
+                    <!--list-->
+                </div>
+            </div>
+            <!-- content -->
+            <%-include('../_parts/_footer')%>
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+
+        <script type="text/javascript">
+            function onSubLineup(a) {
+                
+                $.ajax({
+                    type: 'PUT',
+                    url: '/profile/lineup/',
+                    data: $(a).data(),
+                    success: function (data) {
+                        $(a).data('now') == 'i' ?
+                            $(a).addClass('btn-fill-blue').removeClass('btn-text-normal').html("<%= __('SUB_READY')%>").data("now", "d") :
+                            $(a).removeClass('btn-fill-blue').addClass('btn-text-normal').html("<%= __('SUB_ING')%>").data("now", "i");
+                    }, error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+            (function () {
+                setHeader('back','')
+                $("#idHeaderLeft").attr('onclick', '').unbind('click');
+                $("#idHeaderLeft").on("click",function(){
+                    location.href="/profile/main"
+                })
+            })();
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

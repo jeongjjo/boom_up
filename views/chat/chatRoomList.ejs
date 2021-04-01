@@ -1,0 +1,32 @@
+<% if(data==null || data.length ==0) {%>
+    <div class="nodata p-4 ">
+        <div>
+            <i class="icon-excl-area-sm icon-excl"></i>
+        </div>
+        <div class="p-2">쪽지가 없습니다.</div>
+    </div>
+    <!--nodata-->
+    <%} else {%>
+        <% for(var x=0; x < data.length; x++  ) { %>
+        <!--repeat-->
+        <div id="chatRoom-<%= data[x]._id %>" class="media align-items-center pb-3 mb-3 border-bottom-only" name="msglst" data-id='<%= data[x]._id %>'>
+            <% for(var y=0; y < data[x].members.length; y++  ) { %>
+                <% if(data[x].members[y].userId != user._id ) { %>
+                    <img src="<%=getPhotoEx(data[x].members[y].photo,3,1,'/img/pro-image.png')%>" class="list-img-profile" alt="">
+                    <div class="media-body ml-3 mr-1">
+                        <a href="/profile/main/<%= data[x].members[y].userId %>" class="list_nickname mr-2">
+                            <%= data[x].members[y].nickname %>
+                        </a>
+                        <i class="icon-block block_icon_small <%= data[x].blocked ? '' : 'hidden' %> "></i>
+                        <div class="list_memo pr-1 msg-content-title"  onclick="location.href='chatmsg/<%= data[x]._id %>/<%= data[x].members[y].userId %>/<%= data[x].members[y].nickname %>'">
+                            <%= (data[x].lastMsg=="")?"쪽지가 없습니다.":data[x].lastMsg %>
+                        </div>
+                        <div><img src="/img/time.png" class="post-time"><span class="post-time"><%=convertTS2Date(data[x].registDate,"from")%></span></div>
+                    </div>
+                    <button class="btn btn-fill-red btn-sm list_btn_text " onclick="delChat('<%= data[x]._id %>')"><%= __('DELETE')%></button>
+                <% } %>
+            <% } %>
+        </div>
+        <!--repeat-->
+        <%}%>
+    <%}%>

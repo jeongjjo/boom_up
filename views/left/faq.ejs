@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+        <style>
+
+        </style>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid p-0 m-0">
+                <div id="accordion" class="accordion">
+                    <div class=" mb-0" id='faqArea'>
+
+                    </div>
+
+
+                </div>
+
+          
+<!--
+                <div class="get_more p-2" onclick="getfaq(event);" class="text-666" id="btnMoreFaq">
+                    더보기 <a href="#" class="icon-arrow-down setting_right_icon"></a>
+                </div>
+-->
+            </div>
+
+
+
+            <!-- content -->
+
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+        
+
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+        <script type="text/javascript">
+            (function () {
+                $('#faqArea').empty();
+                setHeader('back','save')
+                $("#idHeaderLeft").addClass("displayNone")
+                $("header .right").addClass("header-right-width").removeClass("header-side-width");
+                $("header span.btn-save").removeClass("btn-fill-blue").text("닫기").attr("onclick","goBack()")
+
+                faq(null);
+            })();
+
+            function faq(id) {
+
+                var url = '/left/faqlist';
+                if (id) url += "/" + id;
+
+                console.log(url)
+                $.get({
+                    url: url,
+                    success: function (html, status, xhr) {
+                        var b = $('.faq_quetion').length;
+                        $('#faqArea').append(html);
+                        var a = $('.faq_quetion').length;
+                        if (a == b) $('#btnMoreFaq').html("마지막입니다.").prop('disabled', true)
+                        typeof callback === 'function' && callback(list, status, xhr);
+                    },
+                    error: function (xhr, status, err) {
+                        typeof callback === 'function' && callback(null, false, xhr);
+                    }
+                });
+            }
+
+            function getfaq(e) {
+                e.preventDefault()
+                faq($('.faq_quetion').last().data('id'));
+            }
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

@@ -1,0 +1,18 @@
+
+<% for(var x=0; x<list.length; x++) { %>
+<div class="collapsed faq_content faq_quetion" data-toggle="collapse"  data-parent="#accordion"  href="#collapse<%=list[x]._id %>" data-id="<%= list[x]._id %>">
+    <span class="FAQ Q">Q</span> <span class="setting_line_text"><%- list[x].q %>  </span>
+</div>
+<div id="collapse<%=list[x]._id %>" class="faq_content faq_answer collapse" data-parent="#accordion">
+    <span class="FAQ A">A</span> <span class="setting_line_text"><%- list[x].a.replace(/\n/g,"<br>") %> </span>
+</div>
+<% } %>
+
+ 
+
+<script type="text/javascript">
+    (function () {
+        // TODO script
+    })();
+</script>
+ 

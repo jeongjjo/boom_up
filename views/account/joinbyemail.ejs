@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/headerEmpty') -%>
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_Empty_bodystart') -%>
+
+        <div class="app header">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="container-fluid p-3 m-0" >
+                <form id="join-form" method="POST">
+                    <div class="d-flex flex-column h-100">
+                        <div class="mt-1 flex-shrink-1">
+                            <div class="input-group mt-1">
+                                <input id="em" type="email" name="em" class="form-control input_login" placeholder="<%= __('LOGIN_EMAILADDR')%>">
+                            </div>
+                            <div class="d-flex align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('AUTH_ALREADYEM')%></div>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <input id="pw1" type="password" name="pw1" class="form-control input_login" placeholder="<%= __('LOGIN_PASSWORD')%>">
+                            </div>
+                            <div class="d-flex align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('VALIDATOR_REQUIREDPW')%></div>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <input id="pw2" type="password" name="pw2" class="form-control input_login" placeholder="<%= __('LOGIN_EQPASSWORD')%>">
+                            </div>
+                            <div class="d-flex align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('VALIDATOR_EQUALTOPW')%></div>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <input id="nn" type="text" name="nn" class="form-control input_login" placeholder="<%= __('LOGIN_NICKNAME')%>">
+                            </div>
+                            <div class="d-flex align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('AUTH_INVALIDNICKNAME')%></div>
+                            </div>
+
+                            <div class="custom-control input-group custom-checkbox ml-1 mt-3">
+                                <input type="checkbox" id="jb-checkbox" name="chkAgreements" class="custom-control-input">
+                                <label class="custom-control-label" for="jb-checkbox" style="padding-top:0.1rem"><%= __('LOGIN_AGREEWALL')%></label>
+                            </div>
+                            <div class="d-flex align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('AUTH_REQUIREDTERMS')%></div>
+                            </div>
+                        </div>
+
+                        <div class="flex-grow-1 terms m-0 p-0 h-100">
+                            <iframe id="ifContents" src="/support/doc/terms" style="width:100%; height:100%;border:0px;padding:0px;"></iframe>
+                        </div>
+
+                        <div class="d-flex justify-content-around mt-2">
+                            <div class="row w-100 ">
+                                <div class="col-5 px-0"><a href="javascript:{$('#ifContents').attr('src','/support/doc/terms');}" class="login_text small"><%= __('LOGIN_VIEWTERMS')%> ></a></div>
+                                <div class="col pr-0 text-right"><a href="javascript:{$('#ifContents').attr('src','/support/doc/privacy');}" class="login_text small"><%= __('LOGIN_VIEWPOLICY')%> ></a></div>
+                            </div>
+                        </div>
+
+                        <div class="flex-shrink-1">
+                            <button id="btnJoin" type="submit" class="btn btn-primary btn-block btn_login mt-3"><%= __('LOGIN_SUBMIT')%></button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Content -->
+            </div>
+
+            <%- include('../_layouts/layout_Empty_bodyscript') -%>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/additional-methods.min.js" integrity="sha256-vb+6VObiUIaoRuSusdLRWtXs/ewuz62LgVXg2f1ZXGo=" crossorigin="anonymous"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js" integrity="sha256-6rXZCnFzbyZ685/fMsqoxxZz/QZwMnmwHg+SsNe+C/w=" crossorigin="anonymous"></script>
+            <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/cipher-core.min.js" integrity="sha256-Y7SVWwin6U0VYV88jtgGd6z3ohMG+IMn3w4vl8vTvDs=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/hmac-sha512.min.js" integrity="sha256-6LEpzLhP3784Zf/1GDOijZdcE58Oqnkjbr5DQ17bjNk=" crossorigin="anonymous"></script> -->
+            <script type="text/javascript">
+                $.validator.messages = {
+                    required: "<%= __('VALIDATOR_REQUIRED')%>",
+                    remote: "<%= __('VALIDATOR_REMOTE')%>",
+                    email: "<%= __('VALIDATOR_EMAIL')%>",
+                    url: "<%= __('VALIDATOR_URL')%>",
+                    date: "<%= __('VALIDATOR_DATE')%>",
+                    dateISO: "<%= __('VALIDATOR_DATEISO')%>",
+                    number: "<%= __('VALIDATOR_NUMBER')%>",
+                    digits: "<%= __('VALIDATOR_DIGITS')%>",
+                    equalTo: "<%= __('VALIDATOR_EQUALTO')%>",
+                    maxlength: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                    minlength: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                    rangelength: $.validator.format("<%= __('VALIDATOR_RANGELENGTH')%>"),
+                    range: $.validator.format("<%= __('VALIDATOR_RANGE')%>"),
+                    max: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                    min: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                    step: $.validator.format("<%= __('VALIDATOR_STEP')%>")
+                };
+
+                (function () {
+                    var emsg = getQueryString('e');
+                    if (emsg) {
+                        onPopup("alert", emsg, function (cb) { });
+                    }
+
+                    setHeader('back', '');
+
+                    $.validator.addMethod("regex", function (value, element, regexpr) { return regexpr.test(value); });
+                    $.validator.addMethod("byteRangeLength", function (value, element, param) {
+                        var length = value.length;
+                        for (var i = 0; i < value.length; i++) {if (value.charCodeAt(i) > 127) {length++;}}
+                        return this.optional(element) || (length >= param[0] && length <= param[1]);
+                    }, $.validator.format("<%= __('VALIDATOR_BYTELENGTH')%>"));
+
+                    // Validation
+                    window.validator = $("#join-form").validate({
+                        ignore: ':hidden:not(.validate)',
+                        rules: {
+                            em: {
+                                required: true,
+                                email: true,
+                                remote: {
+                                    url: "/auth/checkemail",
+                                    type: "post",
+                                    data: {
+                                        em: function () {
+                                            return $("#em").val();
+                                        }
+                                    }
+                                }
+                            },
+                            pw1: {
+                                required: true,
+                                byteRangeLength:[4,32],
+                            },
+                            pw2: {
+                                required: true,
+                                equalTo: "#pw1"
+                            },
+                            nn: {
+                                required: true,
+                                regex: /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|_|\u3130-\u3163\u4E00-\u9FFF|\u3040-\u30FC]{2,10}$/,
+                                remote: {
+                                    url: "/auth/checknickname",
+                                    type: "post",
+                                    data: {
+                                        nn: function () {
+                                            return $("#nn").val();
+                                        }
+                                    }
+                                }
+                            },
+                            chkAgreements: {
+                                required: true //"#chkAgreements:checked"
+                            }
+                        },
+                        messages: {
+                            em: {
+                                required: "<%= __('VALIDATOR_REQUIREDEMAIL')%>",
+                                remote: "<%= __('VALIDATOR_REMOTE_EMAIL')%>"
+                            },
+                            pw1: {
+                                required: "<%= __('VALIDATOR_REQUIREDPW')%>"
+                            },
+                            pw2: {
+                                required: "<%= __('VALIDATOR_EQUALTOPW')%>",
+                                equalTo: "<%= __('VALIDATOR_EQUALTOPW')%>"
+                            },
+                            nn: {
+                                required: "<%= __('AUTH_REQUIREDNICKNAME')%>",
+                                regex: "<%= __('VALIDATOR_INVALIDNN')%>"
+                            },
+                            chkAgreements: {
+                                required: "<%= __('AUTH_REQUIREDTERMS')%>"
+                            }
+                        },
+                        errorPlacement: function errorPlacement(error, element) {
+                            var $parent = $(element).addClass('is-invalid').parents('.input-group').next('.warn_area');
+                            if ($parent.length < 1) $parent = $(element).addClass('is-invalid').parents('.input-group').find('.warn_area');
+
+                            // Do not duplicate errors
+                            if ($parent.find('.jquery-validation-error').length) {
+                                return;
+                            }
+
+                            if (error.length > 0) $parent.find('.warn_text').text(error.text());
+                            $parent.removeClass('hidden');
+                        },
+                        highlight: function (element) {
+                            // var $el = $(element);
+                            // var $parent = $el.parents('.form-group');
+                            // $el.addClass('is-invalid');
+                            // // Select2 and Tagsinput
+                            // if ($el.hasClass('select2-hidden-accessible') || $el.attr('data-role') === 'tagsinput') {
+                            //     $el.parent().addClass('is-invalid');
+                            // }
+                        },
+                        unhighlight: function (element) {
+                            // $(element).parents('.form-group').find('.is-invalid').removeClass('is-invalid');
+                            var $parent = $(element).removeClass('is-invalid').addClass('is-valid').parents('.input-group').next('.warn_area');
+                            if ($parent.length < 1) $parent = $(element).removeClass('is-invalid').addClass('is-valid').parents('.input-group').find('.warn_area');
+                            $parent.addClass('hidden');
+                        },
+                        success: function (element) {
+                        },
+                        submitHandler: function (form) {
+                            var formData = objectifyForm(form);
+
+                            formData.pw = CryptoJS.enc.Hex.stringify(CryptoJS.SHA512(formData.pw1));
+                            formData.pw1 = "";
+                            formData.pw2 = "";
+                            
+                            var fdata = { type: 'email', mode: 'signup', em: formData.em, pw: formData.pw, nn: formData.nn, url: '<%=redirectUrl%>' };
+
+                            if (window.Auth) {
+                                blockPage();
+                                window.Auth && window.Auth.postMessage(JSON.stringify(fdata));
+                            } else {
+                                fdata.d = pdata.getObject('__d__', '');
+                                $.post({
+                                    url: '/api/auth/signup',
+                                    processData: false,
+                                    contentType: 'application/json',
+                                    dataType: 'json',
+                                    data: JSON.stringify(fdata),
+                                    success: function (data, status, xhr) {
+                                        if (data && data.result === 'ok') {
+                                            var reurl = getQueryString('r');
+                                            var f = CryptoJS.enc.Hex.stringify(CryptoJS.SHA1(data.data));
+                                            top.location.href = '/auth/welcomeemail/' + f + '/' + fdata.d;
+                                            return;
+                                        } else if (data && data.displaymsg) {
+                                            unblockPage();
+                                            return onPopup("alert", data.displaymsg, function (cb) { });
+                                        }
+
+                                        unblockPage();
+                                        return onAuthMessage('EINVALIDEM');
+                                    },
+                                    error: function (xhr, status, err) {
+                                        unblockPage();
+                                        return onAuthMessage('EUNKNOWN');
+                                    }
+                                });
+                            }
+                            return false;
+                        }
+                    });
+                })();
+
+                function onAuthMessage(type) {
+                    if (!type) return;
+                    switch (type) {
+                        case 'EARG': { return onPopup("alert", "<%= __('AUTH_EARG')%>", function (cb) { }); }
+                        case 'EREQARG': { return onPopup("alert", "<%= __('AUTH_EREQARG')%>", function (cb) { }); }
+                        case 'EINVALIDEM': { return onPopup("alert", "<%= __('AUTH_EINVALIDEM')%>", function (cb) { }); }
+                        case 'ENOTSUPP': { return onPopup("alert", "<%= __('AUTH_ENOTSUPP')%>", function (cb) { }); }
+                        case 'EINVALIDJOINSNS': { return onPopup("alert", "<%= __('AUTH_EINVALIDJOINSNS')%>", function (cb) { }); }
+                        case 'EINVALIDADDSNS': { return onPopup("alert", "<%= __('AUTH_EINVALIDADDSNS')%>", function (cb) { }); }
+                        case 'EUNKNOWN': { return onPopup("alert", "<%= __('AUTH_EUNKNOWN')%>", function (cb) { }); }
+                        default: { break; }
+                    }
+                }
+            </script>
+            <%- include('../_layouts/layout_Empty_bodyend') -%>
+    </body>
+
+</html>

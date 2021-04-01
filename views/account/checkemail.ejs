@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/headerEmpty') -%>
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_Empty_bodystart') -%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="container-fluid p-0 m-0 h-100">
+                <div class="d-flex flex-column h-100">
+                    <div class="text-center pt-5 pb-3">
+                        <h2>
+                            <i class="logotitle3"></i>
+                        </h2>
+                    </div>
+                    <div class="flex-shrink-1 p-4 ">
+                        <p class="text-center"><%- __('AUTH_CHECKEMAILDONE').replace('[NICKNAME]', userInfo.nickname); %></p>
+                        <button id="goToAppBtn" class="btn btn-primary btn-block btn_login" onclick="location.href='https://go.inkiup.com/?link=<%=encodeURIComponent(serviceinfo.defaultUrl+"/auth/login")%>&apn=com.inkiup.app&amv=1&ibi=com.inkiup.app&isi=1501274378&efr=1'"><%= __('GOTOAPP')%></button>
+                        <button id="goToLogin" class="btn btn-secondary btn-block btn_login" onclick="location.href='/auth/login'"><%= __('GOTOLOGIN')%></button>
+                    </div>
+                    <div class="pt-3 pb-5">
+                    </div>
+                </div>
+
+                <footer class="fixed-bottom keyboard-show-hidden-item">
+                    <div class="d-flex justify-content-around">
+                        <div class="mt-1 mb-4">
+                            <a href="/support/terms" class="left_bottom_text"><%= __('LB_MENU1')%></a> | <a href="/support/privacy" class="left_bottom_text"><%= __('LB_MENU2')%></a> | <a href="/left/faq" class="left_bottom_text"><%= __('LB_MENU3')%></a> | <a href="/left/notice" class="left_bottom_text"><%= __('LB_MENU4')%></a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <!-- Content -->
+        </div>
+
+        <%- include('../_layouts/layout_Empty_bodyscript') -%>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/additional-methods.min.js" integrity="sha256-vb+6VObiUIaoRuSusdLRWtXs/ewuz62LgVXg2f1ZXGo=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js" integrity="sha256-6rXZCnFzbyZ685/fMsqoxxZz/QZwMnmwHg+SsNe+C/w=" crossorigin="anonymous"></script>
+        <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/cipher-core.min.js" integrity="sha256-Y7SVWwin6U0VYV88jtgGd6z3ohMG+IMn3w4vl8vTvDs=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/hmac-sha512.min.js" integrity="sha256-6LEpzLhP3784Zf/1GDOijZdcE58Oqnkjbr5DQ17bjNk=" crossorigin="anonymous"></script> -->
+        <script type="text/javascript">
+
+            (function () {
+
+                if( /Android/i.test(navigator.userAgent)) {
+                    $("#goToLogin").addClass("hidden");
+                    // 안드로이드
+                } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    $("#goToLogin").addClass("hidden");
+                    // iOS 아이폰, 아이패드, 아이팟
+                } else {
+                    // 그 외 디바이스
+                    $("#goToAppBtn").addClass("hidden");
+                }
+                setHeader('back', '');
+            })();
+        </script>
+        <%- include('../_layouts/layout_Empty_bodyend') -%>
+    </body>
+
+</html>

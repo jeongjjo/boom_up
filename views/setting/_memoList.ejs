@@ -1,0 +1,40 @@
+<% if(id==null && list.length ==0) {%>
+
+<!--nodata-->
+<div class="nodata p-4 ">
+    <div>
+        <i class="icon-excl-area-sm icon-excl"></i>
+    </div>
+    <div class="p-2">
+        내용이 없습니다.
+    </div>
+</div>
+<!--nodata-->
+<%} else {%>
+    <%} for(var x=0; x<list.length; x++  ) { {%>
+
+    <!--repeat-->
+    <div class="media align-items-center pb-3 mb-3 border border-left-0 border-right-0 border-top-0" name="usrmemo" data-id="<%= list[x]._id%>" id="<%= list[x]._id%>">
+
+        <%  if(list[x].photo != null && list[x].photo != '' ) { %>
+        <img src="<%=list[x].photo%>" class="list-img-profile" alt="">
+        <%  }  else { %>
+        <img src="/img/pro-image.png" class="list-img-profile" alt="">
+        <!-- <i class="icon-my-footer list-noimage"></i> -->
+        <%  }  %>
+
+        <div class="media-body ml-3 mr-1">
+            <a href="/profile/main/<%= list[x].targetUserId%>" class="list_nickname mr-2 text-break"><%= list[x].targetNickname%></a>
+
+            <i class="icon-block block_icon_small <%=  list[x].blocked ? '' : 'hidden' %> "></i>
+            <div class="list_memo pr-1 text-break"><%=list[x].memo%></div>
+        </div>
+        <div class="">
+            <a href="memodetail/<%= list[x].targetUserId%>" class="btn btn-text-normal btn-sm list_btn_text ml-2" data-id="<%= list[x]._id%>"><%= __('MODIFY')%></a>
+            <button  class="btn btn-fill-red btn-sm list_btn_text " data-id="<%= list[x]._id%>" onclick="delMemo(this)"><%= __('DELETE')%></button>
+        </div>
+    </div>
+    <!--repeat-->
+
+    <%}%> 
+<%}%>

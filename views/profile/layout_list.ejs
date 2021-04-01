@@ -1,0 +1,181 @@
+<div id="board-list-area">
+    <!-- START 처음 로딩시 데이터가 있는 경우 START -->
+    <% if (typeof board !== 'undefined' && board !== null) { %>
+    <%- include('../board/list', {data: board.data, kind: board.kind, page: board.page, sort: board.sort, lineup: board.lineup}) -%>
+    <% } %>
+    <!-- END 처음 로딩시 데이터가 있는 경우 END -->
+</div>
+<div id="board-list-nocontent" class="main-nocontent hidden">
+    <div class="text-center">
+        <i class="icon-inkiup"></i>
+        <span class="nocontent-text"></span>
+    </div>
+</div>
+
+<script type="text/javascript">
+(function () {
+    //sessionStorage.setItem('INKIUP_SC:' + location.href, JSON.parse({html: 'test', scroll: $(".app").scrollTop()}));
+});
+
+cashePage({
+    onBeforeUnload: () => {
+        return {
+            selector: $("#board-list-area").data("casheSelector") || "#board-list-area",
+            end: $("#board-list-area").data("end"),
+            kind: $("#board-list-area").data("kind"),
+            sort: $("#board-list-area").data("sort"),
+            keyword: $("#board-list-area").data("keyword")
+        }
+    }
+});
+
+function getBoardList(data, cb) {
+    var oldReq = $("#board-list-area").data("req");
+    if (typeof oldReq !== 'undefined' && oldReq !== null && data.reset !== true) {
+        return;
+    }
+
+    let listLoadEnd = (data) => {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        var newCount = $("#board-list-area > div[id|=board-area]").length;
+        if (newCount <= 0) {
+            $("#board-list-nocontent").removeClass("hidden");
+            $("#board-list-nocontent .nocontent-text").text(data.kind == "event" ? "<%= __('MAIN_NOEVENT')%>" : "<%= __('MAIN_NOCONTENT')%>" )
+        } else {
+            $("#board-list-nocontent").addClass("hidden");
+        }
+    }
+
+    data = data || {};
+
+    // if (data.cashe !== false && loadCachPage && loadCachPage((cdata) => {
+    //     $("#board-list-area").data("kind", cdata.kind || null);
+    //     $("#board-list-area").data("sort", cdata.sort || null);
+    //     $("#board-list-area").data("keyword", cdata.keyword || null);
+    //     $("#board-list-area").data("casheSelector", cdata.casheSelector || null);
+    //     $("#board-list-area").data("end", cdata.end || false);
+    //     listLoadEnd(data);
+    //     cb && cb("");
+    // })) {
+    //     return;
+    // }
+
+    $("#board-list-area").data("casheSelector", data.casheSelector || null);
+
+    var end = $("#board-list-area").data("end");
+    var oldKind = $("#board-list-area").data("kind");
+    var oldSort = $("#board-list-area").data("sort");
+    var oldKeyword = $("#board-list-area").data("keyword") || '';
+    var kind = data.kind;
+    var sort = data.sort || 'date-down';
+    var keyword = data.keyword || '';
+    if (data.reset === true || oldKind != kind || oldSort != sort || oldKeyword != keyword) {
+        if (oldReq) {
+            oldReq.abort();
+        }
+        if (data.inited !== true) {
+            $("#board-list-area").empty();
+        }
+        $("#board-list-area").data("kind", kind);
+        $("#board-list-area").data("sort", sort);
+        $("#board-list-area").data("keyword", keyword);
+        $("#board-list-area").data("end", false);
+    } else if (end === true) {
+        if (typeof cb === 'function') {
+            cb(true);
+        }
+        return;
+    }
+
+    if (data.inited === true) {
+        setTimeout(() => {
+            listLoadEnd({kind, kind});
+            cb && cb("");
+        }, 500);
+        return;
+    }
+
+    var count = $("#board-list-area > div[id|=board-area]").length || 0;
+    var limit = data.limit || 30;
+    var url = '/board/list/' + kind + '/' + count + '/' + sort + '/' + limit + '/' + keyword;
+    var req = $.get({
+        url: url,
+        success: function (html, status, xhr) {
+            $("#board-list-area").data("req", null);
+            $("#board-list-area").append(html);
+            listLoadEnd(data);
+
+            var newCount = $("#board-list-area > div[id|=board-area]").length;
+            if (newCount == count) {
+                $("#board-list-area").data("end", true);
+            }
+            if (typeof cb === 'function') {
+                var msg = "";
+                if (html == "") {
+                    msg = "nodata";
+                }
+                cb(msg);
+            }
+        },
+        error: function (xhr, status, err) {
+            $("#board-list-area").data("req", null);
+            if (typeof cb === 'function') {
+                cb(false);
+            }
+            console.log(err);
+        }
+    });
+    $("#board-list-area").data("req", req);
+}
+
+function onBoardVoting(e, cid, vote) {
+    e.stopPropagation();
+    putVoting(cid, vote, 'board', (req) => {
+        if (req && req.result == 'ok') {
+            if (req.data) {
+                $("#board-" + cid + "-vote-up-count").text(req.data.votingUp);
+                $("#board-" + cid + "-vote-down-count").text(req.data.votingDown);
+
+                if(vote=="DOWN"){
+                    $("#board-" + cid + "-vote-up").removeClass("newlistarrowup-sel").addClass("newlistarrowup")
+                    if($("#board-" + cid + "-vote-down").hasClass("newlistarrowdown")){
+                        $("#board-" + cid + "-vote-down").removeClass("newlistarrowdown").addClass("newlistarrowdown-sel")
+                    }else{
+                        $("#board-" + cid + "-vote-down").removeClass("newlistarrowdown-sel").addClass("newlistarrowdown")
+                    }
+                }else{
+                    $("#board-" + cid + "-vote-down").removeClass("newlistarrowdown-sel").addClass("newlistarrowdown")
+                    if($("#board-" + cid + "-vote-up").hasClass("newlistarrowup")){
+                        $("#board-" + cid + "-vote-up").removeClass("newlistarrowup").addClass("newlistarrowup-sel")
+                    }else{
+                        $("#board-" + cid + "-vote-up").removeClass("newlistarrowup-sel").addClass("newlistarrowup")
+                    }
+                }
+                /*
+                $("#board-" + cid + "-vote-group").removeClass("up down");
+                if (req.data.vote == "UP") {
+                    $("#board-" + cid + "-vote-group").addClass("up");
+                } else if (req.data.vote == "DOWN") {
+                    $("#board-" + cid + "-vote-group").addClass("down");
+                }
+                */
+            }
+        }
+    });
+}
+
+function showPofilePop(e, userId) {
+    e.stopPropagation();
+    <% if (_isAuthed) { %>
+    Popup2On('list', userId,  (val,id) => {callbackPopup(val,id)});
+    <% } %>
+}
+
+function onProfileMove(e, userId) {
+    e.stopPropagation();
+    <% if (_isAuthed) { %>
+    location.href="/profile/main/"+userId
+    <% } %>
+}
+</script>

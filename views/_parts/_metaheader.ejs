@@ -1,0 +1,56 @@
+<title><%=_metaInfo?_metaInfo.title+' ':(title?title+' | ':'')%><%=serviceinfo.sitename%></title>
+
+<%if(!_metaInfo){%>
+<meta name="title" content="<%=serviceinfo.og.title%>" />
+<meta name="keywords" content="<%=serviceinfo.og.keywords%>" />
+<meta name="description" content="<%=serviceinfo.og.description%>" />
+<meta name="author" content="<%=serviceinfo.og.author%>">
+
+<link rel="canonical" href="<%=serviceinfo.defaultUrl%><%=url%>" />
+
+<meta property="og:title" content="<%=serviceinfo.og.title%>" />
+<meta property="og:description" content="<%=serviceinfo.og.description%>" />
+<meta property="og:url" content="<%=serviceinfo.defaultUrl%>" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="<%=serviceinfo.og.sitename%>" />
+<meta property="og:image" content="<%=serviceinfo.sitelogourl%>" />
+<meta property="fb:admins" content="<%=serviceinfo.contactperson%>" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="<%=serviceinfo.og.sitename%>" />
+<meta name="twitter:url" content="<%=serviceinfo.defaultUrl%>" />
+<meta name="twitter:title" content="<%=serviceinfo.og.title%>" />
+<meta name="twitter:image" content="<%=serviceinfo.og.image%>" />
+<meta name="twitter:description" content="<%=serviceinfo.og.description%>" />
+<%}else{%>
+<meta name="title" content="<%=_metaInfo.title%>" />
+<meta name="description" content="<%=_metaInfo.content||serviceinfo.og.description%>" />
+<meta name="author" content="<%=_metaInfo.author%>">
+
+<link rel="canonical" href="<%=serviceinfo.defaultUrl%><%=url%>" />
+
+<meta property="og:site_name" content="<%=serviceinfo.og.sitename%>" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="<%=serviceinfo.defaultUrl%><%=url%>" />
+<meta property="og:title" content="<%=_metaInfo.title%>" />
+<meta property="og:description" content="<%=_metaInfo.content||serviceinfo.og.description%>" />
+<meta property="og:image" content="<%=_metaInfo.imageurl&&_metaInfo.imageurl.startsWith('https:')?_metaInfo.imageurl:serviceinfo.defaultUrl+_metaInfo.imageurl%>" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="<%=serviceinfo.og.sitename%>" />
+<meta name="twitter:title" content="<%=_metaInfo.title%>" />
+<meta name="twitter:url" content="<%=serviceinfo.defaultUrl%><%=url%>" />
+<meta name="twitter:image" content="<%=_metaInfo.imageurl&&_metaInfo.imageurl.startsWith('https:')?_metaInfo.imageurl:serviceinfo.defaultUrl+_metaInfo.imageurl%>" />
+<meta name="twitter:description" content="<%=_metaInfo.content||serviceinfo.og.description%>" />
+
+<meta property="article:published_time" content="<%=_metaInfo.lastUpdatedDate%>" />
+<%}%>
+
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="<%=serviceinfo.sitename%>" />
+<meta name="mobile-web-app-capable" content="yes" />
+
+<meta name="google-site-verification" content="" />
+<meta name="robots" content="index" />

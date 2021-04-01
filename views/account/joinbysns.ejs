@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/headerEmpty') -%>
+        <meta name="google-signin-scope" content="profile email" />
+        <meta name="google-signin-client_id" content="742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com" />
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_Empty_bodystart') -%>
+
+        <div class="app header">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="container-fluid p-3 m-0 h-100">
+                <form id="join-form" method="POST" class="h-100">
+                    <div class="d-flex flex-column h-100">
+                        <div class="mt-2 flex-shrink-1">
+                            <div class="input-group normal">
+                                <input id="nn" type="text" name="nn" class="form-control input_login" placeholder="<%= __('LOGIN_NICKNAME')%>">
+                            </div>
+                            <div class="d-flex align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('AUTH_ALREADYUSE')%></div>
+                            </div>
+
+                            <div class="custom-control input-group custom-checkbox ml-1 mt-5">
+                                <input type="checkbox" id="jb-checkbox" name="chkAgreements" class="custom-control-input">
+                                <label class="custom-control-label" for="jb-checkbox" style="padding-top:0.1rem"><%= __('LOGIN_AGREEWALL')%></label>
+                            </div>
+                            <div class="d-flex align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('AUTH_REQUIREDTERMS')%></div>
+                            </div>
+                        </div>
+
+                        <div class="flex-grow-1 terms m-0 p-0 h-100">
+                            <iframe id="ifContents" src="/support/doc/terms" style="width:100%; height:100%;border:0px;padding:0px;"></iframe>
+                        </div>
+
+                        <div class="d-flex justify-content-around mt-2">
+                            <div class="row w-100 ">
+                                <div class="col-5 px-0"><a href="javascript:{$('#ifContents').attr('src','/support/doc/terms');}" class="login_text small"><%= __('LOGIN_VIEWTERMS')%> ></a></div>
+                                <div class="col pr-0 text-right"><a href="javascript:{$('#ifContents').attr('src','/support/doc/privacy');}" class="login_text small"><%= __('LOGIN_VIEWPOLICY')%> ></a></div>
+                            </div>
+                        </div>
+
+                        <div class="flex-shrink-1 mt-2">
+                            <% if(type==='google') { %>
+                            <button id="btnJoin" type="submit" class="btn btn-outline-secondary btn-google btn-block btn-block"><img src="/img/google-logo.svg" width="18px" class="mr-1"> <%= __('LOGIN_CONTWGOOGLE')%></button>
+                            <% } else if(type==='apple') { %>
+                            <button id="btnJoin" type="submit" class="btn btn-fill-base-lg btn-apple btn-block btn-block"><i class="icon-apple mr-2"></i> <%= __('LOGIN_CONTWAPPLE')%></button>
+                            <% } else if(type==='facebook') { %>
+                            <button id="btnJoin" type="submit" class="btn btn-fill-base-lg btn-facebook btn-block btn-block"><i class="icon-facebook-fill mr-2"></i> <%= __('LOGIN_CONTWFACEBOOK')%></button>
+                            <% } else if(type==='kakao') { %>
+                            <button id="btnJoin" type="submit" class="btn btn-fill-base-lg btn-kakao btn-block btn-block"><i class="icon-kakao-fill mr-2"></i> <%= __('LOGIN_CONTWKAKAO')%></button>
+                            <% } else if(type==='naver') { %>
+                            <button id="btnJoin" type="submit" class="btn btn-fill-base-lg btn-naver btn-block btn-block"><i class="icon-naver-fill mr-2"></i> <%= __('LOGIN_CONTWNAVER')%></button>
+                            <% } %>
+                        </div>
+                    </div>
+                </form>
+                <!-- Content -->
+            </div>
+
+            <%- include('../_layouts/layout_Empty_bodyscript') -%>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/additional-methods.min.js" integrity="sha256-vb+6VObiUIaoRuSusdLRWtXs/ewuz62LgVXg2f1ZXGo=" crossorigin="anonymous"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js" integrity="sha256-6rXZCnFzbyZ685/fMsqoxxZz/QZwMnmwHg+SsNe+C/w=" crossorigin="anonymous"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/cipher-core.min.js" integrity="sha256-Y7SVWwin6U0VYV88jtgGd6z3ohMG+IMn3w4vl8vTvDs=" crossorigin="anonymous"></script>
+            <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/hmac-sha512.min.js" integrity="sha256-6LEpzLhP3784Zf/1GDOijZdcE58Oqnkjbr5DQ17bjNk=" crossorigin="anonymous"></script> -->
+            <script src="https://apis.google.com/js/platform.js"></script>
+            <script src="/js/sns/naveridlogin_js_sdk_2.0.0.js"></script>
+            <script src="/js/sns/kakao.min.js"></script>
+            <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+            <script>
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '198725284527297',
+                        xfbml: true,
+                        version: 'v6.0'
+                    });
+                    // FB.AppEvents.logPageView();
+                };
+                (function (d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) { return; }
+                    js = d.createElement(s); js.id = id;
+                    js.src = "https://connect.facebook.net/en_US/sdk.js";
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+                Kakao.init('9cfe7beef00ed4406492fb303309aa41');
+                // var naverLogin = new naver.LoginWithNaverId(
+                //     {
+                //         clientId: "Nm4tK40AcGaKsMWH0H5g",
+                //         callbackUrl: "<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver",
+                //     }
+                // );
+                // naverLogin.init();
+                gapi.load('auth2', function () {
+                });
+            </script>
+            <script type="text/javascript">
+                var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+                $.validator.messages = {
+                    required: "<%= __('VALIDATOR_REQUIRED')%>",
+                    remote: "<%= __('VALIDATOR_REMOTE')%>",
+                    email: "<%= __('VALIDATOR_EMAIL')%>",
+                    url: "<%= __('VALIDATOR_URL')%>",
+                    date: "<%= __('VALIDATOR_DATE')%>",
+                    dateISO: "<%= __('VALIDATOR_DATEISO')%>",
+                    number: "<%= __('VALIDATOR_NUMBER')%>",
+                    digits: "<%= __('VALIDATOR_DIGITS')%>",
+                    equalTo: "<%= __('VALIDATOR_EQUALTO')%>",
+                    maxlength: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                    minlength: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                    rangelength: $.validator.format("<%= __('VALIDATOR_RANGELENGTH')%>"),
+                    range: $.validator.format("<%= __('VALIDATOR_RANGE')%>"),
+                    max: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                    min: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                    step: $.validator.format("<%= __('VALIDATOR_STEP')%>")
+                };
+                $.validator.addMethod("regex", function (value, element, regexpr) { return regexpr.test(value); });
+                $.validator.addMethod("byteRangeLength", function (value, element, param) {
+                    var length = value.length;
+                    for (var i = 0; i < value.length; i++) { if (value.charCodeAt(i) > 127) { length++; } }
+                    return this.optional(element) || (length >= param[0] && length <= param[1]);
+                }, $.validator.format("<%= __('VALIDATOR_BYTELENGTH')%>"));
+
+                (function () {
+                    var emsg = getQueryString('e');
+                    if (emsg) {
+                        onPopup("alert", emsg, function (cb) { });
+                    }
+
+                    setHeader('back', '');
+
+                    // Validation
+                    window.validator = $("#join-form").validate({
+                        ignore: ':hidden:not(.validate)',
+                        rules: {
+                            nn: {
+                                required: true,
+                                regex: /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|_|\u3130-\u3163\u4E00-\u9FFF|\u3040-\u30FC]{2,10}$/,
+                                remote: {
+                                    url: "/auth/checknickname",
+                                    type: "post",
+                                    data: {
+                                        nn: function () {
+                                            return $("#nn").val();
+                                        }
+                                    }
+                                }
+                            },
+                            chkAgreements: {
+                                required: true //"#chkAgreements:checked"
+                            }
+                        },
+                        messages: {
+                            nn: {
+                                required: "<%= __('AUTH_REQUIREDNICKNAME')%>",
+                                regex: "<%= __('VALIDATOR_INVALIDNN')%>"
+                            },
+                            chkAgreements: {
+                                required: "<%= __('AUTH_REQUIREDTERMS')%>"
+                            }
+                        },
+                        errorPlacement: function errorPlacement(error, element) {
+                            var $parent = $(element).addClass('is-invalid').parents('.input-group').next('.warn_area');
+
+                            // Do not duplicate errors
+                            if ($parent.find('.jquery-validation-error').length) {
+                                return;
+                            }
+
+                            if (error.length > 0) $parent.find('.warn_text').text(error.text());
+                            $parent.removeClass('hidden');
+                        },
+                        highlight: function (element) {
+                            // var $el = $(element);
+                            // var $parent = $el.parents('.form-group');
+                            // $el.addClass('is-invalid');
+                            // // Select2 and Tagsinput
+                            // if ($el.hasClass('select2-hidden-accessible') || $el.attr('data-role') === 'tagsinput') {
+                            //     $el.parent().addClass('is-invalid');
+                            // }
+                        },
+                        unhighlight: function (element) {
+                            // $(element).parents('.form-group').find('.is-invalid').removeClass('is-invalid');
+                            var $parent = $(element).removeClass('is-invalid').addClass('is-valid').parents('.input-group').next('.warn_area');
+                            $parent.addClass('hidden');
+                        },
+                        success: function (element) {
+                        },
+                        submitHandler: function (form) {
+                            var type = '<%=type%>';
+                            if (window.Auth && !(type === 'apple' && !isIOS && navigator.userAgent.endsWith('InkiupApp'))) {
+                                blockPage();
+                                window.Auth.postMessage(JSON.stringify({ type: type, mode: 'signup', nn: $('#nn').val(), url: '<%=redirectUrl%>' }));
+                            } else {
+                                switch (type) {
+                                    case 'kakao': {
+                                        Kakao.Auth.authorize({
+                                            redirectUri: '<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/kakao',
+                                            state:
+                                                JSON.stringify({
+                                                    m: 'su',
+                                                    d: pdata.getObject('__d__', ''),
+                                                    nn: $('#nn').val(),
+                                                    r: '<%=redirectUrl||"/"%>'
+                                                })
+                                        });
+                                        break;
+                                    }
+                                    case 'naver': {
+                                        var state = JSON.stringify({
+                                            m: 'su',
+                                            d: pdata.getObject('__d__', ''),
+                                            nn: $('#nn').val(),
+                                            r: '<%=redirectUrl||"/"%>'
+                                        });
+                                        location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=Nm4tK40AcGaKsMWH0H5g&redirect_uri=${encodeURIComponent('<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver')}&state=${encodeURIComponent(encodeURIComponent(state))}`;
+                                        break;
+                                    }
+                                    case 'facebook': {
+                                        var state = JSON.stringify({
+                                            m: 'su',
+                                            d: pdata.getObject('__d__', ''),
+                                            nn: $('#nn').val(),
+                                            r: '<%=redirectUrl||"/"%>'
+                                        });
+                                        location.href = `https://www.facebook.com/v6.0/dialog/oauth?client_id=198725284527297&redirect_uri=${encodeURIComponent('<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/facebook')}&state=${encodeURIComponent(state)}`;
+                                        break;
+                                    }
+                                    case 'google': {
+                                        gapi.auth2.authorize({
+                                            client_id: '742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com',
+                                            scope: 'profile email',
+                                            prompt: 'select_account',
+                                            response_type: 'id_token permission'
+                                        }, function (response) {
+                                            if (response.error) {
+                                                onAuthMessage('EGGFAIL');
+                                                return;
+                                            }
+                                            var state = JSON.stringify({
+                                                m: 'su',
+                                                d: pdata.getObject('__d__', ''),
+                                                nn: $('#nn').val(),
+                                                r: '<%=redirectUrl||"/"%>'
+                                            });
+                                            location.href = `/api/auth/oauth/callback/google?code=${response.id_token}&state=${encodeURIComponent(state)}`;
+                                        });
+                                        break;
+                                    }
+                                    case 'apple': {
+                                        AppleID.auth.init({
+                                            clientId: 'com.inkiup.inkiup',
+                                            scope: 'name email',
+                                            redirectURI: '<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/apple',
+                                            state: encodeURIComponent(JSON.stringify({
+                                                m: 'su',
+                                                d: pdata.getObject('__d__', ''),
+                                                nn: $('#nn').val(),
+                                                r: '<%=redirectUrl||"/"%>'
+                                            })),
+                                            usePopup: false
+                                        });
+                                        AppleID.auth.signIn();
+                                    }
+                                }
+                            }
+                            return false;
+                        }
+                    });
+                })();
+                function onAuthMessage(type) {
+                    if (!type) return;
+                    switch (type) {
+                        case 'EARG': { return onPopup("alert", "<%= __('AUTH_EARG')%>", function (cb) { }); }
+                        case 'EREQARG': { return onPopup("alert", "<%= __('AUTH_EREQARG')%>", function (cb) { }); }
+                        case 'EINVALIDEM': { return onPopup("alert", "<%= __('AUTH_EINVALIDEM')%>", function (cb) { }); }
+                        case 'ENOTSUPP': { return onPopup("alert", "<%= __('AUTH_ENOTSUPP')%>", function (cb) { }); }
+                        case 'EINVALIDJOINSNS': { return onPopup("alert", "<%= __('AUTH_EINVALIDJOINSNS')%>", function (cb) { }); }
+                        case 'EINVALIDADDSNS': { return onPopup("alert", "<%= __('AUTH_EINVALIDADDSNS')%>", function (cb) { }); }
+                        case 'EUNKNOWN': { return onPopup("alert", "<%= __('AUTH_EUNKNOWN')%>", function (cb) { }); }
+
+                        case 'EFBFAIL': { return onPopup("alert", "<%= __('AUTH_FACEBOOK_FAIL')%>", function (cb) { }); }
+                        case 'EFBCANCEL': { return onPopup("alert", "<%= __('AUTH_FACEBOOK_CANCEL')%>", function (cb) { }); }
+                        case 'EFBERROR': { return onPopup("alert", "<%= __('AUTH_FACEBOOK_ERROR')%>", function (cb) { }); }
+
+                        case 'EKKOFAIL': { return onPopup("alert", "<%= __('AUTH_KAKAO_FAIL')%>", function (cb) { }); }
+                        case 'EKKOCANCEL': { return onPopup("alert", "<%= __('AUTH_KAKAO_CANCEL')%>", function (cb) { }); }
+                        case 'EKKOERROR': { return onPopup("alert", "<%= __('AUTH_KAKAO_ERROR')%>", function (cb) { }); }
+
+                        case 'ENVFAIL': { return onPopup("alert", "<%= __('AUTH_NAVER_FAIL')%>", function (cb) { }); }
+                        case 'ENVCANCEL': { return onPopup("alert", "<%= __('AUTH_NAVER_CANCEL')%>", function (cb) { }); }
+                        case 'ENVERROR': { return onPopup("alert", "<%= __('AUTH_NAVER_ERROR')%>", function (cb) { }); }
+
+                        case 'EGGFAIL': { return onPopup("alert", "<%= __('AUTH_GOOGLE_FAIL')%>", function (cb) { }); }
+                        case 'EGGCANCEL': { return onPopup("alert", "<%= __('AUTH_GOOGLE_CANCEL')%>", function (cb) { }); }
+                        case 'EGGERROR': { return onPopup("alert", "<%= __('AUTH_GOOGLE_ERROR')%>", function (cb) { }); }
+
+                        case 'EAPFAIL': { return onPopup("alert", "<%= __('AUTH_APPLE_FAIL')%>", function (cb) { }); }
+                        case 'EAPCANCEL': { return onPopup("alert", "<%= __('AUTH_APPLE_CANCEL')%>", function (cb) { }); }
+                        case 'EAPERROR': { return onPopup("alert", "<%= __('AUTH_APPLE_ERROR')%>", function (cb) { }); }
+                        default: { break; }
+                    }
+                }
+                function onConfirmJoin(type, url) {
+                    switch (type) {
+                        case 'facebook': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINFACEBOOK')%>", (r) => { if (r) location.href = '/auth/join/facebook?r=' + encodeURIComponent(url) }); }
+                        case 'kakao': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINKAKAO')%>", (r) => { if (r) location.href = '/auth/join/kakao?r=' + encodeURIComponent(url) }); }
+                        case 'naver': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINNAVER')%>", (r) => { if (r) location.href = '/auth/join/naver?r=' + encodeURIComponent(url) }); }
+                        case 'google': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINGOOGLE')%>", (r) => { if (r) location.href = '/auth/join/google?r=' + encodeURIComponent(url) }); }
+                        case 'apple': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINAPPLE')%>", (r) => { if (r) location.href = '/auth/join/apple?r=' + encodeURIComponent(url) }); }
+                        default: { break; }
+                    }
+                }
+            </script>
+            <%- include('../_layouts/layout_Empty_bodyend') -%>
+    </body>
+
+</html>

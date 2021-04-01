@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="container-fluid p-0 m-0" id="notice_area"> 
+                <!--profile-->
+                <!--profile-->
+                
+            </div>
+            <div id="idNoticeMore" class="get_more p-2" onclick="getlist()">
+                더보기 <i class="icon-arrow-down setting_right_icon"></i>
+            </div>
+            
+
+            <!-- Content -->
+        
+        </div>
+
+        <div class="hidden">
+            <div class="list-group list-group-flush" id="clone_notice">
+                <div class="list-group-item d-flex justify-content-between py-3 clone_notic_id" onclick="onGoNoticeDetail(this);">
+                    <div class="col-1 1">
+                        <span ><strong class="clone_count">1</strong></span>
+                    </div>
+                    <div class="col text-break">
+                        <div class="clone_title"></div>  
+                        <div><span class="icon-time clock"></span><span class="post-time clone_time"></span></div>
+                    </div>
+                    <div class="col-1">
+                        <i class="icon-arrow-right setting_right_icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+        
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+        <script type="text/javascript">
+            var g_pageCount = 0;
+            (function () {
+                // TODO script
+                setHeader('back','save')
+                $("#idHeaderLeft").addClass("displayNone")
+                $("header .right").addClass("header-right-width").removeClass("header-side-width");
+                $("header span.btn-save").removeClass("btn-fill-blue").text("닫기").attr("onclick","goBack()")
+                getlist();
+            })();
+
+            function getlist() {
+                g_pageCount=$("#notice_area div.list-group").length
+                $.ajax({
+                    type: 'GET',
+                    url: '/left/noticelist/'+g_pageCount,
+                    success : function (data) {
+                        if (data.msg && data.msg == "success") {
+                            //console.log(data.list.length)
+                            if(data.list.length==0){
+                                $("#idNoticeMore").text("마지막 입니다.")
+                            }else{
+                                noticelist(data)
+                                if(!data.more){
+                                    $("#idNoticeMore").text("마지막 입니다.")
+                                }
+                            }
+                            
+                        }
+                    }, error : function (error) {
+                        console.log(error);
+                    }
+                })
+            }
+
+            function noticelist(data) {
+                var list = data.list;
+                if(list != null) {
+                    for(var i = 0; i < list.length; i++) {
+                        var clone = $("#clone_notice").clone().removeAttr("id");
+                        $(".clone_count", clone).text((i+1));
+                        $(".clone_notic_id", clone).data("id", list[i]._id);
+                        $(".clone_title", clone).text(list[i].title);
+                        $(".clone_time", clone).text(list[i].registDate.formatted);
+                        $("#notice_area").append(clone);
+                    }
+                }
+            }
+
+            function onGoNoticeDetail($this) {
+                var id = $($this).data("id");
+                location.href = "/left/noticedetail/"+id;
+            }
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

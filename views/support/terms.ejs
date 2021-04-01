@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="container-fluid">
+
+                <%-include('./__terms')%>
+
+            </div>
+
+            <!-- Content -->
+
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+        
+
+        <script type="text/javascript">
+            (function () {
+                setHeader('back','save')
+                $("#idHeaderLeft").addClass("displayNone")
+                $("header .right").addClass("header-right-width").removeClass("header-side-width");
+                $("header span.btn-save").removeClass("btn-fill-blue").text("닫기").attr("onclick","goBack()")
+                // TODO script
+            })();
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

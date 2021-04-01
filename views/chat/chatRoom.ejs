@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid p-0 m-0">
+                <div class="card border-0">
+                    <div class="card-body p-3" id="msgArea"></div>
+                </div>
+            </div>
+            <!-- content -->
+            <%-include('../_parts/_footer')%>
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+
+        <script type="text/javascript">
+            (function () {
+                setLeft('back');
+                getList(0);
+            })();
+            function delChat(id) {
+                onPopup("confirm", "<%- __('MSG_ROOMDELETE')%>", function(cb){
+                    if(cb==1){
+                        $.ajax({
+                            processData: false,
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            data: JSON.stringify({roomid: id}),
+                            method: 'delete',
+                            url: '/chat/chatroom',
+                            success: function (data, status, xhr) {
+                                $("#chatRoom-"+id).remove();
+                                if($("[id^=chatRoom-]").length == 0 ) {
+                                    var html = '';
+                                    html += '<div class="nodata p-4 ">';
+                                    html += '<div>';
+                                    html += '    <i class="icon-excl-area-sm icon-excl"></i>';
+                                    html += '    </div>';
+                                    html += '   <div class="p-2">쪽지가 없습니다.</div>';
+                                    html += '</div>';
+                                    $("#msgArea").append(html);
+                                
+                                }
+                                
+                            },
+                            error: function (xhr, status, err) {
+                            },
+                            complete: function () {
+                            }
+                        });
+                    }
+                });
+            }
+
+            function getList(listcnt) {
+                var url = '/chat/chatroomlist/'+listcnt;
+                $.get({
+                    url: url,
+                    success: function (html, status, xhr) {
+                        $('#msgArea').append(html);
+                        //    if(a==b) $('#btnMoreFaq').html("마지막입니다.").prop('disabled',true)
+                        //typeof callback === 'function' && callback(list, status, xhr);
+                    },
+                    error: function (xhr, status, err) {
+                        typeof callback === 'function' && callback(null, false, xhr);
+                    }
+                });
+            }
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

@@ -1,0 +1,144 @@
+<div>
+<div id="comment-area-<%=data._id%>" class="list-postdesc-replylist <%=(data.commentId == null ? '' : 'ml-3')%>" <% if (isProfile && isProfile == "myprofile") { %> onclick="location.href='/detail/inkiup-allrank/<%=data.contentId%>'" <% } %>  >
+        <div class="d-flex list-post-profile">
+            <div onclick="event.stopPropagation();popupProfile('<%= data.userId %>');">
+                <img src="<%= getPhotoEx(data.userPhoto,3,1,'/img/pro-image.png') %>" class="img-profile" alt="profile">
+                <% if(data.writer == "Y") { %>
+                <span class="box-writer"><%= __('WRITER')%></span>
+                <% } %>
+                <span class="post-nickname ml-1"><%= data.nickname %></span><%-getLevelIcon(data.level,false)%>
+            </div>
+            <div class="flex-grow-1 align-self-center">
+                <% if (_isAuthed && data.userId!=user._id.toHexString() && data.userMemo ) {%>
+                <span data-toggle="tooltip" data-placement="bottom" title="<%=data.userMemo%>">
+                    <i class="icon-user-memo-area icon-user-memo" <% if (_isAuthed) {%>onclick="event.stopPropagation();" <%}%>></i>
+                </span>
+                <%}%>
+            </div>
+            <div>
+                <span class="icon-time postdesc-votecount-l"></span>
+                <span class="post-time"><%= fn_dateTimeToFormatted(data.createTS).formatted %></span>
+            </div>
+        </div>
+        <div id="comment-<%=data._id%>" style="padding-left:19px" class="d-flex list-postdesc-reply ml-4 <%if(data.delete || data.blockUser || data.block) {%> text-danger <% } %>">
+            <% if(data.image && data.image[0] && !data.delete && !data.block && !data.blockUser) { %>
+            <div class="mb-2"><img class="comm-image" src="<%=data.image[0][0] %>" /></div>
+            <% } %>
+            <%
+            var comment = data.comment;
+            if (data.block) {
+                comment = __('COMMANT_BLOCK_MSG');
+            } else if (data.blockUser) {
+                comment = __('COMMANT_BLOCKUSER_MSG');
+            } else if (data.delete) {
+                comment = __('COMMANT_DELETED_MSG');
+            }
+            %>
+                <%- linkContent(comment||'').replace(/\n/mg,'<br/>') %>
+            </div>
+            <div id="comment-<%=data._id%>-button-area" class="d-flex flex-grow-1 ml-3 pl-4 group_voting <%= typeof data.vote === 'undefined' ? '' : (data.vote == 'UP' ? 'up' : 'down' )%>">
+                <%if(!data.delete && !data.blockUser && !data.block) {%>
+                <div class="event-hidden-item mr-3" id="btn-vote-up">
+                    <i id="comment-<%=data._id%>-vote-up" class="postdesc-votecount-l icon-up post-up-down" <% if (!data.delete) { %> onclick="onCommentVotiong(event, '<%= data._id %>', 'UP');" <% } %>><%= data.votingUp %></i>
+                </div>
+                <div class="event-hidden-item mr-3" id="btn-vote-down">
+                    <i id="comment-<%=data._id%>-vote-down" class="postdesc-votecount-l icon-down post-up-down" <% if (!data.delete) { %> onclick="onCommentVotiong(event, '<%= data._id %>', 'DOWN');" <% } %>><%= data.votingDown %></i>
+                </div>
+                <% } %>
+                <div class="flex-grow-1"></div>
+                <% if (_isAuthed) {%>
+                <% if(data.delete !== true) { %>
+                <div class="event-hidden-item " name='delete-button-group'>
+                    <span class="post-time clone_reply postdesc-votecount-l" onclick="onReComment(event, '<%= data._id %>', '<%= data.userId%>', '<%= data.nickname%>');"><%= __('COMMENTING')%></span>
+                </div>
+
+
+                <div class="ml-3" name='delete-button-group'>
+                    <% if (user && user && user._id.toHexString() == data.userId) { %>
+                    <span class="postdesc-text-l post-time" onclick="onModifyComment(event, '<%= data._id %>', '<%= data.userId%>','<%= data.imageName||'' %>',<%= data.createTS %>);">수정</span>
+                    <span class="postdesc-text-l reply-delete-report ml-3" onclick="onDeleteComment(event, '<%= data._id %>');">삭제</span>
+                    <% } else { %>
+                    <span class="postdesc-text-l reply-delete-report" onclick="onReportComment(event, '<%= data._id %>', '<%= data.userId%>', '<%= data.nickname%>');">신고</span>
+                    <%} %>
+                </div>
+                <% }%>
+                <% } %>
+            </div>
+        </div>
+        <div id="comment-relay-area-<%=data._id%>" style="background-color:#f6f6f6" <% if (isProfile && isProfile == "myprofile") { %> onclick="location.href='/detail/inkiup-allrank/<%=data.contentId%>'" <% } %> >
+
+            <% if (data.replycomment && data.replycomment.length > 0) { %>
+            <% for(var a = 0; a < data.replycomment.length; a++) { %>
+            <div style="background-color:#F6F6F6">
+                <div id="comment-area-<%=data.replycomment[a]._id%>" class="list-postdesc-replylist ml-3">
+                    <div class="d-flex list-post-profile">
+                        <div onclick="event.stopPropagation();popupProfile('<%= data.replycomment[a].userId %>');">
+                            <img src="<%= getPhotoEx(data.replycomment[a].userPhoto,3,1,'/img/pro-image.png') %>" class="img-profile" alt="profile">
+                            <% if(data.replycomment[a].writer == "Y") { %>
+                            <span class="box-writer"><%= __('WRITER')%></span>
+                            <% } %>
+                            <span class="post-nickname ml-1"><%= data.replycomment[a].nickname %></span><%-getLevelIcon(data.replycomment[a].level,false)%>
+                        </div>
+                        <div class="flex-grow-1 align-self-center">
+                            <% if (_isAuthed && data.replycomment[a].userId!=user._id.toHexString() && data.replycomment[a].userMemo ) {%>
+                            <span data-toggle="tooltip" data-placement="bottom" title="<%=data.replycomment[a].userMemo%>">
+                                <i class="icon-user-memo-area icon-user-memo" <% if (_isAuthed) {%>onclick="event.stopPropagation();" <%}%>></i>
+                            </span>
+                            <% } %>
+                        </div>
+                        <div>
+                            <span class="icon-time postdesc-votecount-l"></span>
+                            <span class="post-time"><%= fn_dateTimeToFormatted(data.replycomment[a].createTS).formatted %></span>
+                        </div>
+                    </div>
+                    <div id="comment-<%=data.replycomment[a]._id%>" style="padding-left:19px" class="d-flex list-postdesc-reply ml-4 <%if(data.replycomment[a].delete || data.replycomment[a].blockUser || data.replycomment[a].block) {%> text-danger <% } %>">
+                        <% if(data.replycomment[a].image && data.replycomment[a].image[0] && !data.replycomment[a].block && !data.replycomment[a].blockUser && !data.replycomment[a].delete    ) { %>
+                        <div class="mb-2"><img class="comm-image" src="<%=data.replycomment[a].image[0][0] %>" /></div>
+                        <% } %>
+                        <%
+                        var comment = data.replycomment[a].comment;
+                        if (data.replycomment[a].block) {
+                            comment = __('COMMANT_BLOCK_MSG');
+                        } else if (data.replycomment[a].blockUser) {
+                            comment = __('COMMANT_BLOCKUSER_MSG');
+                        } else if (data.replycomment[a].delete) {
+                            comment = __('COMMANT_DELETED_MSG');
+                        }
+                        %>
+                        <%- linkContent(comment||'').replace(/\n/mg,'<br/>') %>
+                    </div>
+                    <div id="comment-<%=data.replycomment[a]._id%>-button-area" style="padding-left:19px" class="d-flex group_voting ml-4 <%= typeof data.replycomment[a].vote === 'undefined' ? '' : (data.replycomment[a].vote == 'UP' ? 'up' : 'down' )%>">
+                        <%if(!data.replycomment[a].delete && !data.replycomment[a].blockUser && !data.replycomment[a].block) {%>
+                        <div class="event-hidden-item mr-3" id="btn-vote-up">
+                            <i id="comment-<%=data.replycomment[a]._id%>-vote-up" class="postdesc-votecount-l icon-up post-up-down" <% if (!data.replycomment[a].delete) { %> onclick="onCommentVotiong(event, '<%= data.replycomment[a]._id %>', 'UP');" <% } %>><%= data.replycomment[a].votingUp %></i>
+                        </div>
+                        <div class="event-hidden-item mr-3" id="btn-vote-down">
+                            <i id="comment-<%=data.replycomment[a]._id%>-vote-down" class="postdesc-votecount-l icon-down post-up-down" <% if (!data.replycomment[a].delete) { %> onclick="onCommentVotiong(event, '<%= data.replycomment[a]._id %>', 'DOWN');" <% } %>><%= data.replycomment[a].votingDown %></i>
+                        </div>
+                        <% } %>
+                        <div class="flex-grow-1"></div>
+                        <% if (_isAuthed) {%>
+                        <% if(data.replycomment[a].delete !== true) { %>
+                        <div class="event-hidden-item " name='delete-button-group'>
+                            <span class="post-time clone_reply postdesc-votecount-l" onclick="onReComment(event, '<%= data.replycomment[a]._id %>', '<%= data.replycomment[a].userId%>', '<%= data.replycomment[a].nickname%>');"><%= __('COMMENTING')%></span>
+                        </div>
+                        <div class="ml-3" name='delete-button-group'>
+                            <% if (user && user && user._id.toHexString() == data.replycomment[a].userId) { %>
+                            <span class="postdesc-text-l post-time" onclick="onModifyComment(event, '<%= data.replycomment[a]._id %>', '<%= data.replycomment[a].userId%>','<%= data.replycomment[a].imageName||'' %>',<%= data.replycomment[a].createTS %>);">수정</span>
+                            <span class="postdesc-text-l reply-delete-report ml-3" onclick="onDeleteComment(event, '<%= data.replycomment[a]._id %>');">삭제</span>
+                            <% } else { %>
+                            <span class="postdesc-text-l reply-delete-report" onclick="onReportComment(event, '<%= data.replycomment[a]._id %>', '<%= data.replycomment[a].userId%>', '<%= data.replycomment[a].nickname%>');">신고</span>
+                            <%} %>
+                        </div>
+                        <% }%>
+                        <% } %>
+                    </div>
+                </div>
+                <div id="comment-relay-area-<%=data.replycomment[a]._id%>"></div>
+            </div>
+            <% } %>
+            <% } %>
+
+        </div>
+    </div>
+</div>

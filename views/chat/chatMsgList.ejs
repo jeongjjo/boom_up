@@ -1,0 +1,46 @@
+<% if (data.length==0){ %>
+<div name="dateline" class="mx-3 py-2 msg_div_line _dateline _msg " data-dateline="<%=moment(Date.now()).format(' YYYYMMDD ')%>">
+    <%= moment(Date.now()).format("YYYY년 MM월 DD일 dddd") %>
+</div>
+<% } else { %>
+    <% 
+        var tempDate=""
+        for(var x=data.length-1; x >= 0; x--){  
+    %>
+        <% if(moment(data[x].createTS).format("YYYYMMDD") != tempDate   ) {%>
+            <div name="dateline" class="mx-3 py-2 msg_div_line _dateline _msg " data-dateline="<%=moment(data[data.length-1].createTS).format(' YYYYMMDD ')%>">
+            <%= moment(data[x].createTS).format("YYYY년 MM월 DD일 dddd")   %>
+            </div>
+        <% }  %>
+        <% if (my == data[x].userId) {  %>
+            <!--msg type 2-->
+            <div class="d-flex flex-row-reverse m-2 _msg " name="msgbubble" data-id="<%=data[x]._id%>">
+                <div class="msg_body">
+                    <div class="row msg_box_2">
+                        <%= data[x].content %>
+                    </div>
+                </div>
+                <div class="align-self-end my-2 mx-1"><span class="msg_time"><%= convertTS2Date(data[x].createTS,"HH:mm") %></span></div>
+            </div>
+            <!--msg type 2-->
+        <% } else { %>
+            <!--msg type 1-->
+            <div class="d-flex flex-row mx-2 _msg " name="msgbubble" data-id="<%=data[x]._id%>">
+                <div class=" align-self-start my-1 mx-0">
+                    <img src="<%=getPhotoEx(data[x].photo,3,1,'/img/pro-image.png')%>" class="msg-img-profile" alt=""> 
+                </div>
+                <div class="msg_body">
+                    <div class="msg_id"><span class="post-time"><%= data[x].nickname %></span></div>
+                    <div class="row msg_box_1">
+                        <%= data[x].content %>
+                    </div>
+                </div>
+                <div class="align-self-end my-2 mx-1"><span class="msg_time"><%= convertTS2Date(data[x].createTS,"HH:mm") %></span></div>
+            </div>
+            <!--msg type 1-->
+        <% } %>
+    <% 
+            tempDate=moment(data[x].createTS).format("YYYYMMDD");
+        } 
+    %>
+<% } %>

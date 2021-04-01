@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+
+        <link rel="stylesheet" href="/css/write.css?2020072101" />
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid p-0 m-0">
+
+
+                <div class="card border-0">
+                    <!--serach-->
+                    <div class="card-body bg-white">
+                        <div class="input-group mb-3">
+                            <input id="idTitle" type="text" class="form-control rounded-1 write-input-line" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" placeholder="제목을 입력해주세요.">
+                        </div>
+                        <div class="input-group mb-2 write-textarea h-100">
+                            <textarea id='idRequest' class="form-control rounded-1 write-input-line " style="height:400px" placeholder="문의하실 내용을 입력해주세요."></textarea>
+                        </div>
+                    </div>
+                    <!--serach-->
+
+                </div>
+
+
+            </div>
+            <!-- content -->
+            <%-include('../_parts/_footer')%>
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/additional-methods.min.js" integrity="sha256-vb+6VObiUIaoRuSusdLRWtXs/ewuz62LgVXg2f1ZXGo=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/localization/messages_ko.min.js" integrity="sha256-2MPaDIgwuO0zMFW6Rlrc857sIWkxu1mP23Lv+t0L6Rs=" crossorigin="anonymous"></script>
+
+        <script type="text/javascript">
+            (function () {
+                setHeader('back', 'save')
+                $("#idHeaderLeft").addClass("displayNone")
+                $("i.left-cancel").removeClass("hidden").css("font-style","normal")
+                $("header .right").addClass("header-right-width").removeClass("header-side-width");
+            })();
+
+            function onRegist(){
+                var title=$("#idTitle").val().trim();
+                var request=$("#idRequest").val().trim()
+
+                if (title=="" || request==""){
+                    onPopup("alert", "<%= __('INQUIRE_REGCHECK')%>", function(cb){ });
+                    return
+                }
+
+                $.ajax({
+                    method: 'post',
+                    url: '/setting/reqregist',
+                    data: {
+                        title: title,
+                        request:request
+                    },
+                    success: function (data, status, xhr) {
+                        if(data.result=="ok"){
+                            location.href="/setting/reqList";
+                        }else{
+                            onPopup("alert", "<%- __('INQUIRE_REGERROR')%>", function(cb){});
+                        }
+                    },
+                    error: function (xhr, status, err) {
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

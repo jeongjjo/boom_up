@@ -1,0 +1,603 @@
+<div id="comment-list-area">
+</div>
+
+
+<div class="d-flex justify-content-center mt-3 margin-more-bottom" id="comm-more-area">
+    <div class="hidden" id="comment_more" onclick="getContent();">
+        <span><%= __('MORE')%></span><span><i class="icon-arrow-down"></i></span>
+    </div>
+</div>
+
+
+<div class="d-flex flex-column justify-content-center inputboxarea_msg" id="comm-input-area">
+    <% if (_isAdmin){ %>
+    <select id="idSelContentUser" class="mb-2 selbox-opuser">
+        <option value="">-- 댓글 등록 대상 선택 --</option>
+        <% for(var i=0; i < contentuser.length ; i++) { %>
+        <option value="<%=contentuser[i]._id%>"><%=contentuser[i].nickname%></option>
+        <% } %>
+    </select>
+    <% } %>
+    <div id="relay-comment-info" class="d-flex flex-row  p-2 pb-3 hidden">
+        <div class="flex-fill align-self-center"></div>
+        <button type="button" class="btn btn-sm icon-x" onclick="onCloseRelay();"></button>
+    </div>
+
+    <div id="relay-photo-info" class="d-flex flex-row  p-2 pb-3 hidden">
+        <div class="align-self-center mr-3 text-primary font-weight-bold">이미지 첨부: </div>
+        <div class="flex-fill align-self-center" id="photo-name"></div>
+        <button type="button" class="btn btn-sm icon-x" onclick="onClosePhoto();"></button>
+    </div>
+
+    <div class="input-group normal">
+        <div class="d-flex justify-items-end">
+            <% if(_isInApp){ %>
+            <button type="button" class="btn rounded-0 btn-sm px-2 py-0 mb-1 align-self-end" onclick="onImageChange(this);"><img src="/img/commupload.png" /></button>
+            <% } else {  %>
+            <button type="button" class="btn rounded-0 btn-sm px-2 py-0 mb-1 align-self-end" id="pickfiles"><img src="/img/commupload.png" /></button>
+            <% } %>
+        </div>
+        <div class="d-flex flex-grow-1">
+            <textarea onkeyup="contentCheck(this);" class="form-control input_msg" <% if (_isAuthed) {%> onkeydown="resize(this)" onkeyup="resize(this)" <% } else { %> readonly="readonly" onclick="onNoAuthed();" <% } %> placeholder="<%= __('WRITE_REPLY')%>" id="input_comment" style="height: 35px;"></textarea>
+        </div>
+        <div class="d-flex justify-items-end" style="background-color:#ffffff">
+            <button id="idCommentRegistBtn" type="button" class="btn rounded-0 btn-sm px-1 py-0 align-self-end detail-comment-reg-btn-silver" style="height:35px; width:30px" <% if (_isAuthed) {%> onclick="onPostComment(event)" <% } else { %> onclick="onNoAuthed();" <% } %>><img class="mt-1" src="/img/detail_arrow_up.png" style="width:17px;height:16px" /></button>
+        </div>
+    </div>
+</div>
+
+<div id="comm-btn-area" class="detail-bottom-button hidden btn-detail-updown">
+    <div class="mb-3 text-center">
+        <button type="button" class="btn rounded-circle border btn-border-color detail-bottom-btn-bg" style="width:48px;height:48px;" onclick="onGoDetailMove('UP');"><img src="/img/detail_arrow_up.png"></button>
+    </div>
+    <div class="mb-3 text-center">
+        <button type="button" class="btn rounded-circle border btn-border-color detail-bottom-btn-bg" style="width:48px;height:48px;" onclick="onGoDetailMove('DOWN');"><img src="/img/detail_memo.png"></button>
+    </div>
+</div>
+
+<script src="/js/plupload/plupload.full.min.js"></script>
+<script type="text/javascript">
+
+    <%if (!_isInApp) {%>
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,html4',
+            browse_button: 'pickfiles',
+            url: "/api/attach",
+            resize: {
+                width: 1280,
+                quality: 95
+            },
+            filters: {
+                max_file_size: '100mb',
+                mime_types: [
+                    { title: "file", extensions: "ani,jpg,gif,png,jpeg,ANI,JPG,GIF,PNG,JPEG" }
+                ]
+            },
+            init: {
+                FilesAdded: function (up, files) {
+                    uploader.start();
+                    return false;
+                },
+                FileUploaded: function (up, file, response) {
+                    onResultData(JSON.parse(response.response).data);
+                },
+                Error: function (up, err) {
+                    console.log(err);
+                    if (err.code == -600) {
+                        onPopup("alert", "<%= __('UPLOADMSG')%>", function (cb) { });
+                    }
+                }
+            }
+        });
+        uploader.init();
+    <%}%>
+
+        function contentCheck(obj) {
+            if ($(obj).val() != "") {
+                $("#idCommentRegistBtn").removeClass("detail-comment-reg-btn-silver").addClass("detail-comment-reg-btn-red")
+                $("#idCommentRegistBtn img").attr("src", "/img/detail_arrow_up_white.png")
+            } else {
+                $(obj).css("height", "35px");
+                $("#idCommentRegistBtn").removeClass("detail-comment-reg-btn-red").addClass("detail-comment-reg-btn-silver")
+                $("#idCommentRegistBtn img").attr("src", "/img/detail_arrow_up.png")
+            }
+
+        }
+
+    function onImageChange($this) {
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (!(isIOS && navigator.userAgent.endsWith('InkiupApp'))) {
+            blockPage();
+        }
+        window.Attach && window.Attach.postMessage(JSON.stringify({ count: 1, video: false, iwidth: 1280, iheight: 3600, iqual: 95, vqual: 2, vdur: -1, vaud: true }));
+    }
+
+    var attachList = [];
+    var totalAttachSize = 0;
+    var imagecount = 0;
+    function onResultData(data) {
+        if (data != null && data.length > 0) {
+            var err = null;
+            data.map(att => {
+                // TODO : 여기서 첨부파일 총용량을 먼저 계산 후에 MAX를 넘어가면 제한해야함.(액션 : 첨부파일 목록(attachList에 추가 안 함 및 에디터에 첨부 안 함))
+
+                if (att.err) {
+                    err = att.err;
+                } else {
+                    console.log(att);
+                    var idx = attachList.length; // 인덱스
+                    attachList.push(att.images);
+                    totalAttachSize += att.size; // 첨부파일 총용량 계산
+                    $("#relay-photo-info").removeClass("hidden");
+                    $("#relay-photo-info > #photo-name").text(att.originalname);
+
+                }
+            });
+
+            // 대표이미지가 없으면 첫번째 첨부파일으로 선택
+            if ($('#imagearea li input[type="radio"]:checked').parent().not(".hidden").length < 1) {
+                $('#imagearea li:not(.hidden) input[type="radio"]').first().prop('checked', true);
+            }
+
+            if (err && err === 'EINVALID') {
+                onPopup("alert", "<%= __('ATTACH_INVALID')%>", function (cb) { });
+            } else if (err && err === 'EOVERSIZE') {
+                onPopup("alert", "<%= __('ATTACH_OVERSIZE')%>", function (cb) { });
+            }
+        }
+    }
+
+
+    function resize(obj) {
+        obj.style.height = "1px";
+        obj.style.height = (12 + obj.scrollHeight) + "px";
+    }
+    $(function () {
+        <% if (_isAuthed) {%>
+        var oldValue = "";
+            $("#input_comment").on("change keyup paste", function () {
+                var currentValue = $(this).val();
+                if (currentValue == oldValue) {
+                    return;
+                }
+                oldValue = currentValue;
+            });
+        <% } %>
+
+        
+        $("#input_comment").focus(function(e) {
+            $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).off();
+        });
+        $("#input_comment").blur(function(e) {
+            setTimeout(function(e){
+                isScrollEvent();
+            }, 500);
+        });
+    });
+
+    function onGoDetailMove(type) {
+        if (type == "UP") {
+            //$(<% if (_isInApp) { %>".app"<%} else {%>'html, body'<%}%>).stop().animate({ scrollTop: 0 }, 1000);
+            $(<% if (_isInApp) { %>".app"<%} else {%>'html, body'<%}%>).scrollTop(0);
+        } else {
+            var offsetTop = $("#detail-vote-line").offset().top;
+            var scrollTop = $(".app").scrollTop();
+            var moving = offsetTop + scrollTop;
+            //$(<% if (_isInApp) { %>".app"<%} else {%>'html, body'<%}%>).stop().animate({ scrollTop: (moving - 100) }, 1000, function() {
+            $(<% if (_isInApp) { %>".app"<%} else {%>'html, body'<%}%>).scrollTop((moving - 100));
+            setTimeout(function(e){
+                $("#comm-input-area").removeClass("hidden");
+                $("footer").removeClass("hidden");
+                $("#comm-more-area").removeClass("hidden");
+                
+                $("#comm-btn-area").addClass("hidden");
+            }, 50);
+            
+        }
+
+    }
+
+    function onCommentMore() {
+        getCommentList();
+    }
+
+    function showComPofilePop(userId, nickname) {
+    <% if (_isAuthed) { %>
+            Popup2On('list', userId, (val, id) => { callbackPopup(val, id) });
+    <% } %>
+    }
+    function onComProfileMove(e, id) {
+        e.stopPropagation();
+        <% if (_isAuthed) { %>
+            location.href="/profile/main/" + id
+                <% } %>
+    }
+
+    function onCloseRelay() {
+        var nm = $('#input_comment').data("nickname");
+        var comment = $('#input_comment').val();
+        $('#input_comment').val(comment.replace('@' + nm, '')).data("nickname", null).data("cId", null).data("uId", null);
+        $("#relay-comment-info").addClass("hidden");
+    }
+
+    function onClosePhoto() {
+        var ptype = ($("#relay-comment-info div").text().indexOf('댓글수정') > -1) ? 'up' : 'in'
+        if (ptype == 'in') {
+            attachList = [];
+            $("#relay-photo-info").addClass("hidden");
+        } else {
+            onPopup("confirm", "첨부 이미지를 삭제 하시겠습니까?", function (cb) {
+                if (cb == 1) {
+                    var id = $("#input_comment").data("cId") || null;
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/comment/image',
+                        data: {
+                            id: id
+                        },
+                        success: function (req) {
+                            if (req && req.result === 'ok') {
+                                $("#photo-name", "#relay-photo-info").text("")
+                                $("#relay-photo-info").addClass("hidden");
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    function onReComment(e, commentId, userId, nickname) {
+        e.stopPropagation();
+        $("#relay-comment-info").removeClass("hidden");
+        $("#relay-comment-info div").text(nickname + "<%= __('COMMANT_REPLAYTOUSER_MSG')%>");
+        $("#input_comment").val('');
+        $("#input_comment").data("cId", commentId);
+        $("#input_comment").data("uId", userId);
+        $("#input_comment").data("nickname", nickname);
+        //$("#input_comment").val("@" + nickname + " ");
+        //$("#input_comment").focus();
+
+        //$("#tempHeight").css("height:100px")
+
+        $("#comm-input-area").removeClass("hidden");
+        $("footer").removeClass("hidden");
+        $("#comm-more-area").removeClass("hidden");
+        $("#comm-btn-area").addClass("hidden");
+
+        onClosePhoto();
+    }
+
+    function onPostComment(e) {
+        e.stopPropagation();
+        var rcId = $("#input_comment").data("cId") || null;
+        var comment = $("#input_comment").val();
+        var commentOri = comment;
+        var uId = $("#input_comment").data("uId") || $("input[name=userid]").val();
+        var cId = $("#comment-list-area").data("cId");
+        var search = comment.substring(0, 1);
+
+        // var p = /(http(s)?:W([\w-]+\.)+[\w-]+(V[\w-.V?%&=]*)?)/gi;
+        // var link = comment.replaceAll(p,'<a href="$1">$1</a>');
+        // console.log(link);
+        var ptype = ($("#relay-comment-info  div").text().indexOf('댓글수정') > -1) ? 'up' : 'in'
+
+        var originalname = $("#photo-name").text();
+        if (comment.length < 2) {
+            return onPopup("alert", "<%= __('WRITE_REPLY')%>", function (cb) { });
+        }
+
+        var nickname = $("#input_comment").data("nickname");
+        if (nickname) {
+            console.log(nickname);
+            comment = "@" + nickname + " " + comment;
+        }
+        var contentUserId = "";
+        var contentUserNM = "";
+        <% if (_isAdmin) { %>
+            contentUserId=$("#idSelContentUser option:selected").val();
+            contentUserNM = $("#idSelContentUser option:selected").text();
+        <% } %>
+
+            $.ajax({
+                type: 'POST',
+                url: '/comment',
+                data: {
+                    uId: uId,
+                    cId: cId,
+                    rcId: rcId,
+                    comment: comment,
+                    contentType: $(".event-detail").length > 0 ? 'e' : 'b',
+                    photo: JSON.stringify(attachList),
+                    originalname: originalname,
+                    ptype: ptype,
+                    contentUserId: contentUserId,
+                    contentUserNM: contentUserNM,
+                    isAdmin:<%=_isAdmin|| false %>
+            },
+                success: function (req) {
+                    if (req.result == "ok" && req.data && req.data._id) {
+                        $('#input_comment').val('').data("nickname", null).data("cId", null).data("uId", null);
+                        $("#relay-comment-info").addClass("hidden");
+                        $("#relay-photo-info").addClass("hidden");
+                        attachList = [];
+                        // 화면 갱신 처리 필요.
+                        $.get({
+                            url: '/comment/list/' + req.data._id + '/single-comment',
+                            success: function (html, status, xhr) {
+                                if (ptype == 'up') {
+                                    onCommentReload();
+                                } else {
+                                    $(rcId ? "#comment-relay-area-" + rcId : "#comment-list-area").prepend(html);
+                                    var offsetTop = $(rcId ? "#comment-relay-area-" + rcId : "#comment-list-area").offset().top;
+                                    var scrollTop = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
+                                    var moving = offsetTop + scrollTop;
+
+                                    $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).animate({ scrollTop: (moving - 200) }, 1000);
+                                    if (html) {
+                                        if (rcId) {
+                                            $(".reply-" + rcId).text(($(".reply-" + rcId).text() * 1) + 1);
+                                        }
+                                        $("#comment_count").text(($("#comment_count").text() * 1) + 1);
+                                    }
+                                }
+
+                            },
+                            error: function (xhr, status, err) {
+                                console.log(err);
+                            }
+                        });
+                    } else if (req.result == "banword") {
+                        onPopup("alert", "<%= __('WRITE_BANWORD')%>", function (cb) { });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                }
+        });
+    }
+    // TODO: 팝업 변경 처리 필요 전역변수 임시 사용.
+    var _kind = "";
+    var _cid = "";
+    var _uid = "";
+    var _name = "";
+    var _title = "";
+    function onNoAuthed() {
+        onPopup("confirm", "<%- __('NEEDLOGIN')%>", function (cb) {
+            if (cb == 1) {
+                location.href = '/auth/login';
+            }
+        });
+    }
+    function onReportComment(e, id, uId, nm) {
+        e.stopPropagation();
+        _title = $("#comment-" + id).text();
+        _kind = "comment";
+        _cid = id;
+        _uid = uId;
+        _name = nm;
+        PopupOn('report', [], function (a, b) {
+            postReport(_cid, _uid, _name, _title, _kind, a, b)
+        });
+    }
+    function getCommentList(data, cb) {
+        var isProfile = data.isProfile || null;
+        if(isProfile == "myprofile") {
+            var oldReq = $("#comment-list-area").data("req");
+            if (typeof oldReq !== 'undefined' && oldReq !== null && data.reset !== true) {
+                return;
+            }
+        }
+        
+
+        data = data || {};
+        var cId = data.contentId || data.commentId || null;
+        var kind = typeof data.commentId === "string" ? 'comment' : 'board';
+        var $listArea = kind == 'comment' ? $("#comment-relay-area-" + cId) : $("#comment-list-area");
+        var sort = data.sort || null;
+        var limit = data.limit || $listArea.data("limit") || 10;
+        var reload = data.reload || null;
+        var boardType = data.boardType || null;
+
+        var cyn = data.cyn;
+
+        var end = $("#comment-list-area").data("end");
+
+        $listArea.data("limit", limit);
+        var oldSort = $listArea.data("sort");
+        var oldCId = $listArea.data("cId");
+        sort = sort || oldSort || 'date-up';
+        cId = cId || oldCId || null;
+
+        if (cId == null) {
+            return;
+        }
+
+        if (sort != oldSort || cId != oldCId) {
+            $listArea.empty();
+            $listArea.data("sort", sort);
+            $listArea.data("cId", cId);
+        }
+
+        var count = 0;
+        if (reload != null) {
+            count = 0;
+            if(isProfile == "myprofile") {
+                if (oldReq) {
+                    oldReq.abort();
+                }
+            }
+        } else if(end == true) {
+            if (typeof cb === 'function') {
+                cb(true);
+            }
+            return;
+        } else {
+            count = $(kind == 'comment' ? "#comment-relay-area-" + cId + " > div" : "#comment-list-area > div").length || 0;
+        }
+        console.log(count);
+        if (boardType == "event") kind = "event";
+
+        var req = $.get({
+            url: '/comment/list/' + cId + '/' + kind + '/' + count + '/' + sort + '/' + limit,
+            data: { isProfile: isProfile || null },
+            success: function (html, status, xhr) {
+                $("#comment-list-area").data("req", null);
+                if(isProfile == "myprofile") {
+                    $listArea.append(html);
+                } else {
+                    $listArea.html(html);
+                }
+                
+                var newCount = $("#comment-list-area > div").length;
+                //console.log(newCount + "   ///   " + count);
+                if (newCount == count) {
+                    $("#comment-list-area").data("end", true);
+                }
+
+
+                var cnt = $(kind == 'comment' ? "#comment-relay-area-" + cId + " > div" : "#comment-list-area").length;
+                if (cnt > count && cnt - count >= limit) {
+                    //$(kind == 'comment' ? "" : "#comment_more").removeClass("hidden");
+                } else {
+                    //$(kind == 'comment' ? "" : "#comment_more").addClass("hidden");
+                }
+                if (typeof cb === 'function') {
+                    cb();
+                }
+                $('[data-toggle="tooltip"]').tooltip();
+
+                if (cyn == "Y") {
+                    var offsetTop = $("#detail-vote-line").offset().top;
+                    //var offsetTop = $("#comment-list-area").offset().top;
+                    //var scrollTop = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
+                    var scrollTop = $(".app").scrollTop();
+                    var moving = offsetTop + scrollTop;
+                    // $(<% if (_isInApp) { %>".app"<%} else {%>'html, body'<%}%>).animate({ scrollTop: (moving - 100) }, 1000, function() {
+                    //     $("#comm-input-area").removeClass("hidden");
+                    //     $("footer").removeClass("hidden");
+                    //     $("#comm-more-area").removeClass("hidden");
+                        
+                    //     $("#comm-btn-area").addClass("hidden");
+                    // });
+                    $(<% if (_isInApp) { %>".app"<%} else {%>'html, body'<%}%>).scrollTop((moving - 100));
+                    setTimeout(function(e){
+                        $("#comm-input-area").removeClass("hidden");
+                        $("footer").removeClass("hidden");
+                        $("#comm-more-area").removeClass("hidden");
+                        
+                        $("#comm-btn-area").addClass("hidden");
+                    }, 50);
+                }
+            },
+            error: function (xhr, status, err) {
+                $("#comment-list-area").data("req", null);
+                console.log(err);
+            }
+        });
+        $("#comment-list-area").data("req", req);
+    }
+
+    function getRelayCommentList(e, commentId) {
+        e.stopPropagation();
+        getCommentList({
+            commentId: commentId
+        });
+    }
+
+    function onCommentVotiong(e, cid, vote) {
+        e.stopPropagation();
+        putVoting(cid, vote, 'comment', (req) => {
+            if (req && req.result == 'ok') {
+                if (req.data) {
+                    $("#comment-" + cid + "-vote-up").text(req.data.votingUp);
+                    $("#comment-" + cid + "-vote-down").text(req.data.votingDown);
+                    $("#comment-" + cid + "-button-area").removeClass("up down");
+                    if (req.data.vote == "UP") {
+                        $("#comment-" + cid + "-button-area").addClass("up");
+                    } else if (req.data.vote == "DOWN") {
+                        $("#comment-" + cid + "-button-area").addClass("down");
+                    }
+                }
+            }
+        });
+    }
+
+    function onDeleteComment(e, id) {
+        e.stopPropagation();
+        onPopup("confirm", "삭제시 득표로 얻은 점수<br>+a의 파워가 차감됩니다.<br><%= __('COMMENT_DELETE')%>", function (cb) {
+            if (cb == 1) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/comment',
+                    data: {
+                        id: id
+                    },
+                    success: function (req) {
+                        if (req && req.result === 'ok') {
+                            var $commentArea = $("#comment-area-" + id);
+                            $('.list-postdesc-reply', $commentArea).text("<%=__('COMMANT_DELETED_MSG')%>");
+                            $('[name="delete-button-group"]', $commentArea).remove();
+                            $("#comment-" + id + "-vote-up").removeAttr("onclick");
+                            $("#comment-" + id + "-vote-down").removeAttr("onclick");
+                            $("#btn-vote-up").addClass("hidden");
+                            $("#btn-vote-down").addClass("hidden");
+                            $("#comment-" + id).addClass("text-danger");
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+        });
+    }
+
+    function onModifyComment(e, commentId, userId, photoinfo, createTS) {
+        e.stopPropagation();
+        var ts = moment();
+        var tsc = moment(createTS);
+        var tsDiss = ts.diff(tsc, 'hours');
+        
+        getVoteCount('comment',commentId,(data)=>{
+            console.log(data.total,data.check)
+            if (data.check || tsDiss > 1) {
+                onPopup("alert", "등록 후 1시간이 경과하거나<br> 30표 이상 득표한 댓글은 수정할 수 없습니다.", function (cb) {
+
+                })
+                return;
+            }
+
+            var comment = $("#comment-" + commentId).text().replaceAll("\n", "").ltrim().rtrim();
+            var temp = comment.split(' ');
+            var targetnm = "";
+            
+            if (temp[0] != comment) {
+                comment = comment.replace(temp[0], "").trim();
+                console.log("---", temp[0])
+                targetnm = temp[0].indexOf('@') > -1 ? temp[0].replace('@', '') : ''
+            }
+            comment = comment.trim();
+
+            if (photoinfo != null && photoinfo != '') {
+                $("#photo-name", "#relay-photo-info").text(photoinfo)
+                $("#relay-photo-info").removeClass("hidden")
+            }
+
+            $("#relay-comment-info").removeClass("hidden");
+            $("#relay-comment-info div").text("댓글수정" + (targetnm == "" ? '' : ' - ' + targetnm + '님 답글'));
+            $("#input_comment").data("uId", userId);
+            $("#input_comment").data("cId", commentId).data("nickname", targetnm).val(comment);
+            $("#input_comment").focus();
+
+            $("#comm-input-area").removeClass("hidden");
+            $("footer").removeClass("hidden");
+            $("#comm-more-area").removeClass("hidden");
+            $("#comm-btn-area").addClass("hidden");
+        });
+
+    }
+
+</script>

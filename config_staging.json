@@ -1,0 +1,96 @@
+{
+    "bindhost": "0.0.0.0",
+    "bindport": 3000,
+    "redirect2https": true,
+    "useGoogleAnalytics": false,
+    "locales": [
+        "ko",
+        "en"
+    ],
+    "session": {
+        "key": "gkjQe",
+        "secret": "jhg&93jhks@#"
+    },
+    "chatServer": {
+        "host": "https://chat.inkiup.com",
+        "port": 443,
+        "namespace": "chatlist"
+    },
+    "redis": {
+        "host": "172.31.39.66",
+        "port": 6379
+    },
+    "mongodb": {
+        "host": "172.31.37.125:27017/",
+        "hostRead": "172.31.37.125:27017/",
+        "database": "INKIUP",
+        "username": "",
+        "password": "",
+        "opts": {
+            "useNewUrlParser": true,
+            "native_parser": true,
+            "poolSize": 10,
+            "useUnifiedTopology": true
+        }
+    },
+    "temppath": "../temp",
+    "attach": {
+        "limitSize": 104857600,
+        "src": "/attach"
+    },
+    "googleAuthClientKey": "742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com",
+    "appleAuthClientKey": "com.inkiup.inkiup",
+    "firebaseDatabaseUrl": "https://inkiup.firebaseio.com",
+    "servicemodule": {
+        "home": "",
+        "account": "auth",
+        "api/og": "api/og",
+        "api/auth": "api/auth",
+        "api/attach": "api/attach",
+        "chat": "chat",
+        "support": "support",
+        "left": "left",
+        "profile": "profile",
+        "setting": "setting",
+        "search": "search",
+        "notification": "notification",
+        "comment": "comment",
+        "board": "board"
+    },
+    "serviceinfo": {
+        "domain": "inkiup.com",
+        "sitename": "인끼업 inkiup",
+        "sid": "inkiupmobileweb",
+        "contactperson": "관리자",
+        "sitelogourl": "https://sta.inkiup.com/app-logo-512.png",
+        "description": "인끼업 실시간 소셜 랭킹 커뮤니티 ",
+        "retailcategory": "COMMUNITY",
+        "businessevent": "WEB",
+        "phone": "",
+        "fax": "",
+        "email": "noreplay@nothings.not",
+        "defaultUrl": "https://sta.inkiup.com",
+        "mailSender": {
+            "from": "No Replay <noreplay@nothings.not>",
+            "replyto": "No Replay <noreplay@nothings.not>"
+        },
+        "og": {
+            "sitename": "인끼업 닷컴 inkiup.com",
+            "author": "인끼업 inkiup inc.",
+            "title": "인끼업(inkiup) 실시간 소셜 랭킹 커뮤니티",
+            "keywords": "인끼업,실시간,소셜,랭킹,커뮤니티,realtime,rank,social,community,inkiup,유머,humor",
+            "description": "인끼업(inkiup) 대한민국 최초의 실시간 랭킹 커뮤니티로 대한민국 모든 인터넷 커뮤니티의 인기글들과 인끼업 내의 업로더들의 컨텐츠들을 함께 다루고 경쟁하고 유저들은 한 눈에 핫한 정보들을 확인할 수 있습니다.",
+            "image": "https://sta.inkiup.com/app-logo-512.png"
+        }
+    },
+    "aws": {
+        "enabled": true,
+        "AWSAccessKeyId": "AKIAJWKJN2ESTCVO3XXA",
+        "AWSSecretKey": "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",
+        "REGION": "ap-northeast-2",
+        "Bucket": "filesinkiup",
+        "S3Url": "https://d39rw2lh9ylrhv.cloudfront.net",
+        "S3UrlOrignal": "https://filesinkiup.s3.ap-northeast-2.amazonaws.com/"
+    },
+    "invalidUrlRegex": "^(?!http[s]?:\\/{2}(\\w*)\\.?inkiup\\.com(:\\d)*|https:\\/{2}appleid\\.apple\\.com|https:\\/{2}d39rw2lh9ylrhv\\.cloudfront\\.net|https:\\/{2}filesinkiup\\.s3\\.ap-northeast-2\\.amazonaws\\.com|https:\\/{2}(\\w*)\\.?youtube\\.com\\/embed\\/|https:\\/{2}(\\w*)\\.?hotjar\\.com).*$"
+}

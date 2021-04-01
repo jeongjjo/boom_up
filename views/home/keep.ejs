@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+    <head>
+        <%-include('../_layouts/header')%>
+        <%-include('../_layouts/layout_bodyscript')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div id="main_list" class="container-fluid p-0 m-0">
+                <%- include('../board/layout_list') -%>
+            </div>
+            <%-include('../_parts/_footer')%>
+        </div>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+</html>
+
+<script type="text/javascript">
+    var _auth = <%= _isAuthed %>;
+    var ismine = "<%= isMine %>";
+    var g_fliter = "24rank";
+    $(function () {
+        setLeft();
+        $(".icon-keep-footer").addClass("font-weight-bold");
+        $(".app").naaEvent({
+            main: "#main_list",
+            onPullToRefresh: () => {
+                getBoardList({
+                    kind: 'keep',
+                    limit: 30,
+                    reset: true
+                }, true);
+            },
+            onPullToMore: () => {
+                getBoardList();
+            }
+        });
+
+        getBoardList({
+            kind: 'keep',
+            limit: 30
+        }, ()=>{
+        });
+    });
+
+    // function getContent() {
+    //     getBoardList({
+    //         kind: 'keep',
+    //         limit: 30
+    //     }, true);
+    // }
+
+    function onGoPostDetail($this, id) {
+        var pathHash='keep'
+        location.href = '/detail/'+(pathHash||'inkiup-24rank')+"/"+id
+    }
+
+    function onGoPostDetailComment($this, id) {
+        var pathHash = window.location.hash.replace("#", "");
+        location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id+"?cyn=Y"; 
+    }
+</script>

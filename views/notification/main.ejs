@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/header')-%>
+        <style>
+            
+        </style>
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_bodystart') -%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <!-- list area -->
+            <div id="idResultListAreaNoContent" class="hidden">
+                <div class="d-flex flex-column mt-4">
+                    <div class="icon-excl-area align-self-center d-flex">
+                        <span class="icon-excl ml-3 mt-3"></span>
+                    </div>
+                    <div class="align-self-center d-flex mt-3 icon-excl-text">알림받은 내용이 없습니다.</div>
+                </div>
+            </div>
+            <div id="idResultListArea">
+            </div>
+            <div style="height:7em"><div>
+        </div>
+        <%- include('../_layouts/layout_bodyscript') -%>
+        <!-- Content -->
+        
+        <%- include('../_parts/_footer') -%>
+
+        <script type="text/javascript">
+        
+            (function () {
+                // TODO script
+                setHeader('back','')
+                scroll();
+                getList();
+            })();
+
+            function onClickNotificationItem(url) {
+                if (url && url.length > 0) {
+                    location.href = url;
+                }
+            }
+            
+            function scroll() {
+                $(".header").scroll(function () {
+                    clearTimeout($.data(this, 'scrollTimer'));
+                    $.data(this, 'scrollTimer', setTimeout(function () {
+                        var scrollT = $(".header").scrollTop();
+                        var scrollH = $(this).height();
+                        var contentH = $('#idResultListArea').height();
+                        if (scrollT + scrollH + 1 >= contentH) {
+                            //g_pageCount = g_pageCount + 30;
+                            getList();
+                        }
+                    }, 250));
+                });
+            }
+
+            function getList(){
+                var listcount=$("#idResultListArea div[name='list']").length;
+                $.get({
+                    url: '/notification/list/'+listcount,
+                    success: function (html, status, xhr) {
+                        $("#idResultListArea").append(html);
+                        if ($("#idResultListArea div[name='list']").length > 0) {
+                            $("#idResultListAreaNoContent").addClass('hidden');
+                        } else {
+                            $("#idResultListAreaNoContent").removeClass('hidden');
+                        }
+                    },
+                    error: function (xhr, status, err) {
+                        console.log(err);
+                    }
+                });
+            }
+        </script>
+        <%- include('../_layouts/layout_bodyend') -%>
+    </body>
+
+</html>

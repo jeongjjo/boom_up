@@ -1,0 +1,88 @@
+<html>
+<head>
+    <title>인끼업 OpenAPI</title>
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/site.css?2020081001">
+</head>
+<body style="padding-left:30px;padding-top:30px" id="app-pc-bg">
+    <div class="d-flex flex-column p-4" >
+        <h2><i class="logotitle3"></i></h2>
+        <p>
+        <div class="h4 font-weight-bold">인끼업 기본 제공 OpenAPI</div>
+        <div class="ml-4">
+            <p class=" mb-1">1. 인끼업 글 목록</p>
+            <ul>
+                <li>최신 글 목록</li>
+                <li>실시간 Top 10 글 목록 </li>
+            </ul>
+            <p class=" mb-1">2. 인끼업 글 상세정보</p>
+            <ul class="mb-0">
+                <li>글 상세내용 보기</li>
+            </ul>
+        </div>
+        <p><p>
+        <div class="h4 font-weight-bold">OpenAPI 사용 정보</div>
+        <div class="ml-4">
+            <p class=" mb-1">1. OpenAPI 접속정보</p>
+            <ul>
+                <li>OpenAPI 제공은 RESTful/JSON 서비스로 제공</li>
+                <li>OpenAPI Service Point (Access URL)</li>
+                <li>https://inkiup.com/openapi</li>
+            </ul>
+            <p class=" mb-1">2. OpenAPI 목록</p>
+            <div class="pl-3" style="width:800px">
+                <table class="table text-left">
+                <thead>
+                    <tr>
+                    <th>URL</th>
+                    <th>
+                        Method
+                    </th>
+                    <th>
+                        Service Name
+                    </th>
+                    <th>
+                        Parameters
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td><code>/board</code></td>
+                    <td class="text-muted">GET</td>
+                    <td>최신 글 목록</td>
+                    <td>-</td>
+                    <td>최신 글 목록 제공</td>
+                    </tr>
+                    <tr>
+                    <td><code>/board/top10</code></td>
+                    <td class="text-muted">GET</td>
+                    <td>실시간 Top 10</td>
+                    <td>-</td>
+                    <td>실시간 인끼글 top 10 제공</td>
+                    </tr>
+                    <tr>
+                    <td><code>/detail/게시물id</code></td>
+                    <td class="text-muted">GET</td>
+                    <td class="text-muted">글 상세보기</td>
+                    <td>게시물id</td>
+                    <td>게시물id에 해당하는 상세 정보 제공</td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+            <p class=" mb-1">3. OpenAPI 사용 예</p>
+            <ul>
+                <li>최신 글 목록</li>
+                <li><a href="https://inkiup.com/openapi/board">https://inkiup.com/openapi/board</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
+
+

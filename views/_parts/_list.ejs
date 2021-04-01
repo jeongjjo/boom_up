@@ -1,0 +1,139 @@
+<% if( list.length==0 && fist =='Y') { %>
+<!--nodata-->
+<div class="nodata p-4 ">
+    <div>
+        <i class="icon-excl-area-sm icon-excl"></i>
+    </div>
+    <div class="p-2">
+        <%= __('PROFILE_NO_DATA')%>
+    </div>
+</div>
+<!--nodata-->
+
+<%  }  %>
+
+
+<!--repeat-->
+<% for  (var x=0 ; x < list.length; x++  ) { %>
+<div id="board-area-<%= list[x]._id %>" data-naa-animation-scroll="in" class="naa-animation">
+    <% if( list[x].listType == 'post'  ) { %>
+    <!--listType = 'post' -->
+    <% if( _isAuthed && list[x].blockedUser  != null && list[x].blockedUser != [] &&  list[x].blockedUser.length > 0) { %>
+    <div class="p-0 m-0 blocked_list _search <%=list[x].listType2%>" data-id="<%= list[x].listType2=='_vote'?lastVoteId:list[x]._id %>">
+        <div class="blocked_post_list d-flex justify-content-center p-3">
+            <i class="icon-block block_icon_sm mr-2 "></i> <%= __('BLOCK_USER_POST')%><br>(<%=list[x].nickname%>)
+        </div>
+    </div>
+    <% } else if (list[x].block) { %>
+    <div class="p-0 m-0 blocked_list _search <%=list[x].listType2%>" data-id="<%= list[x].listType2=='_vote'?lastVoteId:list[x]._id %>">
+        <div class="blocked_post_list d-flex justify-content-center p-3">
+            <i class="icon-block block_icon_sm mr-2 "></i> <%= __('REPORT_POST')%>
+        </div>
+    </div>
+    <% } else if (list[x].delete) { %>
+    <div class="p-0 m-0 blocked_list _search <%=list[x].listType2%>" data-id="<%= list[x].listType2=='_vote'?lastVoteId:list[x]._id %>">
+        <div class="blocked_post_list d-flex justify-content-center p-3">
+            <i class="icon-right-circle block_icon_sm mr-2 "></i> <%= __('PROFILE_DELETEPOST')%>
+        </div>
+    </div>
+    <% } else { %>
+    <div class="list-post d-flex _search <%=list[x].listType2%>" data-id="<%= list[x].listType2=='_vote'?lastVoteId:list[x]._id %>" onclick="onGoPostDetail('<%=list[x]._id%>')">
+        <div class="flex-grow-0 flex-shrink-1 list-post-vote">
+            <div class="d-flex flex-column h-100 ">
+                <div class="flex-grow-0 flex-shrink-1 align-self-center">
+                    <span onclick="event.stopPropagation();onVote(this, 'UP', '<%=list[x]._id%>','board');" class="icon-up icon-up-icon post-up-down <%= (_isAuthed  && list[x].vote != null && list[x].vote != [] &&  list[x].vote.length > 0 && list[x].vote[0].type=='UP' )? 'text-danger' : ''  %>  "></span>
+                </div>
+                <div class="flex-grow-1 flex-shrink-1 align-items-center d-flex justify-content-center">
+                    <span class="post-rank"></span>
+                </div>
+                <div class="flex-grow-0 flex-shrink-1 align-self-center">
+                    <span onclick="event.stopPropagation();onVote(this, 'DOWN', '<%=list[x]._id%>','board');" class="icon-down post-down-icon post-up-down <%= (_isAuthed  && list[x].vote != null && list[x].vote != [] &&  list[x].vote.length > 0 && list[x].vote[0].type=='DOWN' )? 'text-primary' : ''  %>"></span>
+                </div>
+            </div>
+        </div>
+        <div class="flex-grow-1 flex-shrink-1">
+            <span class="d-flex">
+                <div class="list_margin_left text-break list-post-title  main-content-title">
+                    <%- list[x].title.replace( keyword  , '<span class="warn_text">' +   keyword  + '</span>') %>
+                    <span class="post-recount ">(<%=list[x].comment || 0 %>)</span>
+                </div>
+            </span>
+            <div class="d-flex">
+                <div class="align-self-center">
+                    <span class="icon-time post-time-icon"></span>
+                    <span class="post-time ">
+                        <% if (moment().add(-3,'d').valueOf()>list[x].createTS ){ %>
+                        <%= moment(list[x].createTS).format("MM/DD") %>
+                        <% } else { %>
+                        <%=fn_dateTimeToFormatted(list[x].createTS).formatted %>
+                        <% } %>
+                    </span>
+                    <span class="ml-4 mr-4  post-lineup-<%=list[x].lineupKey%>" style="<%= typeof list[x].lineup.color !== 'undefined' && typeof list[x].lineup.background !== 'undefined' ? 'color:'+list[x].lineup.color+'; background-color: '+list[x].lineup.background+';' : '' %>" onclick="event.stopPropagation();goLineup('<%=list[x].lineupKey%>');"><%= list[x].lineup.lineup %></span>
+                </div>
+                <div class="flex-grow-1 ">
+                    <span id="board-<%=list[x]._id%>-keep" onclick="event.stopPropagation();putKeep('<%=list[x]._id%>')" class="post-keep-icon clock-icon align-middle <%= (_isAuthed  &&  list[x].keep != null &&  list[x].keep != []  &&  list[x].keep.length > 0 )? 'icon-keep-fill text-warning' : 'icon-keep'  %> "></span>
+                </div>
+            </div>
+            <div class="d-flex list-post-profile">
+                <div class="" onclick="event.stopPropagation();popupProfile('<%=list[x].userId%>',<%=list[x].followed%> );">
+                    <img src="<%=getPhotoEx(list[x].writer[0].photo,3,1)%>" class="img-profile" alt="">
+                </div>
+                <div class="align-self-center " onclick="event.stopPropagation();popupProfile('<%=list[x].userId%>',<%=list[x].followed%>);"><span class="post-nickname "><%- list[x].nickname.replace( keyword  , '<span class="warn_text">' +   keyword  + '</span>')%></span></div>
+                <div class="flex-grow-1 align-self-center">
+                    <div>
+                        <span data-toggle="tooltip" data-placement="bottom" title="<%= (_isAuthed  && list[x].memo != null  && list[x].memo.length > 0) ? list[x].memo[0].memo : '' %>" class="icon-user-memo-area icon-user-memo <%= (_isAuthed  && list[x].memo != null  && list[x].memo.length > 0) ? '' : 'hidden' %> "></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex-grow-0 flex-shrink-1">
+            <% if (list[x].representationImage != undefined && list[x].representationImage != null && list[x].representationImage != "") { %>
+            <img src="<%=getPhotoEx(list[x].representationImage,3,1)%>" class="post-thumnail" onerror="this.src='/img/block.png';">
+            <% } %>
+        </div>
+    </div>
+    <%  } %>
+    <!--rereply-->
+    <%  } else if (list[x].listType == 'comment' ){   %>
+    <!--listType = 'comment' -->
+    <!--reply-->
+    <% if (list[x].delete) { %>
+    <div class="p-0 m-0 blocked_list _search <%=list[x].listType2%>" data-id="<%= list[x].listType2=='_vote'?lastVoteId:list[x]._id %>">
+        <div class="blocked_post_list d-flex justify-content-center p-3">
+            <i class="icon-right-circle block_icon_sm mr-2 "></i> <%= __('COMMANT_DELETED_MSG')%>
+        </div>
+    </div>
+    <% } else { %>
+    <div class="d-flex flex-row list-rereply _search <%=list[x].listType2%>" data-id="<%= list[x].listType2=='_vote'?lastVoteId:list[x]._id %>">
+        <div class="mt-1"><i class="icon-reply icon-reply-font" style="font-size:1.1em"></i></div>
+        <div class="list-rereply-replylist">
+            <div onclick="onGoPostDetail('<%=list[x].contentId%>')" class="d-flex list-postdesc-reply">
+                <%- list[x].comment%>
+            </div>
+            <div class="d-flex align-items-center mt-1 _grpvote">
+                <span class="icon-up postdesc-votecount postdesc-votecount-l <%=list[x].vote != null && list[x].vote.length>0 && list[x].vote[0].type=='UP'?'upvoted':''%>" onclick="onVote(this, 'UP', '<%=list[x]._id%>','comment');"></span>
+                <span class="postdesc-votecount ml-1 _upcnt <%=list[x].vote != null && list[x].vote.length>0 && list[x].vote[0].type=='UP'?'upvoted':''%>"><%=list[x].votingUp || 0 %> </span>
+
+                <span class="icon-down postdesc-votecount postdesc-votecount-l ml-4 <%=list[x].vote != null && list[x].vote.length>0 && list[x].vote[0].type=='DOWN'?'downvoted':''%>" onclick="onVote(this, 'DOWN', '<%=list[x]._id%>','comment');"></span>
+                <span class="postdesc-votecount ml-1 _downcnt <%=list[x].vote != null && list[x].vote.length>0 && list[x].vote[0].type=='DOWN'?'downvoted':''%>"><%=list[x].votingDown|| 0 %> </span>
+
+                <span class='icon-time postdesc-votecount ml-4'></span>
+                <span class="postdesc-votecount ml-1">
+                    <% if (moment().add(-3,'d').valueOf()>list[x].createTS ){ %>
+                    <%= moment(list[x].createTS).format("MM/DD") %>
+                    <% } else { %>
+                    <%=fn_dateTimeToFormatted(list[x].createTS).formatted %>
+                    <% } %>
+                </span>
+            </div>
+
+
+        </div>
+    </div>
+    <% } %>
+    <!--reply-->
+    <%  }%>
+
+</%>
+<%  } %>
+<!--repeat-->

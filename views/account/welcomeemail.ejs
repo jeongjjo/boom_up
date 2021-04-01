@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/headerEmpty') -%>
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_Empty_bodystart') -%>
+
+        <div class="app header footerNoNav">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="container-fluid p-0 pb-5 m-0 h-100">
+                <div class="d-flex flex-column justify-content-between px-3 pb-4 h-100">
+                    <div class="align-self-center text-center my-auto">
+                        <i class="logotitle2"></i>
+                    </div>
+                    <div class="algin-self-start mb-auto">
+                        <p class="flex-shrink-1 text-center"><%- __('AUTH_CHECKEMAILSENDMSG').replace('[NICKNAME]', userInfo.nickname); %></p>
+                        <p class="flex-shrink-1 text-center mt-3 mb-3"><%- __('AUTH_CHECKEMAILSENDMSG2') %></p>
+                        <form id="email-check-form" method="POST" novalidate="novalidate" class="mdy-auto">
+                            <div class="input-group">
+                                <div class="justify-content-center  d-flex align-items-center mx-3"><i class="icon-message"></i></div>
+                                <input type="text" name="em" class="form-control input_login" placeholder="<%= __('LOGIN_EMAILADDR')%>" value="<%= userInfo.auth.email.key %>">
+                            </div>
+                            <div class="d-flex ml-5 align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('VALIDATOR_REQUIREDEMAIL')%></div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary btn-block btn_login mt-3"><%= __('AUTH_CHECKEMAILRESEND')%></button>
+                            <button class="btn btn-primary btn-block btn_login mt-3" onclick="location.href = '/auth/login';"><%= __('GOTOLOGIN')%></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Content -->
+
+            <footer class="fixed-bottom keyboard-show-hidden-item">
+                <div class="d-flex justify-content-around">
+                    <div class="mt-1">
+                        <a href="/support/terms" class="left_bottom_text"><%= __('LB_MENU1')%></a> | <a href="/support/privacy" class="left_bottom_text"><%= __('LB_MENU2')%></a> | <a href="/left/faq" class="left_bottom_text"><%= __('LB_MENU3')%></a> | <a href="/left/notice" class="left_bottom_text"><%= __('LB_MENU4')%></a>
+                    </div>
+                </div>
+            </footer>
+
+            <%- include('../_layouts/layout_Empty_bodyscript') -%>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/additional-methods.min.js" integrity="sha256-vb+6VObiUIaoRuSusdLRWtXs/ewuz62LgVXg2f1ZXGo=" crossorigin="anonymous"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js" integrity="sha256-6rXZCnFzbyZ685/fMsqoxxZz/QZwMnmwHg+SsNe+C/w=" crossorigin="anonymous"></script>
+            <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/cipher-core.min.js" integrity="sha256-Y7SVWwin6U0VYV88jtgGd6z3ohMG+IMn3w4vl8vTvDs=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/hmac-sha512.min.js" integrity="sha256-6LEpzLhP3784Zf/1GDOijZdcE58Oqnkjbr5DQ17bjNk=" crossorigin="anonymous"></script> -->
+            <script type="text/javascript">
+                $.validator.messages = {
+                    required: "<%= __('VALIDATOR_REQUIRED')%>",
+                    remote: "<%= __('VALIDATOR_REMOTE')%>",
+                    email: "<%= __('VALIDATOR_EMAIL')%>",
+                    url: "<%= __('VALIDATOR_URL')%>",
+                    date: "<%= __('VALIDATOR_DATE')%>",
+                    dateISO: "<%= __('VALIDATOR_DATEISO')%>",
+                    number: "<%= __('VALIDATOR_NUMBER')%>",
+                    digits: "<%= __('VALIDATOR_DIGITS')%>",
+                    equalTo: "<%= __('VALIDATOR_EQUALTO')%>",
+                    maxlength: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                    minlength: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                    rangelength: $.validator.format("<%= __('VALIDATOR_RANGELENGTH')%>"),
+                    range: $.validator.format("<%= __('VALIDATOR_RANGE')%>"),
+                    max: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                    min: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                    step: $.validator.format("<%= __('VALIDATOR_STEP')%>")
+                };
+
+                (function () {
+
+                    if (/Android/i.test(navigator.userAgent)) {
+                        $("#goToLogin").addClass("hidden");
+                        // 안드로이드
+                    } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                        $("#goToLogin").addClass("hidden");
+                        // iOS 아이폰, 아이패드, 아이팟
+                    } else {
+                        // 그 외 디바이스
+                        $("#goToAppBtn").addClass("hidden");
+                    }
+
+                    setHeader('hidden', '');
+
+                    $("#email-check-form").validate({
+                        ignore: ':hidden:not(.validate)',
+                        rules: {
+                            em: {
+                                required: true,
+                                email: true
+                            }
+                        },
+                        messages: {
+                            em: {
+                                required: "<%= __('VALIDATOR_REQUIREDEMAIL')%>"
+                            }
+                        },
+                        errorPlacement: function errorPlacement(error, element) {
+                            var $parent = $(element).parents('.input-group').next('.warn_area');
+                            // Do not duplicate errors
+                            if ($parent.find('.jquery-validation-error').length) {
+                                return;
+                            }
+                            $parent.removeClass('hidden');
+                        },
+                        highlight: function (element) {
+                        },
+                        unhighlight: function (element) {
+                            // $(element).parents('.form-group').find('.is-invalid').removeClass('is-invalid');
+                            var $parent = $(element).removeClass('is-invalid').addClass('is-valid').parents('.input-group').next('.warn_area');
+                            $parent.addClass('hidden');
+                        },
+                        submitHandler: function (form) {
+                            blockPage();
+                            var formData = objectifyForm(form);
+                            formData.fb = "<%= firebaseToken %>";
+                            formData.deviceId = "<%= deviceId %>";
+                            $.post({
+                                url: '/auth/sendemailcheck',
+                                processData: false,
+                                contentType: 'application/json',
+                                dataType: 'json',
+                                data: JSON.stringify(formData),
+                                success: function (data, status, xhr) {
+                                    unblockPage();
+                                    if (data && data.result === 'ok') {
+                                        onPopup("alert", "<%= __('AUTH_EMAILSENDMSG')%>", function (cb) { });
+                                        return false;
+                                    }
+                                    onPopup("alert", "<%- __('AUTH_EMAILSENDFAIL')%>", function (cb) { });
+                                    return false;
+                                },
+                                error: function (xhr, status, err) {
+                                    unblockPage();
+                                    onPopup("alert", "<%- __('AUTH_EMAILSENDFAIL')%>", function (cb) { });
+                                }
+                            });
+                            return false;
+                        }
+                    });
+
+                    $("#email-check-form").submit();
+                })();
+
+            </script>
+            <%- include('../_layouts/layout_Empty_bodyend') -%>
+    </body>
+
+</html>

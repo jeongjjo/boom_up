@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/header')-%>
+        
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_bodystart') -%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+
+            <div class="d-flex flex-column pt-3" style="height:90%">
+                <div class="d-flex mt-2 ml-4 mr-4 justify-content-between">
+                    <div class="search-category-title2" style="font-size:14px">
+                    관심 키워드는 최대 5개 까지 선택하거나 생성 가능하며,
+                    선택 시 추천글 또는 맞춤 정보를 제공받을 수 있습니다.
+                    </div>
+                </div>
+                <div class="d-flex flex-column search-category-area" style="height:100%">
+                    <%- include('../setting/keywordCKList',{myviewYN:true}) -%>
+                </div>
+            </div>
+            
+        </div>
+        <%- include('../_layouts/layout_bodyscript') -%>
+
+        <!-- Content -->
+
+        <script type="text/javascript">
+
+            (function () {
+                setHeader('back','save');
+                $("#idHeaderLeft").parent().removeClass("header-side-width")
+                $("div.header-tempright-width").removeClass("header-tempright-width")
+                $("#idHeaderLeft").removeClass("icon-arrow-left p-2").addClass("ml-3").css({"font-style":"normal","color":"#333333"}).text("취소")
+                $("#idHeaderLeft").off('click').on('click',()=>{
+                    var url="";
+                    if('<%=path%>'=='main'){
+                        url="/?popen=true"
+                    }else if('<%=path%>'=='profile'){
+                        url="/<%=path%>/main"
+                    }else if('<%=path%>'=='search'){
+                        url="/<%=path%>/s/"+moment().valeueOf()
+                    }else{
+                        url="/<%=path%>"
+                    }
+                    location.href=url;
+                })
+                $("header .btn-save").removeClass("btn-fill-blue").css({"font-style":"normal","color":"#3F6DF2"}).text("저장")
+
+                cklist()
+            })();
+
+            var onRegist = (txt) => {
+                var selectdata=[]
+                $("#idConcernKeywordList span[name='cklistItem']").each((i, item) => {
+                    if($(item).hasClass("selected")){
+                        var ckid=$(item).data("ckid")
+                        var text=$(item).text()
+                        selectdata.push({"id":ckid,"text":text})
+                    }
+                })
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/setting/ckuser',
+                    processData: false,
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({"cklist":selectdata}),
+                    success: function (data) {
+                        onPopup("alert", "관심 키워드가 저장되었습니다.", function(cb){ 
+                            location.href="/"
+                        });
+                    }, error: function (error) {
+                        //오류처리 팝업창 띄우기 코딩
+                        onPopup("alert", "저장시 오류가 발생했습니다.", function(cb){ });
+                        console.log(error);
+                    }
+                });
+            }
+
+            
+            
+        </script>
+        <%- include('../_layouts/layout_bodyend') -%>
+    </body>
+
+</html>

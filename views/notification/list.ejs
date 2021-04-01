@@ -1,0 +1,21 @@
+<% for(var i=0 ; i < data.length ; i++) { %>
+    <div name="list" class="d-flex list-post" onclick="onClickNotificationItem('<%= typeof data[i].url !== "undefined" ? data[i].url : ''%>', '<%= typeof data[i].readed !== "undefined" && data[i].readed === false ? String(data[i]._id) : ''%>');">
+        <div class="mt-1">
+            <% if (data[i].type=='admin'){ %>
+                <img src="/img/ci.png" class="img-profile" alt="profile">
+            <% } else { %>
+                <img src="<%=data[i].senderPhoto == null ? '/img/pro-image.png' : data[i].senderPhoto%>" class="img-profile" alt="profile">
+            <% } %>
+        </div>
+        <div class="flex-grow-1 flex-shrink-1 ml-2 mr-2">
+            <div><span class="alert-msgtext"><%=data[i].message%></span></div>
+            <div class="d-flex flex-wrap mt-2">
+                <div class="mr-3 d-flex"><span class="icon-person alert-icon-style"></span><span class="alert-subtext"><%=data[i].senderNickname%></span></div>
+                <div class="d-flex"><span class="icon-time alert-icon-style"></span><span class="alert-subtext"><%=fn_dateTimeToFormatted(data[i].registDate).formatted%></span></div>
+            </div>
+        </div>
+        <% if (data[i].thumbnail && data[i].thumbnail.length > 0) { %>
+        <div class="flex-grow-0 flex-shrink-1"><img src="<%= data[i].thumbnail %>" class="alert-list-thumnail"></div>
+        <% } %>
+    </div>
+<% } %>

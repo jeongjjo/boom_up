@@ -1,0 +1,57 @@
+
+<!-- close buton -->
+<div class="rounded-circle py-1 px-2 mb-4" style="border: 1px solid #fff !important; background-color: #999;">
+    <i class="icon-x text-white align-middle"></i>
+</div>
+
+<!-- profile area -->
+<div class="d-flex flex-column rounded-lg p-1" style="background-color:#fff; width:calc(var(--app-width) * 0.8);" onclick="event.stopPropagation();">
+
+    <!-- profile -->
+    <div class="d-flex flex-column justify-content-center align-items-center border-bottom mb-2 p-2">
+        <img class="rounded-circle mb-3" src="<%=getPhotoEx(userinfo.photo,3,2, '/img/pro-image.png');%>" style="width:calc(var(--app-width)/4) !important; height:calc(var(--app-width)/4) !important;" data-holder-rendered="true">
+        <h4 class="mb-3">
+            <span><%= userinfo.nickname %></span>
+            <%-getLevelIcon(userinfo.level,false)%>
+            <!--<i class="icon-user-memo text-secondary ml-2" style="font-size:0.7em;"></i>-->
+        </h4>
+        <div class="mb-1"><%= __('FOLLOWER')%> <span id="popup-profile-subscribe-count"><%= userinfo.subscriberCount || 0 %></span></div>
+        <span style="font-size:12px"><%= userinfo.message %></span>
+    </div>
+
+    <!-- buttons -->
+    <div class="d-flex flex-column p-2">
+        <% if (!isMine) { %>
+        <button id="popup-profile-btn-subscribe" class="btn mb-2 <%= followed ? 'hidden': '' %>" onclick="onSubscribe(event, 'd');" style="background-color:var(--inkiup-primary-color); color:#fff;"><%=__('SUB_READY')%></button>
+        <button id="popup-profile-btn-unsubscribe" class="btn mb-2 <%= !followed ? 'hidden': '' %>" onclick="onSubscribe(event, 'i');" style="color:var(--inkiup-primary-color); border: 1px solid var(--inkiup-primary-color);"><%=__('SUB_ING')%></button>
+        <% } %>
+        <button class="btn" style="color:var(--inkiup-primary-color);" onclick="event.stopPropagation();location.href='/profile/main/<%= userinfo._id.toHexString() %>';">프로필 보기</button>
+    </div>
+</div>
+<script>
+function onSubscribe(event, flag) {
+    event.stopPropagation();
+    <% if (_isAuthed) {%>
+        putSubscribe('<%= userinfo._id.toHexString() %>', '<%= userinfo.nickname %>', flag, (d)=>{
+            if (d && d.data) {
+                $('#popup-profile-subscribe-count').text(d.data.subscriberCount || 0);
+            }
+            if (flag == 'd') {
+                $('#popup-profile-btn-subscribe').addClass('hidden');
+                $('#popup-profile-btn-unsubscribe').removeClass('hidden');
+            } else {
+                $('#popup-profile-btn-subscribe').removeClass('hidden')
+                $('#popup-profile-btn-unsubscribe').addClass('hidden');
+            }
+        });
+    <% } else {  %>
+        onPopup("confirm", "<%- __('NEEDLOGIN')%>", function(cb){
+                if(cb==1){
+                    location.href='/auth/login';
+                    return
+                }
+            });
+    <% } %>
+    
+}
+</script>

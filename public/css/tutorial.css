@@ -1,0 +1,51 @@
+
+.tutorial {
+    position: fixed;
+    z-index: 10000;
+    top: 0 !important;
+    left: 0 !important;
+    width: var(--app-width);
+    height: var(--app-height);
+}
+
+#tutorial-background {
+    position: absolute;
+    top: 0 !important;
+    left: 0 !important;
+}
+
+@media screen and (min-width: 767.98px) and (min-height: 767.98px),
+screen\9 {
+    .tutorial, #tutorial-step-2 {
+        top: var(--app-top) !important;
+        left: var(--app-left) !important;
+    }
+}
+.tutorial-message {
+    position: absolute;
+}
+
+.tutorial-message img.right{
+    display: none;
+}
+
+
+.tutorial-message.right img.right{
+    display: block;
+}
+.tutorial-message.right img.left{
+    display: none;
+}
+
+.tutorial-message .text {
+    font-size: 0.9em;
+    border-radius: 10px;
+    background-color: white;
+    width: calc(var(--app-width) - 125px - 30px);
+    min-height: 50px;
+    padding: 5pt;
+}
+
+.tutorial-message img {
+    height: 75px;
+}

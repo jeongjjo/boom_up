@@ -1,0 +1,166 @@
+<%-include('../_parts/_popup_bottom')%>
+
+<%if(useGoogleAnalytics) {%>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<%}%>
+<script type="text/javascript">
+    <% if (_isInApp) { %>
+    $("html").addClass("is-in-app");
+    <% } %>
+
+    (function () {
+        moment.locale('<%=_locale%>');
+
+        /*const ptr = PullToRefresh.init({
+        mainElement: '.app',
+        onRefresh() {
+        window.location.reload();
+        }});*/
+    })();
+
+    function onSoftKeyboard(isShow, height) {
+        //console.log(flag, height);
+        document.documentElement.style.setProperty('--keyboard-hidden', isShow == true ? 0 : 1);
+        document.documentElement.style.setProperty('--keyboard-height', height + 'px');
+        if (isShow) {
+            $(".app").addClass('keyboard-show');
+        } else {
+            $(".app").removeClass('keyboard-show');
+        }
+    }
+
+    // votting 공통 함수
+    function putVoting(cid, vote, kind, cb) {
+<% if (_isAuthed) {%>
+            $.ajax({
+                type: 'PUT',
+                url: '/voting/' + cid + "/" + vote + "/" + kind,
+                success: function (req) {
+                    if (typeof cb == 'function') {
+                        console.log(req)
+                        cb(req);
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if (typeof cb == 'function') {
+                        cb(null);
+                    }
+                }
+            });
+<% } else { %>
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function (cb) {
+                if (cb == 1) {
+                    location.href = '/auth/login';
+                }
+            });
+<% } %>
+}
+
+    function putSubscribe(id, nm, flag, cb) {
+        $.ajax({
+            method: 'put',
+            url: '/profile/sub',
+            data: {
+                id: id,
+                nm: nm,
+                action: flag // i,d
+            },
+            success: function (data, status, xhr) {
+                if (typeof cb === 'function') {
+                    cb(data);
+                }
+            },
+            error: function (xhr, status, err) { },
+            complete: function () { }
+        });
+    }
+
+    function putKeep(cid) {
+        <% if (_isAuthed) {%>
+            $.ajax({
+                type: 'PUT',
+                url: '/keep/' + cid,
+                success: function (req) {
+                    if (req.result == "ok") {
+                        if (req.insert) {
+                            $("#board-" + cid + "-keep").addClass("icon-keep-fill text-warning");
+                            $("#board-" + cid + "-keep").removeClass("icon-keep");
+                            $("#idFooterKeep i").removeClass("icon-keep-footer").addClass("icon-keep-fill text-warning");
+                            
+                        } else {
+                            $("#board-" + cid + "-keep").removeClass("icon-keep-fill text-warning");
+                            $("#board-" + cid + "-keep").addClass("icon-keep");
+                            $("#idFooterKeep i").removeClass("icon-keep-fill text-warning").addClass("icon-keep-footer");
+                        }
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                }
+            });
+        <% } else {  %>
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function(cb){
+                if(cb==1){
+                    location.href='/auth/login';
+                }
+            });
+        <% }  %>
+    }
+
+    function putShare(cid) {
+        $.ajax({
+            type: 'PUT',
+            url: '/share/' + cid,
+            success: function (req) {
+                console.log(req);
+                if (req.result == "ok") {
+                    
+                }
+            }, error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function postReport(cid, uid, name, title, kind, a, b) {
+        if (a == "A99" && b == "") {
+            setTimeout(function () {
+                onPopup("alert", "<%= __('REPORTOTHER')%>", function (cb) {
+                });
+            }, 200);
+            return
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/report',
+            data: {
+                id: cid, //신고대상 _id
+                uid: uid, //신고대항 userid
+                name: name, //신고대상 nickname
+                kind: kind, //신고타입 board / comment
+                info: title, //신고대상의 제목 및 댓글
+                code: a, //신고타입 코드
+                other: b //신고가 기타일경우 text문자
+            },
+            success: function (req) {
+                if (req.result == "keep") {
+                    onPopup("alert", "<%= __('REPORTMSG')%>", function (cb) {
+                    });
+                } else if (req.result == "ok") {
+                    onPopup("alert", "<%= __('REPORTSUCCESS')%>", function (cb) {
+                    });
+                }
+                if (typeof cb == 'function') {
+                    cb(req);
+                }
+            }, error: function (error) {
+                console.log(error);
+                if (typeof cb == 'function') {
+                    cb(null);
+                }
+            }
+        });
+    }
+</script>
+

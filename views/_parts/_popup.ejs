@@ -1,0 +1,462 @@
+<div id="popup-profile-layer" class="popup-area d-flex flex-column justify-content-center align-items-center hidden" onclick="event.stopPropagation(); $(this).addClass('hidden').empty();"></div>
+
+<div id="popuplayer" class='d-flex justify-content-center hidden' onclick="PopupOff(event)">
+  <div class="popup-layer" id='popupcontent' style="display:None">
+    <div class="popup-layer-close">
+      <i class="icon-x text-white"></i>
+    </div>
+    <div>
+      <ul class="list-group list-group-flush popup-border" id="popupArea">
+      </ul>
+    </div>
+  </div>
+
+  <div class="popup-alert align-self-center hidden" id='popupalert'>
+    <div class="d-flex flex-row ">
+      <div class="popup-content-area p-4" id="alert_text">
+      </div>
+    </div>
+    <div class="d-flex flex-row float-right">
+      <div class="p-4" id="btn_cancel">취 소</div>
+      <div class="p-4 text-primary" id="btn_confirm">확 인</div>
+      <div class="p-4 text-primary" id="btn_alert">확 인</div>
+    </div>
+  </div>
+
+  <div class="popup-full-photo hidden" id='popupphoto'>
+    <div class="d-flex flex-row ">
+      <div id="img_full_photo">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha512-hDWGyh+Iy4Mr9AHOzUP2+Y0iVPn/BwxxaoSleEjH/i1o4EVTF/sh0/A1Syii8PWOae+uPr+T/KHwynoebSuAhw==" crossorigin="anonymous"></script>
+<div class="modal fade" id="copypasteModal" tabindex="-1" role="dialog" aria-labelledby="copypasteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="copypasteModalLabel"><%= __('SHARETITLE')%></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="input-group">
+            <!--<input type="text" class="form-control" id="copy-url">-->
+            <textarea class="form-control" id="copy-url"></textarea>
+            <div class="input-group-append">
+                <button type="button" class="btnCnP btn btn-primary" data-clipboard-action="copy" data-clipboard-target="#copy-url"><%= __('URL_COPY')%></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= __('CLOSE')%></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //프로필보기 메뉴 제거함
+  //{ val: 'profile', txt: "<%= __('GO_PROFILE')%>" },
+  var defaultMenu = [
+    //    { val: 'msg', txt: "<%= __('SEND_MSG')%>" },
+    //    { val: 'memo', txt: "<%= __('MEMO_EDIT')%>" },
+    //    { val: 'share', txt: "<%= __('SHARE')%>" }
+  ];
+
+  var followedMenu = [
+    // 팔로우 제거
+    //  { val: 'unsubscribe', txt: "<%= __('UNSUBSCRIBE')%>" },
+    { val: 'block', txt: "<%= __('BLOCK')%>" }
+  ];
+  var unfollowedMenu = [
+    // 팔로우 제거
+    //  { val: 'subscribe', txt: "<%= __('SUBSCRIBE')%>" },
+    { val: 'block', txt: "<%= __('BLOCK')%>" }
+  ];
+  var blockedMenu = [{ val: 'unblock', txt: "<%= __('UNBLOCK')%>" }];
+
+
+  var reportComment = [{ val: 'report', txt: "<%= __('REPORT')%>" }]
+
+  var postMenu = [
+    { val: 'report', txt: "<%= __('REPORT')%>" },
+    { val: 'share', txt: "<%= __('SHARE')%>" }
+  ]
+
+  var mydetailMenu = [
+    { val: 'pushmsg', txt: "알람 끄기" },
+    { val: 'modify', txt: "<%= __('MODIFY')%>" },
+    { val: 'delete', txt: "<%= __('DELETE')%>" },
+    { val: 'share', txt: "<%= __('SHARE')%>" }
+  ]
+
+  var shareMenu = [
+    { val: 'share', txt: "<%= __('SHARE')%>" }
+  ]
+
+  var nprofilemy = [
+    { val: 'share', txt: "<%= __('SHARETITLE')%>" },
+    { val: 'blocklist', txt: "<%= __('BLOCKLIST')%>" },
+    { val: 'memolist', txt: "<%= __('MEMOLIST')%>" }
+  ]
+
+  var nprofileyou = [
+    { val: 'share', txt: "<%= __('SHARETITLE')%>" },
+    { val: 'blockaction', txt: "<%= __('BLOCKACTION')%>" },
+    { val: 'memoaction', txt: "<%= __('MEMOACTION')%>" }
+  ]
+
+  var nProfileUnblocked = [
+    { val: 'blockaction', txt: "<%= __('UNBLOCK')%>" }
+  
+  ]
+
+  function listFliter(fliter, text) {
+    event.preventDefault();
+    event.stopPropagation();
+    // var fliter = $($this).data("action");
+    // var text = $($this).data("text");
+    PopupOff(event);
+    $("#text_filter").text(text);
+    //getContent(fliter);
+    // var pathHash=window.location.hash.replace("#","");
+    // var arrHash=pathHash.split("-");
+    var type = getQueryString('k') || 'inkiup';
+    location.href = "/?k=" + type + "&f=" + fliter + "&ts=" + moment().valueOf();
+  }
+
+  function clickMenu(a, callback) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    typeof callback === 'function' && callback($(a).data("action"));
+    // if ($(a).data("action") == 'share') {
+    //   console.log(location.pathname)
+    // } else {
+    //   typeof callback === 'function' && callback($(a).data("action"));
+    // }
+
+    PopupOff(event);
+  }
+
+  function clickRadio(a, callback) {
+    event.preventDefault();
+    event.stopPropagation();
+    $(a).find("input[type=radio]").prop('checked', true)
+  }
+
+  function onReport(callback) {
+    var param1 = $('[name=optionsRadios]:checked').val()
+    var param2 = $('#reportReason').val();
+
+    typeof callback === 'function' && callback(param1, param2);
+    PopupOff(event);
+  }
+  function getFilterName(val) {
+    var text = [
+      {
+        value: "24newest",
+        text: "최신"
+      },
+      {
+        value: "allrank",
+        text: "전체 인끼"
+      },
+      {
+        value: "24rank",
+        text: "일간 인끼"
+      }
+    ];
+    for (var i = 0; i < text.length; i++) {
+      if (text[i].value == val) {
+        return text[i].text
+      }
+    }
+  }
+
+  function MenuOn(val, callback) {
+
+    switch (val) {
+      case "day":
+        listFliter("24rank", "일간 인끼");
+        break;
+      case "new":
+        listFliter("24newest", "최신");
+        break;
+      case "all":
+        listFliter("allrank", "전체 인끼");
+        break;
+    }
+
+  }
+
+
+  // TODO: 팝업 스크립트로 화면 구성하는 부분 수정 필요.
+
+  function PopupOn(type, val, callback) {
+    $('#popupArea').empty();
+    var html = '';
+    switch (type) {
+      case 'report':
+        html = '';
+
+        var val2 = [{ val: 'A00', txt: '<%= __('REPORT_CODE0')%>' },
+        { val: 'A01', txt: '<%= __('REPORT_CODE1')%>' },
+        { val: 'A02', txt: '<%= __('REPORT_CODE2')%>' },
+        { val: 'A03', txt: '<%= __('REPORT_CODE3')%>' },
+        { val: 'A99', txt: '<%= __('REPORT_CODE99')%>' }];
+
+
+        for (var x = 0; x < val2.length; x++) {
+          html += '<li class="list-group-item" onclick="clickRadio(this, ' + callback + ')">';
+          html += '<label class="input_label">';
+          if (x == 0) {
+            html += '<input type="radio" name="optionsRadios" id="optionsRadios' + x + '" value="' + val2[x].val + '" checked="checked"> ';
+          } else {
+            html += '<input type="radio" name="optionsRadios" id="optionsRadios' + x + '" value="' + val2[x].val + '" > ';
+          }
+          html += val2[x].txt;
+          html += '</label>';
+          if (val2[x].val == 'A99') html += '<input type="text" class="input_popup" value="" placeholder="신고사유" id="reportReason">';
+          html += ' </li>';
+        }
+
+        html += '<li class="list-group-item text-center text-danger" onclick="onReport ( ' + callback + ')">';
+        html += "<%= __('REPORT')%>";
+        html += '</li>';
+        html += '<li class="list-group-item pb-3"></li>';
+        $('#popupArea').html($(html));
+        break;
+
+      default:
+        html = '';
+        for (var x = 0; x < val.length; x++) {
+          if (val[x].val == "report") {
+            <% if (_isAuthed) { %>
+              html += '<li class="list-group-item text-center ' + (val[x].val == 'report' ? ' text-danger' : '') + '" data-action="' + val[x].val + '" onclick="clickMenu(this,' + callback + ')">';
+              html += val[x].txt;
+              html += '</li>';
+            <% } %>
+          } else {
+            html += '<li class="list-group-item text-center ' + (val[x].val == 'report' ? ' text-danger' : '') + '" data-action="' + val[x].val + '" onclick="clickMenu(this,' + callback + ')">';
+            html += val[x].txt;
+            html += '</li>';
+          }
+        }
+        html += '<li class="list-group-item pb-3"></li>';
+        $('#popupArea').html($(html));
+        break;
+    }
+    setTimeout(function () {
+      $('#popuplayer').removeClass('hidden');
+      $("#popupcontent").slideDown("fast");
+    }, 10);
+  }
+
+
+
+  function onClickPopMenu(a, callback) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    var val = $(a).data("action");
+    var b = $(a).data("targetid");
+    var nm = $(a).data('targetnm');
+    var msg = $(a).data("targetmsg") == undefined ? "" : $(a).data("targetmsg");
+    var photo = $(a).data("targetphoto");
+
+    switch (val) {
+      case "profile": location.href = '/profile/main/' + b;
+        break;
+      case "msg": location.href = "/chat/chatmsg/0/" + b + "/" + nm;
+        break;
+      case "memo": location.href = '/setting/memodetail/' + b;
+        break;
+      case "share":
+        shareLink(nm, msg, "/profile/main/" + b, photo);
+        break;
+      case "block":
+      case "unblock":
+        PopupOff(event);
+
+        var msg = "<%- __('BLOCKMSG')%>", action = 'd';
+        if (val == "unblock") {
+          msg = "<%- __('UNBLOCKMSG')%>"; action = 'i'
+        }
+        onPopup("confirm", msg, function (cb) {
+          if (cb == 1) {
+            $.ajax({
+              method: 'put',
+              url: '/profile/block',
+              data: {
+                id: b,
+                nm: nm,
+                action: action// i,d
+              },
+              success: function (data, status, xhr) {
+                typeof callback === 'function' && callback(val, b);
+              },
+              error: function (xhr, status, err) { },
+              complete: function () { }
+            });
+          }
+        });
+        break;
+      case "subscribe":
+      case "unsubscribe":
+        var action = 'd';
+        val == "unsubscribe" ? action = 'i' : ''
+        $.ajax({
+          method: 'put',
+          url: '/profile/sub',
+          data: {
+            id: b,
+            nm: nm,
+            action: action// i,d
+          },
+          success: function (data, status, xhr) {
+            typeof callback === 'function' && callback(val, b);
+          },
+          error: function (xhr, status, err) { },
+          complete: function () { }
+        });
+        break;
+    }
+    //  typeof callback === 'function' && callback(val, b);
+    if (val != "unblock" && val != "block")
+      PopupOff(event);
+
+  }
+
+  function Popup2On(type, id, callback) {
+    $.ajax({
+      method: 'get',
+      url: '/profile/usrinfo/' + id,
+      success: function (data, status, xhr) {
+
+        $('#popupArea').empty();
+        var html = '';
+        switch (type) {
+          default:
+            html = '';
+            var premenu = [];
+            data.blocked ? premenu = blockedMenu : (data.followed ? premenu = followedMenu : premenu = unfollowedMenu)
+            if (data.blocked) {
+              html += '<li class="list-group-item text-center text-danger align-items-center">';
+              html += ' <i class="icon-block block_icon_small mr-1"></i>차단한 사용자입니다';
+              html += '</li>';
+            }
+
+            var val = premenu.concat(defaultMenu)
+            console.log(JSON.stringify(val))
+            /*
+            if (type == 'list' && data.isMine) val = val.filter(obj => (obj.val == 'share') ? obj : null);
+            else if (type == 'profile' && data.isMine) val = val.filter(obj => (obj.val == 'share') ? obj : null);
+            else if (type == 'profile') val = val.filter(obj => (obj.val != 'profile' && obj.val != 'unsubscribe' && obj.val != 'unsubscribe') ? obj : null);
+            */
+            //리스트에서 닉네임 클릭시 팝업 메뉴로 프로필로 옴김 결국 list같아짐
+            console.log(data.isMine)
+            if (data.isMine) val = val.filter(obj => (obj.val == 'share') ? obj : null);
+            console.log(JSON.stringify(val))
+            for (var x = 0; x < val.length; x++) {
+              var photo = getPhotoEx(data.Userinfo.photo,3,1);
+              html += '<li class="list-group-item text-center ' + (val[x].val == 'report' ? ' text-danger' : '') + '" data-targetid="' + id + '" data-targetnm="' + data.Userinfo.nickname + '" data-action="' + val[x].val + '" data-targetmsg="' + data.Userinfo.message + '" data-targetphoto="' + photo + '" onclick="onClickPopMenu(this,  ' + callback + ')">';
+              html += val[x].txt;
+              html += '</li>';
+            }
+            html += '<li class="list-group-item pb-3"></li>';
+            $('#popupArea').html($(html));
+            setTimeout(function () {
+              $('#popuplayer').removeClass('hidden');
+              $("#popupcontent").slideDown("fast");
+            }, 10);
+            break;
+        }
+      },
+      error: function (xhr, status, err) { },
+      complete: function () { }
+    });
+  }
+
+
+
+
+  function PopupOff(e) {
+    event.preventDefault();
+    event.stopPropagation();
+    $('#popuplayer').addClass('hidden').css("background-color", "rgba(0, 0, 0, 0.5)");
+    $('#popupphoto').addClass('hidden');
+    $('#popupalert').addClass('hidden');
+    $("#popupcontent").slideUp("fast");
+  }
+
+  function onPopup(type, text, callback) {
+    showpopup();
+    $("#alert_text").html(text);
+    if (type == "alert") {
+      $("#btn_cancel").hide();
+      $("#btn_confirm").hide();
+      $("#btn_alert").show();
+      $("#btn_alert").off("click").on("click", function (e) {
+        closepopup();
+        callback(1);
+      });
+    } else if (type == "confirm") {
+      $("#btn_cancel").show();
+      $("#btn_confirm").show();
+      $("#btn_alert").hide();
+      $("#btn_confirm").off("click").on("click", function (e) {
+        closepopup();
+        callback(1);
+      });
+      $("#btn_cancel").off("click").on("click", function (e) {
+        closepopup();
+        callback(0);
+      });
+    }
+
+  }
+
+  function showpopup() {
+    $('#popuplayer').removeClass('hidden');
+    $('#popupalert').removeClass('hidden')
+  }
+
+  function closepopup() {
+    $('#popuplayer').addClass('hidden').css("background-color", "rgba(0, 0, 0, 0.5)");
+    $('#popupalert').addClass('hidden');
+  }
+
+  function onFullPhotoPopup(path, size) {
+    $('#popuplayer').removeClass('hidden').css("background-color", "rgba(0, 0, 0, 1)");
+    $('#popupphoto').removeClass('hidden');
+    var html = "";
+    $("#img_full_photo").empty();
+    if (size == "w") {
+      html = "<img src='" + path + "' class='w-full-image'/>"
+      $("#img_full_photo").append(html)
+    } else {
+      html = "<img src='" + path + "' class='h-full-image'/>"
+      $("#img_full_photo").append(html)
+    }
+
+  }
+
+  function popupProfile(id) {
+    var $popupProfileLayer = $("#popup-profile-layer");
+    var url = '/profile/popup/'+id;
+    var req = $.get({
+        url: url,
+        success: function (html, status, xhr) {
+            $popupProfileLayer.append(html).removeClass("hidden");
+        },
+        error: function (xhr, status, err) {
+        }
+    });
+  }
+</script>

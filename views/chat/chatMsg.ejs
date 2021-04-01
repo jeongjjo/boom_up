@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header" id="msgMain">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid px-0 pb-5 m-0 msg_bg">
+                <div id="msgArea"style="padding-top:4em;padding-bottom:4em"> </div>
+                
+                <div class="d-flex flexa-row justify-content-center inputboxarea_msg_only chat-input-pb">
+                    <div class="input-group border   background_white input_border">
+                        <input type="text" id="inputMsg" class="form-control input_msg" placeholder="<%= __('MSG_PLACEHOLDER')%>" onkeypress="onInputMsg(event)">
+                        <button type="button" class="btn btn-fill-lightgray rounded-0 btn-sm px-2 py-0 m-2" onclick="saveMsg(event)"><%= __('MSG_REGIST')%></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='hidden _temp'>	            
+            <div id="tempMyMsg" class="d-flex flex-row-reverse m-2 _msg " name="msgbubble" data-id="">	               
+                <div class="msg_body">	                   
+                    <div class="row msg_box_2" name="msg"></div>	                       
+                </div>	                    
+                <div class="align-self-end my-2 mx-1"><span class="msg_time" name="time"></span></div>	                  
+            </div>	                
+                
+            <div id="tempTargetMsg" class="d-flex flex-row mx-2 _msg" name="msgbubble" data-id="">	                
+                <div class=" align-self-start my-1 mx-0">	
+                    <span name="nophoto" class="icon-my-footer msg-img-profile hidden"></span>                    
+                    <img name="photo" src="" class="msg-img-profile hidden" alt="">	                        
+                </div>	                   
+                <div class="msg_body">	                    
+                    <div class="msg_id"><span class="post-time" name="sender"></span></div>	                       
+                    <div class="row msg_box_1" name="msg"></div>	                        
+                </div>	                    
+                <div class="align-self-end my-2 mx-1"><span class="msg_time" name="ts"></span></div>	                    
+            </div>	  
+            <div id="dateline" name="dateline" class="mx-3 py-2 msg_div_line _dateline _msg " data-dateline="">
+            
+            </div>              
+        </div>	        
+        <%-include('../_layouts/layout_bodyscript')%>
+
+        <script type="text/javascript">
+            (function () {
+                setLeft('back');
+                scroll();
+            })();
+            
+            if( "<%=roomStatus%>"=="not" ){
+                onPopup("alert", "삭제되거나 존재하지 않는 쪽지방입니다.", function (cb) {
+                    history.back();
+                    return
+                });
+                
+            } 
+
+            /* socket start */
+            <% if (roomStatus=="") { %>
+                // 웹소켓 전역 객체 생성
+                var socket = io("<%=chatserverurl%>");
+                var joincount=0;
+                //var socket = io("http://localhost:9898/chatlist");
+                //connection을 위해 서버로 자신의 정보를 전송한다.
+
+                
+                socket.emit("login", { 
+                    sid: "<%=sid%>"
+                });
+                
+                socket.on("login", function(data) {
+                    
+                    if(data.code=="ok"){
+                        getList(0);
+                        socket.emit("joinroom", {
+                            room : "<%=roomid%>",
+                            sid: "<%=sid%>"
+                        });
+                    }
+                });
+
+                socket.on("joinroom", function(data) {
+                    if(data.code=="ok"){
+                        joincount=data.userscnt;
+                    }
+                });
+
+                //메세지 서버로 전송
+                function sendMsg(ts){
+                    if(socket.connected){
+
+                    }
+                    socket.emit("chatmessage", { 
+                        room: "<%=roomid%>",
+                        msg: $('#inputMsg').val(),
+                        ts: ts,
+                        sid: "<%=sid%>",
+                        photo:"<%=getPhotoEx(user.photo,3,1)%>"
+                    });
+
+                    $('#inputMsg').val("");
+                    $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop( $('#msgArea').height());
+                }
+
+                //메세지 서버에서 수신
+                socket.on("chatmessage", function(data) {
+                    joincount=data.userscnt;
+                    if(data.sid!="<%=sid%>" && <%=blocked%>==false) {
+                        //내가쓴 메세지는 화면에 표출하지 않는다.
+                        var tempObj=$("#tempTargetMsg").clone();
+                        if(data.photo.trim()=="noimg"){
+                            $("span[name='nophoto']",tempObj).removeClass("hidden")
+                        }else{
+                            $("img[name='photo']",tempObj).attr("src",data.photo).removeClass("hidden");
+                        }
+                        
+                        $("span[name='sender']",tempObj).text(data.sender);
+                        $("div[name='msg']",tempObj).text(data.msg);
+                        $("span[name='ts']",tempObj).text( data.ts );
+                        $("#msgArea").append(tempObj);
+
+                        $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop( $('#msgArea').height());
+                    }else{
+                        
+                    }
+                });
+
+                socket.on("userdisconnect",function(data){
+                    joincount=data.userscnt;
+                })
+            <% } %>
+            /* socket end */
+
+            function getList(listcnt) {
+                var data={
+                    "roomid":"<%=roomid%>",
+                    "targetuserid":"<%=targetUserId%>",
+                    "listcount":listcnt
+                }
+                
+                var url = '/chat/chatmsglist/<%=blocked%>';
+                $.ajax({
+                    type:'POST',
+                    url: url,
+                    data: data,
+                    success: function (html, status, xhr) {
+                        $('#msgArea').prepend(html);
+                        $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop( $('#msgArea').height());
+                        //typeof callback === 'function' && callback(list, status, xhr);
+                    },
+                    error: function (xhr, status, err) {
+                        //typeof callback === 'function' && callback(null, false, xhr);
+                    }
+                });
+            }
+
+            function getListScroll() {
+                var listcnt=$("#msgArea div[name='msgbubble']").length
+                
+                var data={
+                    "roomid":"<%=roomid%>",
+                    "targetuserid":"<%=targetUserId%>",
+                    "listcount":listcnt
+                }
+                
+                var url = '/chat/chatmsglist/<%=blocked%>';
+                $.ajax({
+                    type:'POST',
+                    url: url,
+                    data: data,
+                    success: function (html, status, xhr) {
+                        var listItenCount=$("#msgArea div[name='msgbubble']",html).length
+                        if(listItenCount>0)
+                            $('#msgArea').prepend(html);
+                        //$('#msgMain').scrollTop( $('#msgArea').height());
+                        //typeof callback === 'function' && callback(list, status, xhr);
+                    },
+                    error: function (xhr, status, err) {
+                        //typeof callback === 'function' && callback(null, false, xhr);
+                    }
+                });
+            }
+            
+            function onInputMsg(e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault(); // Ensure it is only this code that rusn
+                    saveMsg(e);
+                }
+            }
+
+            var saveMsg = (e) => {
+                <% if (blocked){ %>
+                    onPopup("alert", "<%- __('MSG_BLOCKALERT')%>", function(cb){});
+                <% } else { %>
+                e.preventDefault();
+                var msgValue=$('#inputMsg').val();
+
+                if (msgValue != '' && msgValue.trim().length > 0) {
+                    
+                    $.ajax({
+                        processData: false,
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            "chatRoomId" : "<%=roomid%>",
+                            "userId" : "<%=targetUserId%>",
+                            "content": msgValue.trim(),
+                            "userscnt" : joincount
+                        }),
+                        method: 'PUT',
+                        url: '/chat/chatmsgsave',
+                        success: function (html, status, xhr) {
+                            var lastdate=$("#msgArea div[name='dateline']").last().data("dateline").trim()
+                            var currdate=moment(new Date()).format("YYYYMMDD").trim()
+                            
+                            if(lastdate!=currdate){
+                                var obj=$("#dateline").clone();
+                                $(obj).data("dateline",currdate).text(moment(new Date()).format("YYYY년 MM월 DD일 dddd"));
+                                $("#msgArea").append(obj);
+                            }
+                            //시간표출
+                            var tempObj=$("#tempMyMsg").clone();
+                            var ts=moment(new Date(), "h:mm:ss A").format("HH:mm");
+                            $("div[name='msg']",tempObj).text(msgValue);
+                            $("span[name='time']",tempObj).text( ts );
+                            $("#msgArea").append(tempObj);
+                            sendMsg(ts);
+                        },
+                        error: function (xhr, status, err) {
+                            console.log("error : "+xhr);
+                        },
+                        complete: function () { }
+                    })
+                }
+                <% } %>
+            }
+
+            function scroll() {
+                $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scroll(function () {
+                    clearTimeout($.data(this, 'scrollTimer'));
+                    $.data(this, 'scrollTimer', setTimeout(() => {
+                        var scrollT = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
+                        var scrollH = $(this).height();
+                        var contentH = $('#msgArea').height();
+                        var listcnt=$("#msgArea div[name='msgbubble']").length
+                        if(scrollT<50 && listcnt>0){
+                            getListScroll();
+                        } 
+
+                    }, 250));
+                });
+            }
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

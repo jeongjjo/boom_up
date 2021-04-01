@@ -1,0 +1,32 @@
+<div id="popup-bottom-layer" class="popup-area d-flex justify-content-center hidden" onclick="event.stopPropagation(); $(this).addClass('hidden');" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="popup-layer">
+        <div>
+            <div class="popup-layer-close">
+                <i class="icon-x text-white"></i>
+            </div>
+            <ul class="list-group list-group-flush popup-border" id="popup-bottom-content-area">
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+function popupBottom(list = []) {
+    var $ul = $("#popup-bottom-content-area");
+    $ul.empty();
+    for (i in list) {
+        var item = list[i];
+        if (item && item.title) {
+            $ul.append($('<li />', {
+                text: item.title,
+                class: 'list-group-item text-center '+(item.class || ''),
+                click: item.click
+            }));
+        }
+    }
+
+    if ($('li', $ul).length > 0) {
+        $("#popup-bottom-layer").removeClass('hidden');
+    }
+}
+</script>

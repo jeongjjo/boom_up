@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/header')-%>
+        
+        <%- include('../_layouts/layout_bodyscript') -%>
+        <style>
+
+        </style>
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_bodystart') -%>
+        <div class="app header footer" id="contentbody">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div id="idSearchHeaderArea" class="position-fixed" style="z-index: 1000;">
+                <div id="idSearchTab" class="d-flex flex-row p-2 justify-content-between mainmenu-line"
+                    style="background-color: white;">
+                    <div name="stabmenu" id="searchall" class="p-1 search-tab-selected" onclick="tabSelected(this)"
+                        data-type='searchall'><%= __('ALL')%></div>
+                    <div name="stabmenu" class="p-1" id="hashtag" onclick="tabSelected(this)" data-type='hashtag'>
+                        <%= __('HASHTAG')%></div class="p-1">
+                    <div name="stabmenu" class="p-1" onclick="tabSelected(this)" data-type='title'><%= __('TITLE')%>
+                    </div class="p-1">
+                    <div name="stabmenu" class="p-1" onclick="tabSelected(this)" data-type='content'><%= __('CONTENT')%>
+                    </div class="p-1">
+                    <div name="stabmenu" class="p-1" onclick="tabSelected(this)" data-type='nickname'><%= __('WRITER')%>
+                    </div class="p-1">
+                </div>
+                <div class="d-flex flex-row search-input-area">
+                    <div class="d-flex search-input-box pl-1 w-100">
+                        <div class="flex-grow-1 flow-shrink-1 mr-1">
+                            <input id="idSearchWord" type="text" onkeypress="search(event)"
+                                onkeyup="searchwordValidation(this)" class="search-input"
+                                placeholder="<%= __('SEARCH_PLACEHOLDER')%>" value="<%=skeyword%>"/>
+                        </div>
+                        <div class="align-self-center"><span id="btnsearchword" onclick="searchWordClear()"
+                                class="search-btn-clear displayNone">x</span></div>
+                    </div>
+                    <div class="d-flex search-button-box">
+                        <div class="align-self-center ml-3 mr-3" id="btn_search" onclick="blurSearch(this)"><span
+                                class="icon-search2"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="idSearchwordArea" class="search-list-top ">
+                <div class="d-flex flex-column" style="background-color: #f1f1f1;">
+                    <div class="search-category-area mt-1">
+                        <div class="mt-2 ml-3 search-category-title"><%= __('SEARCH_RECENT_WORD')%></div>
+                        <div class="d-flex flex-row flex-wrap mt-1 mb-1 ml-3 mr-3" id="recentArea">
+                            <% for  (var x=0 ; x<newestkeyword.length; x++  ) { %>
+                                <span class="search-inki">
+                                <span onclick="searchwordClick('<%=newestkeyword[x].text%>', 'recently')"
+                                    ><%=newestkeyword[x].text %> </span>
+                                    <span onclick="searchwordRemove(this)" data-txt="<%=newestkeyword[x].text %>" class="icon-x searchword-remove"></span> </span>
+                            <%  } %>
+                        </div>
+                    </div>
+                    <div class="search-category-area">
+                        <div class="mt-2 ml-3 search-category-title"><%= __('SEARCH_HOT_WORD')%></div>
+                        <div class="d-flex flex-row flex-wrap mt-1 mb-1 ml-3 mr-3">
+                            <% for  (var x=0 ; x<hotkeyword.length; x++  ) { %>
+                            <span onclick="searchwordClick('<%=hotkeyword[x].text%>', 'popularity')"
+                                class="search-gray"><%=hotkeyword[x].text %> </span>
+                            <%  } %>
+                        </div>
+                    </div>
+                    <div class="search-category-area">
+                        <div class="d-flex mt-2 ml-3 mr-3 justify-content-between">
+                            <div class="search-category-title"><%= __('SEARCH_HOT_HASHTAG')%></div>
+                            <div><span onclick="goHashList()" class="icon-right-circle icon-hash-more"></span></div>
+                        </div>
+                        <div class="d-flex flex-row flex-wrap mt-1 mb-1 ml-3 mr-3">
+                            <% for  (var x=0 ; x<hothashtag.length; x++  ) { %>
+                            <span onclick="searchwordClick('<%= hothashtag[x].text %>', 'hash')"
+                                class="search-gray">#<%= hothashtag[x].text  %> (<%= hothashtag[x].count  %>)</span>
+                            <%  } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- list area -->
+
+            <div id="idResultListArea" class="search-list-top">
+                <%- include('../board/layout_list') -%>
+            </div>
+
+        </div>
+
+        <!-- Content -->
+
+        <%- include('../_parts/_footer') -%>
+        <script type="text/javascript">
+            var target = "<%= target%>";
+            (function () {
+                // TODO script
+                setLeft();
+                //scroll();
+                //setRecent();
+                setHash();
+                $(".icon-search-footer").addClass("font-weight-bold");
+                $("#contentbody").naaEvent({
+                    main: '#idResultListArea',
+                    onMore: () => {
+                        //goSearch();
+                    }
+                });
+
+                if (target != null && target != "") {
+                    $("[name=stabmenu]").removeClass('search-tab-selected');
+                    $("#hashtag").addClass("search-tab-selected");
+                    $("#idSearchWord").val(target);
+                    $("#btn_search").trigger("click");
+                }
+
+                <% if(skeyword!=""){ %>
+                    $("#btn_search").trigger('click');
+                <% } %>
+            })();
+
+            function setRecent() {
+                var sch = pdata.getObject("recentsearch");
+                $('#recentArea').empty()
+                if (sch != null && sch.length > 0) {
+                    var get = sch.length > 5 ? 5 : sch.length;
+                    for (var x = get - 1; x >= 0; x--) {
+                        var html = '<span class="search-inki">';
+                        html += ' <span onclick="onClickRecent(this)">' + sch[x] + '</span>';
+                        html += '<span onclick="searchwordRemove(this)" data-txt="' + sch[x] + '" class="icon-x searchword-remove"></span> </span>'
+                        $('#recentArea').append($(html))
+                    }
+                }
+            }
+
+            function onGoPostDetail($this, id) {
+                var pathHash = "search" 
+                location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id
+            }
+
+            function onGoPostDetailComment($this, id) {
+                var pathHash = window.location.hash.replace("#", "");
+                location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id+"?cyn=Y"; 
+            }
+
+            function onClickRecent(obj) {
+                searchwordClick($(obj).html())
+            }
+            function setHash() {
+                if ("<%=h%>") {
+                    $('#idSearchWord').val("<%=h%>");
+                    $("#btnsearchword").removeClass("displayNone");
+                    $('#idSearchTab').find('[data-type=hashtag]').trigger('click')
+                }
+            }
+            function searchwordClick(txt, type) {
+                if(type == "hash") {
+                    $("[name=stabmenu]").removeClass('search-tab-selected');
+                    $("#hashtag").addClass("search-tab-selected");
+                } else {
+                    $("[name=stabmenu]").removeClass('search-tab-selected');
+                    $("#searchall").addClass("search-tab-selected");
+                }
+                $("#idSearchWord").val(txt);
+                $("#btnsearchword").removeClass("displayNone");
+                goSearch();
+            }
+
+            function searchwordValidation(obj) {
+                if ($(obj).val().length > 0) {
+                    $("#btnsearchword").removeClass("displayNone");
+                } else {
+                    $("#btnsearchword").addClass("displayNone");
+                }
+                if (event.keyCode == 13 && $(obj).val().length > 1) {
+                    $("#idSearchwordArea").addClass("displayNone");
+                    $("#idResultListArea").removeClass("displayNone");
+                }
+            }
+
+            function search(e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault(); // Ensure it is only this code that rusn
+                    goSearch();
+                }
+            }
+
+            function blurSearch(obj) {
+                if ($("#idSearchWord").val().length > 1) {
+                    $("#btnsearchword").removeClass("displayNone");
+                    $("#idSearchwordArea").addClass("displayNone");
+                    $("#idResultListArea").removeClass("displayNone");
+                    goSearch();
+                } else {
+                    onPopup("alert", "<%= __('SEARCHMSG')%>", function (cb) { });
+                    $("#btnsearchword").addClass("displayNone");
+                }
+            }
+
+            // function getContent() {
+            //     goSearch();
+            // }
+
+            function goSearch() {
+                var maintype = $('.search-tab-selected').data('type');
+                var keyword = $('#idSearchWord').val().trim();
+                if (keyword.length > 1) {
+                    //blockPage()
+                    getBoardList({
+                        kind: maintype,
+                        keyword: keyword,
+                        sort: '',
+                        limit: 50,
+                        casheSelector: $("#contentbody")
+                    }, function () {
+                        //unblockPage()
+                        $("#idSearchwordArea").addClass("displayNone");
+                        $("#idResultListArea").removeClass("displayNone");
+                    });
+                    return
+                } else {
+                    onPopup("alert", "<%= __('SEARCHMSG')%>", function (cb) { });
+                }
+
+            }
+
+            function searchWordClear() {
+                $("#idSearchWord").val('');
+                $("#btnsearchword").addClass("displayNone");
+                $("#idSearchwordArea").removeClass("displayNone");
+                $("#idResultListArea").addClass("displayNone");
+                $("#inpSearchWord").focus();
+                $("#board-list-area").empty();
+            }
+
+            function tabSelected(obj) {
+                var t = $(obj).text();
+                $("[name=stabmenu]").removeClass('search-tab-selected')
+                $("#idSearchTab div[name=stabmenu]").each(function () {
+                    if ($(this).text() == t) {
+                        $(this).addClass("search-tab-selected");
+                    }
+                });
+
+                if($("#idSearchWord").val().length < 1) return
+
+                setTimeout(function () {
+                    goSearch()
+                }, 100);
+            }
+            
+            function searchwordRemove(obj) {
+                var txt = $(obj).data("txt");
+                $.ajax({
+                    type: 'PUT',
+                    url: '/search/keyword/'+ txt,
+                    success: function (data) {
+                        if (data.result=="ok") {
+                            $(obj).parent().remove();
+                        } else {
+                            //메세지 처리
+                        }
+                    }, error: function (error) {
+                        //오류처리 팝업창 띄우기 코딩
+                        console.log(error);
+                    }
+                });
+                
+            }
+
+            function goHashList() {
+                location.href = "/search/index/hash/"+moment().valueOf();
+            }
+
+        </script>
+        <%- include('../_layouts/layout_bodyend') -%>
+    </body>
+
+</html>

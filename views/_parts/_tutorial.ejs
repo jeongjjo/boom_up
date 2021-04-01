@@ -1,0 +1,119 @@
+<link rel="stylesheet" href="/css/tutorial.css?202005141">
+<div class="hidden">
+</div>
+
+<div class="tutorial hidden" data-step="0" onclick="onTutorial(this)">
+    <svg id="tutorial" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <mask id='mask'>
+                <rect x='0' y='0' width='100%' height='100%' fill='white' />
+                <circle id="mask-c1" cx="50" cy="50" r="25"/>
+                <circle id="mask-c2" cx="100" cy="50" r="25"/>
+            </mask>
+        </defs>
+        <g>
+        <rect fill='black' width='100%' height='100%' mask='url(#mask)' opacity="0.75" fill="white" />                
+        </g>
+    </svg>
+    <div class="tutorial-message d-flex align-items-end">
+        <img class="right" src="/img/tutorial-image2.svg"/>
+        <div class='text text-center'></div>
+        <img class="left" src="/img/tutorial-image1.svg"/>
+    </div>
+</div>
+
+<script>
+$(function () {
+    if (window.location.hash && window.location.hash.length > 0) {
+        $('.tutorial').addClass('hidden');
+    } else {
+        onTutorial($('.tutorial'));
+    }
+});
+
+function getElRect(selector, scale = 1) {
+    var $el = $(selector);
+    $el = $($el[1] || $el);
+    var left = $(".app").offset().left;
+    var offset = $el.offset();
+    if (offset) {} else {
+        return null;
+    }
+    var width = $el.outerWidth();
+    var height = $el.outerHeight();
+    var s = Math.max(width/2, height/2);
+    return {
+        cx: (offset.left - left + s),
+        cy: (offset.top + height/2),
+        r: (s * scale)
+    }
+}
+
+function onTutorial(el) {
+    var $el = $(el);
+    var step = (($el.data('step') || 0) * 1) + 1;
+    var tutorialDone = getCookie('tutorial');
+    if (step > 5) {
+        $el.addClass('hidden');
+        setCookie('tutorial', 'Y', 7);
+        <% if (_isAuthed) {} else {%>
+        $('#menu-myinkiup').addClass('hidden');
+        <% } %>
+    } else if (tutorialDone !== 'Y') {
+        $el.removeClass('hidden');
+        var r = null;
+        switch (step) {
+            case 1:
+                $('#menu-myinkiup').removeClass('hidden');
+                r = getElRect(".mainmenu-line #menu-myinkiup");
+                if (r) {
+                    $(".tutorial-message").css({"top":(r.cy + r.r + 20)+'px', 'left': r.cx+'px'});
+                }
+                $(".tutorial-message .text").html('<span class="text-primary">My Inkiup</span>에선<br/>내가 <span class="text-primary">구독한 사람</span>과 <span class="text-primary">카테고리</span>를<br/>한눈에 모아 볼 수 있업!');
+                break;
+            case 2:
+                $(".tutorial-message .text").html('<span class="text-primary">업 다운 버튼</span>을 누르면<br/>게시글 순위에 관여할 수 있지업!');
+
+                var c1 = getElRect('#board-list-area [id|=board-area] .icon-up.icon-up-icon', 2);
+                var c2 = getElRect('#board-list-area [id|=board-area] .icon-down.post-down-icon', 2);
+                if (c1) {
+                    $("#mask-c1").attr("cx", c1.cx).attr("cy", c1.cy).attr("r", c1.r);
+                    $("#mask-c2").attr("cx", c2.cx).attr("cy", c2.cy).attr("r", c2.r);
+                    var c = (c2.cy - c1.cy) / 2;
+                    $(".tutorial-message").css({"top":(c1.cy + c1.r - c)+'px', 'left': (c1.cx + c1.r + 10)+'px'});
+                }
+                break;
+            case 3:
+                $(".tutorial-message .text").html('보관하고 싶은 글이 있다구업?<br/>그럴 때는 <span class="text-primary">KEEP버튼</span>을 눌러봐!');
+                r = getElRect('#board-list-area [id|=board-area] .post-keep-icon.icon-keep', 2);
+                if (r) {
+                    $(".tutorial-message").css({"top":(r.cy + r.r + 20)+'px', 'left': 30+'px'}).addClass('right');
+                }
+                break;
+            case 4:
+                $(".tutorial-message .text").html('보관한 글은 언제든<br/>여기 <span class="text-primary">KEEP</span>에서 다시 볼 수 있업!');
+                r = getElRect($('footer .icon-keep-footer').parent());
+                if (r) {
+                    $(".tutorial-message").css({"top":(r.cy - (r.r + $(".tutorial-message").outerHeight() + 20))+'px', 'left': 30+'px'}).removeClass('right');
+                }
+                break;
+            case 5:
+                $(".tutorial-message .text").html('이 버튼을 누르면 게시물 정렬을<br/><span class="text-primary">일간/최신/전체</span> 순으로 바꿀 수있업!');
+                r = getElRect('#list_filter');
+                if (r) {
+                    $(".tutorial-message").css({"top":(r.cy + r.r + 20)+'px', 'left': 30+'px'}).addClass('right');
+                }
+                break;
+            default:
+                break;
+        }
+
+        if (r) {
+            $("#mask-c1").attr("cx", r.cx).attr("cy", r.cy).attr("r", r.r);
+            $("#mask-c2").attr("cx", 0).attr("cy", 0).attr("r", 0);
+        }
+        
+        $el.data('step', step);
+    }
+}
+</script>

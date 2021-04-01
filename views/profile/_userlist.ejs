@@ -1,0 +1,36 @@
+<% for  (var x=0 ; x<list.length; x++  ) { %>
+<!--repeat-->
+<div class="media align-items-center pb-3 mb-3 border border-left-0 border-right-0 border-top-0">
+
+    <%  if(list[x].photo != null && list[x].photo != '' ) { %>
+    <img src="<%=list[x].photo%>" class="list-img-profile" alt="">
+    <%  }  else { %>
+    <img src="/img/pro-image.png" class="list-img-profile" alt="">
+    <!-- <i class="icon-my-footer list-noimage"></i> -->
+    <%  }  %>
+    <div class="media-body ml-3 mr-1">
+        <a href="/profile/main/<%= type=='t'? list[x].userId :  list[x].targetUserId  %>" class="list_nickname mr-2">
+            <%= type=='t'? list[x].nickname :  list[x].targetNickname  %>
+        </a>
+        <div class="list_memo pr-1"> <%= list[x].memo %></div>
+    </div>
+    <button type="button" class="<%= MY == ( type=='t'? list[x].userId :  list[x].targetUserId  ) ? 'hidden' : '' %>  btn btn-sm list_btn_text <%= (list[x].followed ? 'btn-text-normal' : 'btn-fill-blue') %>" onclick="onsub(this)" data-action="<%= (list[x].followed ? 'i' : 'd') %>" data-nm="<%= type=='t'? list[x].nickname :  list[x].targetUserNickname %>" data-id="<%= type=='t'? list[x].userId :  list[x].targetUserId %>">
+        <%=  (list[x].followed ? __('SUB_ING') :  __('SUB_READY')  ) %>
+    </button>
+</div>
+<!--repeat-->
+<%  }  if(n=="n" && list.length==0) { %>
+
+
+<!--nodata-->
+<div class="nodata p-4 ">
+    <div>
+        <i class="icon-excl-area-sm icon-excl"></i>
+    </div>
+    <div class="p-2">
+        <%= __('PROFILE_NO_USER')%>
+    </div>
+</div>
+<!--nodata-->
+
+<%  }  %>

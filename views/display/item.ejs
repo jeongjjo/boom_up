@@ -1,0 +1,28 @@
+
+<% if(data != null) { %>
+    <% for(var i = 0; i < data.length; i++) { %>
+        <div name="list" class="d-flex list-post">
+            <div class="flex-grow-1 flex-shrink-1 ml-2 mr-2">
+                <div class="d-flex flex-wrap mb-2">
+                    <div class="mr-3 d-flex"><span class="icon-person alert-icon-style"></span><span class="alert-subtext"><%= data[i].nickname%></span></div>
+                    <div class="d-flex ml-auto">
+                        <span class="icon-time alert-icon-style"></span>
+                        <span class="alert-subtext"><%= data[i].start%> ~ <%= data[i].end%></span>
+                    </div>
+                </div>
+                <div><span class="alert-msgtext"><%= data[i].text%></span></div>
+            </div>
+            <% if(type == "my") { %>
+                <div class="flex-grow-0 flex-shrink-1">
+                    <% if(data[i].status == "waiting") { %>
+                        <button class="btn bg-secondary text-white" disabled="disabled">접수중</button>
+                    <% } else if (data[i].status == "approval") { %>
+                        <button class="btn bg-primary text-white" disabled="disabled">승인</button>
+                    <% } else if (data[i].status == "reject") { %>
+                        <button class="btn bg-danger text-white" onclick="onRejectMemo('<%= data[i]._id %>');">반려</button>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    <% } %>
+<% } %>

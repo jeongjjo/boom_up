@@ -1,0 +1,101 @@
+<div id="idConcernKeywordList" class="d-flex flex-wrap mt-3 mb-4 mr-1 cklist-scroll-y">
+    
+</div>
+
+<div class="d-flex flex-column mt-2">
+    <div class="d-flex flex-row align-items-center justify-content-center input-group" style="font-size:14px">
+        <div style="font-weight:bold;">직접입력 : </div>
+        <div class="ml-1"><input id="idKeyword" type="text" onkeyup="dataValidation(this)" maxlength="8" class="keyword-input"></div>
+        <div class="ml-2"><span class="lm-btn-keyword-add2" onclick="keywordAdd()">추가</span></div>
+    </div>
+    <div style="font-size:12px;color:#999999" class="text-center mt-2">키워드는 띄어쓰기 없이 최대 8자까지만 허용합니다.</div>
+</div>
+<div style="height:7em"><div>
+
+
+<script  type="text/javascript">
+    function cklist(){
+        $.ajax({
+            type: 'GET',
+            url: '/setting/cklist',
+            data: {},
+            success: function (data) {
+                $("#idConcernKeywordList").empty();
+                var tag=""
+                
+                for(var i=0;i < data.list.length; i++) { 
+                    var selected="";
+                    <% if (myviewYN){ %>
+                    if(data.list[i].myYn){
+                        selected="selected"
+                    }
+                    <% } %>
+                    tag='<span name="cklistItem" id="ck-'+data.list[i]._id+'" data-ckid="'+data.list[i]._id+'" onclick="onClickCKItem(this)" class="user-keyword-list '+selected+'">'+data.list[i].text+'</span>'
+                    $("#idConcernKeywordList").append(tag);
+                } 
+                
+            }, error: function (error) {
+                //오류처리 팝업창 띄우기 코딩
+                console.log(error);
+            }
+        });
+    }
+
+    function dataValidation(obj){
+        var temp=$(obj).val().replace(/\s/g,"")
+        $(obj).val(temp)
+    }
+
+    function onClickCKItem(obj){
+        
+        if(!$(obj).hasClass("selected")){
+            var selectedCount=$("#idConcernKeywordList span.selected").length
+            console.log("화인",selectedCount)
+            if(selectedCount>=5){
+                onPopup("alert", "최대 5개까지 선택 가능합니다.", function(cb){ });
+                return
+            }
+        }
+
+       var ckid=$(obj).data("ckid");
+       var cktext=$(obj).text();
+       
+
+       if($(obj).hasClass("selected")){
+           $(obj).removeClass("selected")
+       }else{
+           $(obj).addClass("selected")
+       }
+
+    }
+
+    function keywordAdd(){
+        var tag="";
+        var keyword=$("#idKeyword").val();
+        if(keyword==""){
+            onPopup("alert", "키워드를 입력해 주세요", function(cb){ });
+            return
+        }
+        $.ajax({
+            type: 'PUT',
+            url: '/setting/ckadd',
+            processData: false,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({"keyword":keyword}),
+            success: function (data) {
+                if(data.result=="exist"){
+                    onPopup("alert", "이미 등록된 키워드 입니다.", function(cb){ });
+                }else{
+                    tag='<span name="cklistItem" data-ckid="'+data.data[0].id+'" onclick="onClickCKItem(this)" class="user-keyword-list">'+data.data[0].text+'</span>'
+                    $("#idConcernKeywordList").prepend(tag);
+                }
+            }, error: function (error) {
+                //오류처리 팝업창 띄우기 코딩
+                onPopup("alert", "저장시 오류가 발생했습니다.", function(cb){ });
+                console.log(error);
+            }
+        });
+    }
+
+</script>

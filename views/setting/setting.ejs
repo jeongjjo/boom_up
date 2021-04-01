@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+        <meta name="google-signin-scope" content="profile email" />
+        <meta name="google-signin-client_id" content="742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com" />
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid p-0 m-0">
+                <!--profile-->
+                <div class="list-group list-group-flush" id="settingArea">
+                    <div id="setting-notification-title" class="setting-group">
+                        <p class="setting-group-text"> <%= __('SHARESETTING')%> </p>
+                    </div>
+                    <div id="setting-notification-profile" class="list-group-item d-flex justify-content-between">
+                        <div class="py-0 my-0">
+                            <span class="setting_line_text"><%= __('SETTING_PROFILESHARE')%></span>
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" <%= user.setting.shareProfile ?  "checked" :"" %> id="shareProfile">
+                            <label class="custom-control-label" for="shareProfile"></label>
+                        </div>
+                    </div>
+                    <div id="setting-notification-title" class="setting-group">
+                        <p class="setting-group-text"> <%= __('SETTING_ALERTSETMANAGE')%> </p>
+                    </div>
+
+                    <div id="setting-notification-message" class="list-group-item d-flex justify-content-between">
+                        <div class="py-0 my-0">
+                            <span class="setting_line_text"><%= __('SETTING_MESSAGE')%> <%= __('RECEIVE')%> <%= __('SETTING_ALERT')%></span>
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="receiveMsg" <%= user.setting.receiveMsg ?  "checked" :"" %>>
+                            <label class="custom-control-label" for="receiveMsg"></label>
+                        </div>
+                    </div>
+
+                    <div id="setting-notification-reply" class="list-group-item d-flex justify-content-between">
+                        <div class="py-0 my-0">
+                            <span class="setting_line_text"><%= __('REPLY')%> <%= __('REGIST')%> <%= __('MENU_ALERT')%></span>
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="comment" <%= user.setting.comment ?  "checked" :"" %>>
+                            <label class="custom-control-label" for="comment"></label>
+                        </div>
+                    </div>
+
+                    <div id="setting-notification-follower-add" class="list-group-item d-flex justify-content-between">
+                        <div class="py-0 my-0">
+                            <span class="setting_line_text"><%= __('FOLLOWER')%> <%= __('ADD')%> <%= __('MENU_ALERT')%> </span>
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="newSubscriber" <%= user.setting.newSubscriber ?  "checked" :"" %>>
+                            <label class="custom-control-label" for="newSubscriber"></label>
+                        </div>
+                    </div>
+
+                    <!--<div id="setting-notification-following-new-report" class="list-group-item d-flex justify-content-between">
+                        <div class="py-0 my-0">
+                            <span class="setting_line_text"><%= __('FOLLOWINGMEMBER')%> <%= __('NEWREPORT')%> <%= __('MENU_ALERT')%></span>
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="newPostBySubscribeUser" <%= user.setting.newPostBySubscribeUser ?  "checked" :"" %>>
+                            <label class="custom-control-label" for="newPostBySubscribeUser"></label>
+                        </div>
+                    </div>-->
+
+                    <div id="setting-device-permission-title" class="setting-group">
+                        <p class="setting-group-text"> <%= __('SETTING_DEVICESETMANAGE')%> </p>
+                    </div>
+
+                    <div id="setting-permission-notification" class="list-group-item d-flex justify-content-between">
+                        <div class="py-0 my-0">
+                            <span class="setting_line_text"><%= __('ALERT')%></span>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-text-normal" onclick="openAppSetting();"><%= __('SETTING_DEVICESET')%></button>
+                        </div>
+                    </div>
+
+                    <div id="setting-permission-camera" class="list-group-item d-flex justify-content-between">
+                        <div class="py-0 my-0">
+                            <span class="setting_line_text"><%= __('CAMERA')%></span>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-text-normal" onclick="openAppSetting();"><%= __('SETTING_DEVICESET')%></button>
+                        </div>
+                    </div>
+
+                    <div id="setting-permission-microphone" class="list-group-item d-flex justify-content-between">
+                        <div class="py-0 my-0">
+                            <span class="setting_line_text"><%= __('MIC')%></span>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-text-normal" onclick="openAppSetting();"><%= __('SETTING_DEVICESET')%></button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-around m-3">
+                    <button type="button" class="btn btn-text-normal btn-block m-1 py-2" onclick="logout();"><%= __('SETTING_LOGOUT')%></button>
+                    <button type="button" class="btn btn-text-normal btn-block m-1" onclick="unregister()"><%= __('SETTING_LEAVE')%></button>
+                </div>
+                <!--profile-->
+            </div>
+            <!-- content -->
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+
+        <script src="//cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script src="/js/sns/naveridlogin_js_sdk_2.0.0.js"></script>
+        <script src="/js/sns/kakao.min.js"></script>
+        <script>
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '198725284527297',
+                    xfbml: true,
+                    version: 'v6.0'
+                });
+                // FB.AppEvents.logPageView();
+            };
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) { return; }
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+            Kakao.init('9cfe7beef00ed4406492fb303309aa41');
+            var naverLogin = new naver.LoginWithNaverId(
+                {
+                    clientId: "Nm4tK40AcGaKsMWH0H5g",
+                    callbackUrl: "<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver",
+                }
+            );
+            naverLogin.init();
+        </script>
+
+        <script type="text/javascript">
+            (function () {
+                setHeader('back');
+                checkDevicePermission();
+            })();
+
+            function openAppSetting() {
+                OpenAppSetting.postMessage('');
+            }
+
+            function checkDevicePermission() {
+                if (typeof Permission !== 'undefined') {
+                    var permissionList = [];
+                    $("[id|=setting-permission").each((i, item) => {
+                        var id = $(item).attr('id').replace("setting-permission-", "");
+                        if (id.length > 0) {
+                            permissionList.push(id);
+                        }
+                    });
+                    Permission.postMessage(JSON.stringify({ 'type': permissionList }));
+                } else {
+                    $("[id|=setting-permission], #setting-device-permission-title").addClass("hidden");
+                }
+            }
+
+            function onRecivePermission(result) {
+                result = (typeof result === "string" ? JSON.parse(result) : result);
+                for (key in result) {
+                    var permission = result[key];
+                    if (permission == 'granted') {
+                        $("#setting-permission-" + key).addClass("hidden");
+                    } else if (permission == 'unknown') {
+                        // 아직 권한 요청이 없었던 기능에 대한 처리
+                        // 추후 기능 논의 처리 일단 숨김처리
+                        $("#setting-permission-" + key).addClass("hidden");
+                    } else {
+                        $("#setting-permission-" + key).removeClass("hidden");
+                    }
+                }
+
+                if ($("[id|=setting-permission]:not(.hidden)").length == 0) {
+                    $("#setting-device-permission-title").addClass("hidden");
+                }
+            }
+
+            function logout() {
+                onPopup("confirm", "<%= __('MESSAGE_LOGOUT')%>", function (cb) {
+                    if (cb == 1) {
+                        if (window.Auth) {
+                            window.Auth.postMessage(JSON.stringify({ type: 'signout', mode: 'signout' }));
+                        } else {
+                            FB && FB.logout(function (response) {
+                                // Person is now logged out
+                            });
+                            Kakao && Kakao.Auth && Kakao.Auth.logout(function (response) {
+                                // Person is now logged out
+                            });
+                            naverLogin && naverLogin.logout(function (response) {
+                                // Person is now logged out
+                            });
+                            if (gapi && gapi.auth2) {
+                                var auth2 = gapi.auth2.getAuthInstance();
+                                auth2.signOut().then(function () {
+                                    // Person is now logged out
+                                });
+                            }
+                            location.href = "/auth/logout";
+                        }
+                    }
+                });
+            }
+
+            function unregister() {
+                onPopup("confirm", "<%- __('SETTING_LEAVEMSG')%>", function (cb) {
+                    if (cb == 1) {
+                        $.ajax({
+                            method: 'post',
+                            url: '/auth/unregister',
+                            success: function (data, status, xhr) {
+                                console.log(data)
+                                if (data.result == "ok") {
+                                    location.href = "/";
+                                } else {
+                                }
+                            },
+                            error: function (xhr, status, err) {
+                            },
+                            complete: function () {
+                            }
+                        });
+                    }
+                });
+            }
+
+            $('#settingArea input[type=checkbox]').on('change', function () {
+                console.log($(this).attr('id'), $(this).prop('checked'))
+                $.ajax({
+                    method: 'put',
+                    url: '/setting/setting',
+                    data: {
+                        prop: $(this).attr('id'),
+                        val: $(this).prop('checked')
+                    },
+                    success: function (html, status, xhr) {
+                        typeof callback === 'function' && callback(list, status, xhr);
+                    },
+                    error: function (xhr, status, err) { },
+                    complete: function () { }
+                })
+            })
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

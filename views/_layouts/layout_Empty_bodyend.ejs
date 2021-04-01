@@ -1,0 +1,20 @@
+<%if(useGoogleAnalytics) {%>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<%}%>
+<script type="text/javascript">
+    (function () {
+        moment.locale('<%=_locale%>');
+    })();
+
+    function onSoftKeyboard(isShow, height) {
+        //console.log(flag, height);
+        document.documentElement.style.setProperty('--keyboard-hidden', isShow == true ? 0 : 1);
+        document.documentElement.style.setProperty('--keyboard-height', height + 'px');
+        if (isShow) {
+            $(".app").addClass('keyboard-show');
+        } else {
+            $(".app").removeClass('keyboard-show');
+        }
+    }
+</script>

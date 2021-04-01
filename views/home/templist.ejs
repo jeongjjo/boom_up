@@ -1,0 +1,11 @@
+<% for(var i = 0; i < templist.length; i++) { %>
+    <div class="media align-items-center pb-3 mb-3 border border-left-0 border-right-0 border-top-0" id="temp-<%= templist[i]._id%>" onclick="onSettingTemp(`<%= templist[i]._id%>`);">
+        <div class="media-body ml-3 mr-1">
+            <div>
+                <%= templist[i].title%>
+            </div>
+            <span class="icon-time post-time-icon mr-2"></span><div class="d-inline-block list_memo pr-1"><%= fn_dateTimeToFormatted(templist[i].createTS).formatted %></div>
+        </div>
+        <button type="button" class="btn btn-sm list_btn_text btn-outline-secondary" onclick="event.stopPropagation();onDeleteTemp(`<%= templist[i]._id%>`);">삭제</button>
+    </div>
+<% } %>

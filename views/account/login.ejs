@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/headerEmpty') -%>
+        <meta name="google-signin-scope" content="profile email" />
+        <meta name="google-signin-client_id" content="742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com" />
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_Empty_bodystart') -%>
+
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="container-fluid p-0 m-0  lm-scroll-y" style="height:70vh">
+                <div class="d-flex flex-column h-100">
+                    <div class="align-self-center text-center my-auto">
+                        <i class="logotitle2"></i>
+                    </div>
+                    <form id="login-form" method="POST" novalidate="novalidate">
+                        <div class="px-3">
+                            <div class="input-group">
+                                <div class="justify-content-center  d-flex align-items-center mx-3"><i class="icon-message"></i></div>
+                                <input type="text" name="em" class="form-control input_login" placeholder="<%= __('LOGIN_EMAILADDR')%>">
+                            </div>
+                            <div class="d-flex ml-5 align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('VALIDATOR_REQUIREDEMAIL')%></div>
+                            </div>
+
+                            <div class="input-group mt-3">
+                                <div class="justify-content-center  d-flex align-items-center mx-3"><i class="icon-password"></i></div>
+                                <input type="password" name="pw" class="form-control input_login" placeholder="<%= __('LOGIN_PASSWORD')%>">
+                            </div>
+                            <div class="d-flex ml-5 align-items-center warn_area hidden">
+                                <div class="icon-excl warn_icon mt-1"></div>
+                                <div class="ml-1 mt-2 warn_text"><%= __('VALIDATOR_REQUIREDPW')%></div>
+                            </div>
+                        </div>
+
+                        <div class="input-group p-3">
+                            <button type="submit" class="btn btn-primary btn-block btn_login"><%= __('LOGIN')%></button>
+                        </div>
+                    </form>
+                    <div class="d-flex justify-content-center">
+                        <a href="/auth/join" class="login_text"><%= __('JOIN_EMAIL')%></a>
+                        <span class="login_text px-2">|</span>
+                        <a href="/auth/resetpassword" class="login_text mr-4"><%= __('PASSWORD_FIND')%></a>
+                    </div>
+                    <div class="align-self-center my-auto keyboard-show-hidden-item ">
+                        <div class="px-3 py-3 text-center"><%= __('LOGIN_HELPMSG')%></div>
+                        <div>
+                            <button type="button" class="btn btn-apple btn_login mr-3" onclick="signinbySNS('apple');"><i class="icon-apple float-left"></i><span class="float-left"><%= __('LOGIN_CONTWAPPLE')%></span></button>
+                            <button type="button" class="btn btn-outline-secondary btn-google btn_login" onclick="signinbySNS('google');"><img src="/img/google-logo.svg" width="18px" class="float-left" /><span class="float-left"><%= __('LOGIN_CONTWGOOGLE')%></span></button>
+                            <button type="button" class="btn btn-kakao btn_login ml-3" onclick="signinbySNS('kakao');"><i class="icon-kakao-fill float-left"></i><span class="float-left"><%= __('LOGIN_CONTWKAKAO')%></span></button>
+                            <button type="button" class="btn btn-naver btn_login ml-3" onclick="signinbySNS('naver');"><i class="icon-naver-fill float-left"></i><span class="float-left"><%= __('LOGIN_CONTWNAVER')%></span></button>
+                            <button type="button" class="btn btn-facebook btn_login ml-3" onclick="signinbySNS('facebook');"><i class="icon-facebook-fill float-left"></i><span class="float-left"><%= __('LOGIN_CONTWFACEBOOK')%></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="fixed-bottom keyboard-show-hidden-item">
+            <div class="d-flex justify-content-around">
+                <div class="mt-1">
+                    <a href="/support/terms" class="left_bottom_text"><%= __('LB_MENU1')%></a> | <a href="/support/privacy" class="left_bottom_text"><%= __('LB_MENU2')%></a> | <a href="/left/faq" class="left_bottom_text"><%= __('LB_MENU3')%></a> | <a href="/left/notice" class="left_bottom_text"><%= __('LB_MENU4')%></a>
+                </div>
+            </div>
+        </footer>
+        <!-- Content -->
+        </div>
+
+        <%- include('../_layouts/layout_Empty_bodyscript') -%>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/additional-methods.min.js" integrity="sha256-vb+6VObiUIaoRuSusdLRWtXs/ewuz62LgVXg2f1ZXGo=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js" integrity="sha256-6rXZCnFzbyZ685/fMsqoxxZz/QZwMnmwHg+SsNe+C/w=" crossorigin="anonymous"></script>
+        <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/cipher-core.min.js" integrity="sha256-Y7SVWwin6U0VYV88jtgGd6z3ohMG+IMn3w4vl8vTvDs=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/hmac-sha512.min.js" integrity="sha256-6LEpzLhP3784Zf/1GDOijZdcE58Oqnkjbr5DQ17bjNk=" crossorigin="anonymous"></script> -->
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <script src="/js/sns/naveridlogin_js_sdk_2.0.0.js"></script>
+        <script src="/js/sns/kakao.min.js"></script>
+        <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+        <script>
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '198725284527297',
+                    xfbml: true,
+                    version: 'v6.0'
+                });
+                // FB.AppEvents.logPageView();
+            };
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) { return; }
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+            Kakao.init('9cfe7beef00ed4406492fb303309aa41');
+            // var naverLogin = new naver.LoginWithNaverId(
+            //     {
+            //         clientId: "Nm4tK40AcGaKsMWH0H5g",
+            //         callbackUrl: "<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver",
+            //     }
+            // );
+            // naverLogin.init();
+            gapi.load('auth2', function () {
+            });
+        </script>
+        <script type="text/javascript">
+            function signinbySNS(type) {
+                var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (window.Auth && !(type === 'apple' && !isIOS && navigator.userAgent.endsWith('InkiupApp'))) {
+                    blockPage();
+                    window.Auth.postMessage(JSON.stringify({ type: type, mode: 'signin' }));
+                } else {
+                    switch (type) {
+                        case 'kakao': {
+                            Kakao.Auth.authorize({
+                                redirectUri: '<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/kakao',
+                                state: JSON.stringify({
+                                    m: 'si',
+                                    d: pdata.getObject('__d__', ''),
+                                    r: getQueryString('r') || '/'
+                                })
+                            });
+                            break;
+                        }
+                        case 'naver': {
+                            var state = JSON.stringify({
+                                m: 'si',
+                                d: pdata.getObject('__d__', ''),
+                                r: getQueryString('r') || '/'
+                            });
+                            location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=Nm4tK40AcGaKsMWH0H5g&redirect_uri=${encodeURIComponent('<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver')}&state=${encodeURIComponent(encodeURIComponent(state))}`;
+                            break;
+                        }
+                        case 'facebook': {
+                            var state = JSON.stringify({
+                                m: 'si',
+                                d: pdata.getObject('__d__', ''),
+                                r: getQueryString('r') || '/'
+                            });
+                            location.href = `https://www.facebook.com/v6.0/dialog/oauth?client_id=198725284527297&redirect_uri=${encodeURIComponent('<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/facebook')}&state=${encodeURIComponent(state)}`;
+                            break;
+                        }
+                        case 'google': {
+                            gapi.auth2.authorize({
+                                client_id: '742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com',
+                                scope: 'profile email',
+                                prompt: 'select_account',
+                                response_type: 'id_token permission'
+                            }, function (response) {
+                                if (response.error) {
+                                    onAuthMessage('EGGFAIL');
+                                    return;
+                                }
+                                var state = JSON.stringify({
+                                    m: 'si',
+                                    d: pdata.getObject('__d__', ''),
+                                    r: getQueryString('r') || '/'
+                                });
+                                location.href = `/api/auth/oauth/callback/google?code=${response.id_token}&state=${encodeURIComponent(state)}`;
+                            });
+                            break;
+                        }
+                        case 'apple': {
+                            AppleID.auth.init({
+                                clientId: 'com.inkiup.inkiup',
+                                scope: 'name email',
+                                redirectURI: '<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/apple',
+                                state: encodeURIComponent(JSON.stringify({
+                                    m: 'si',
+                                    d: pdata.getObject('__d__', ''),
+                                    r: getQueryString('r') || '/'
+                                })),
+                                usePopup: false
+                            });
+                            AppleID.auth.signIn();
+                            break;
+                        }
+                    }
+                }
+            }
+            $.validator.messages = {
+                required: "<%= __('VALIDATOR_REQUIRED')%>",
+                remote: "<%= __('VALIDATOR_REMOTE')%>",
+                email: "<%= __('VALIDATOR_EMAIL')%>",
+                url: "<%= __('VALIDATOR_URL')%>",
+                date: "<%= __('VALIDATOR_DATE')%>",
+                dateISO: "<%= __('VALIDATOR_DATEISO')%>",
+                number: "<%= __('VALIDATOR_NUMBER')%>",
+                digits: "<%= __('VALIDATOR_DIGITS')%>",
+                equalTo: "<%= __('VALIDATOR_EQUALTO')%>",
+                maxlength: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                minlength: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                rangelength: $.validator.format("<%= __('VALIDATOR_RANGELENGTH')%>"),
+                range: $.validator.format("<%= __('VALIDATOR_RANGE')%>"),
+                max: $.validator.format("<%= __('VALIDATOR_MAXLENGTH')%>"),
+                min: $.validator.format("<%= __('VALIDATOR_MINLENGTH')%>"),
+                step: $.validator.format("<%= __('VALIDATOR_STEP')%>")
+            };
+
+            (function () {
+                
+                var emsg = getQueryString('e');
+                if (emsg) {
+                    onPopup("alert", emsg, function (cb) { });
+                }
+
+                var errmsg = getQueryString('err');
+                if (errmsg) {
+                    onAuthMessage(errmsg);
+                }
+
+                var eret = getQueryString('ret');
+                if (eret) {
+                    onConfirmJoin(eret, getQueryString('r') || '/');
+                }
+
+                setHeader('back', '');
+
+                // Validation
+                $("#login-form").validate({
+                    ignore: ':hidden:not(.validate)',
+                    rules: {
+                        em: {
+                            required: true,
+                            email: true
+                        },
+                        pw: {
+                            required: true,
+                            minlength: 4,
+                            maxlength: 32
+                        }
+                    },
+                    messages: {
+                        em: {
+                            required: "<%= __('VALIDATOR_REQUIREDEMAIL')%>"
+                        },
+                        pw: {
+                            required: "<%= __('VALIDATOR_REQUIREDPW')%>",
+                            maxlength: $.validator.format("<%= __('VALIDATOR_MAXLENGTHPW')%>"),
+                            minlength: $.validator.format("<%= __('VALIDATOR_MINLENGTHPW')%>"),
+
+                        },
+                    }, errorPlacement: function errorPlacement(error, element) {
+                        var $parent = $(element).parents('.input-group').next('.warn_area');
+
+                        // Do not duplicate errors
+                        if ($parent.find('.jquery-validation-error').length) {
+                            return;
+                        }
+
+                        $parent.removeClass('hidden');
+                        // var tmp=element.attr('placeholder');
+                        // if(tmp&&tmp.length>0) error.text(tmp);
+
+                        // $parent.append(
+                        //     error.addClass('jquery-validation-error small form-text invalid-feedback')
+                        // );
+                    },
+                    highlight: function (element) {
+                        // var $el = $(element);
+                        // var $parent = $el.parents('.form-group');
+                        // $el.addClass('is-invalid');
+                        // // Select2 and Tagsinput
+                        // if ($el.hasClass('select2-hidden-accessible') || $el.attr('data-role') === 'tagsinput') {
+                        //     $el.parent().addClass('is-invalid');
+                        // }
+                    },
+                    unhighlight: function (element) {
+                        // $(element).parents('.form-group').find('.is-invalid').removeClass('is-invalid');
+                        var $parent = $(element).removeClass('is-invalid').addClass('is-valid').parents('.input-group').next('.warn_area');
+                        $parent.addClass('hidden');
+                    },
+                    submitHandler: function (form) {
+                        var formData = objectifyForm(form);
+
+                        formData.pw = CryptoJS.enc.Hex.stringify(CryptoJS.SHA512(formData.pw));
+
+                        blockPage();
+                        if (window.Auth) {
+                            window.Auth && window.Auth.postMessage(JSON.stringify({ type: 'email', mode: 'signin', em: formData.em, pw: formData.pw }));
+                        } else {
+                            formData.d = pdata.getObject('__d__', '');
+                            formData.lg = true;
+                            $.post({
+                                url: '/api/auth/signin',
+                                processData: false,
+                                contentType: 'application/json',
+                                dataType: 'json',
+                                data: JSON.stringify(formData),
+                                success: function (data, status, xhr) {
+                                    //$('#modalMessage').modal();
+                                    if (data && data.result === 'ok') {
+                                        var reurl = getQueryString('r');
+                                        if (data.codemsg == "auth-email-check" && data.data) {
+                                            top.location.href = '/auth/welcomeemail/' + data.data.fb + "/" + data.data.deviceId + (reurl ? '?r=' + reurl : '');
+                                            return;
+                                        }
+                                        top.location.href = reurl || '/';
+                                        return;
+                                    } else if (data && data.displaymsg) {
+                                        unblockPage();
+                                        return onPopup("alert", data.displaymsg, function (cb) { });
+                                    }
+
+                                    unblockPage();
+                                    return onAuthMessage('EINVALIDEM');
+                                },
+                                error: function (xhr, status, err) {
+                                    unblockPage();
+                                    return onAuthMessage('EUNKNOWN');
+                                }
+                            });
+                        }
+                        return false;
+                    }
+                });
+
+                setHeader('back','save')
+                $("#idHeaderLeft").addClass("displayNone")
+                $("header .right > div:eq(4)").removeClass("hidden").removeClass("header-tempright-width").addClass("header-right-width");
+                $("header span.btn-save").removeClass("btn-fill-blue").text("닫기").attr("onclick","goBack()");
+
+            })();
+            function onAuthMessage(type) {
+                if (!type) return;
+                switch (type) {
+                    case 'EARG': { return onPopup("alert", "<%= __('AUTH_EARG')%>", function (cb) { }); }
+                    case 'EREQARG': { return onPopup("alert", "<%= __('AUTH_EREQARG')%>", function (cb) { }); }
+                    case 'EINVALIDEM': { return onPopup("alert", "<%= __('AUTH_EINVALIDEM')%>", function (cb) { }); }
+                    case 'ENOTSUPP': { return onPopup("alert", "<%= __('AUTH_ENOTSUPP')%>", function (cb) { }); }
+                    case 'EINVALIDJOINSNS': { return onPopup("alert", "<%= __('AUTH_EINVALIDJOINSNS')%>", function (cb) { }); }
+                    case 'EINVALIDADDSNS': { return onPopup("alert", "<%= __('AUTH_EINVALIDADDSNS')%>", function (cb) { }); }
+                    case 'EUNKNOWN': { return onPopup("alert", "<%= __('AUTH_EUNKNOWN')%>", function (cb) { }); }
+
+                    case 'ENOUSER': { return onPopup("alert", "<%= __('AUTH_NOUSER')%>", function (cb) { }); }
+                    case 'EBLOCKED': { return onPopup("alert", "<%= __('AUTH_BLOCKEDUSER')%>", function (cb) { }); }
+
+                    case 'EFBFAIL': { return onPopup("alert", "<%= __('AUTH_FACEBOOK_FAIL')%>", function (cb) { }); }
+                    case 'EFBCANCEL': { return onPopup("alert", "<%= __('AUTH_FACEBOOK_CANCEL')%>", function (cb) { }); }
+                    case 'EFBERROR': { return onPopup("alert", "<%= __('AUTH_FACEBOOK_ERROR')%>", function (cb) { }); }
+
+                    case 'EKKOFAIL': { return onPopup("alert", "<%= __('AUTH_KAKAO_FAIL')%>", function (cb) { }); }
+                    case 'EKKOCANCEL': { return onPopup("alert", "<%= __('AUTH_KAKAO_CANCEL')%>", function (cb) { }); }
+                    case 'EKKOERROR': { return onPopup("alert", "<%= __('AUTH_KAKAO_ERROR')%>", function (cb) { }); }
+
+                    case 'ENVFAIL': { return onPopup("alert", "<%= __('AUTH_NAVER_FAIL')%>", function (cb) { }); }
+                    case 'ENVCANCEL': { return onPopup("alert", "<%= __('AUTH_NAVER_CANCEL')%>", function (cb) { }); }
+                    case 'ENVERROR': { return onPopup("alert", "<%= __('AUTH_NAVER_ERROR')%>", function (cb) { }); }
+
+                    case 'EGGFAIL': { return onPopup("alert", "<%= __('AUTH_GOOGLE_FAIL')%>", function (cb) { }); }
+                    case 'EGGCANCEL': { return onPopup("alert", "<%= __('AUTH_GOOGLE_CANCEL')%>", function (cb) { }); }
+                    case 'EGGERROR': { return onPopup("alert", "<%= __('AUTH_GOOGLE_ERROR')%>", function (cb) { }); }
+
+                    case 'EAPFAIL': { return onPopup("alert", "<%= __('AUTH_APPLE_FAIL')%>", function (cb) { }); }
+                    case 'EAPCANCEL': { return onPopup("alert", "<%= __('AUTH_APPLE_CANCEL')%>", function (cb) { }); }
+                    case 'EAPERROR': { return onPopup("alert", "<%= __('AUTH_APPLE_ERROR')%>", function (cb) { }); }
+                    default: { break; }
+                }
+            }
+            function onConfirmJoin(type, url) {
+                switch (type) {
+                    case 'facebook': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINFACEBOOK')%>", (r) => { if (r) location.href = '/auth/join/facebook?r=' + encodeURIComponent(url) }); }
+                    case 'kakao': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINKAKAO')%>", (r) => { if (r) location.href = '/auth/join/kakao?r=' + encodeURIComponent(url) }); }
+                    case 'naver': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINNAVER')%>", (r) => { if (r) location.href = '/auth/join/naver?r=' + encodeURIComponent(url) }); }
+                    case 'google': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINGOOGLE')%>", (r) => { if (r) location.href = '/auth/join/google?r=' + encodeURIComponent(url) }); }
+                    case 'apple': { return onPopup('confirm', "<%= __('AUTH_CONFIRMJOINAPPLE')%>", (r) => { if (r) location.href = '/auth/join/apple?r=' + encodeURIComponent(url) }); }
+                    default: { break; }
+                }
+            }
+        </script>
+        <%- include('../_layouts/layout_Empty_bodyend') -%>
+    </body>
+
+</html>

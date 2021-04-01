@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/header') -%>
+        <%- include('../_layouts/layout_bodyscript') -%>
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_bodystart') -%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+        <!-- Content -->
+        <input type="hidden" name="id" value="<%= detail[0]._id%>"/>
+        <input type="hidden" name="userid" value="<%= detail[0].userId%>" />
+        <div class="d-flex align-content-center flex-wrap event-title">
+            <div class="flex-shrink-1 ml-3 mr-3 list-postdesc-title">
+                <%= detail[0].title%>
+            </div>
+        </div>
+        <div class="d-flex flex-column ml-3 mr-3">
+            
+            <div class="flex-grow-0 flex-shrink-1 list-postdesc-contents mt-3">
+                <%= detail[0].content%>
+            </div>
+        </div>
+        <div class="mt-3"></div>
+        <div class="d-flex flex-column event-detail">
+            <div class="d-flex flex-row list-postdesc-replytitle">
+                <div class="mr-auto"><span class="reply-titleleft"><%= __('DETAIL_COMMENTCOUNT')%> (<spam id="comment_count"><%= detail[0].comment%></spam>)</span></div>
+            </div>
+
+            <%- include('../comment/layout_list') -%>
+        </div>
+     
+
+
+        <!-- Content -->
+       
+        </div>
+        <%- include('../_parts/_footer') -%>
+
+        <script type="text/javascript">
+            var count = 0;
+            $(function () {
+                setHeader('back','')
+                onCommentList("date-up")
+            });
+
+            function onCommentList(ob) {
+                orderby = ob;
+                getCommentList({
+                    contentId: '<%= detail[0]._id.toHexString()%>',
+                    sort: ob,
+                    limit: 30,
+                    boardType: 'event'
+                });
+            }
+
+            function insertComment($this, id) {
+                var v = $("#input_comment").val();
+                var type = null;
+                var data = null;
+             
+                type = "re";
+                data = {
+                    comment: v
+                };
+                
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '/comment/'+id+'/'+type+"/e",
+                    data: data,
+                    success : function (data) {
+                        
+                        if(data.msg == "success") {
+                            comment(data);
+                        }
+                        
+                    }, error : function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            function comment(data) {
+                var d = data.data;
+                var clone = $("#temp_comment").clone().removeAttr("id");
+                $(".clone_comment", clone).text(d.comment);
+                $(".clone_nickname", clone).text(d.nickname);
+                $(".clone_up", clone).text(d.votingUp).data("id", d._id);
+                $(".clone_down", clone).text(d.votingDown).data("id", d._id);
+                $(".clone_reply", clone).data("cid", d._id).data("uid", d.userId).data("nm", d.nickname);
+                $(".clone_voting", clone).data("id", d._id);
+
+                $("#comment_list").prepend(clone);
+            
+                $("#input_comment").val("");
+
+                var c = $("#comment_count").text();
+                c = (c * 1) + 1;
+                $("#comment_count").text(c);
+            }
+
+            function fn_dateTimeToFormatted(dt) {
+                var min = 60 * 1000;
+                var c = new Date()
+                var d = new Date(dt);
+                var minsAgo = Math.floor((c - d) / (min));
+
+                var result = {
+                    'raw': d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate() + ' ' + (d.getHours() > 9 ? '' : '0') +  d.getHours() + ':' + (d.getMinutes() > 9 ? '' : '0') +  d.getMinutes() + ':'  + (d.getSeconds() > 9 ? '' : '0') +  d.getSeconds(),
+                    'formatted': '',
+                };
+
+                if (minsAgo < 60) { // 1시간 내
+                    result.formatted = minsAgo + '분 전';
+                } else if (minsAgo < 60 * 24) { // 하루 내
+                    result.formatted = Math.floor(minsAgo / 60) + '시간 전';
+                } else { // 하루 이상
+                    result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
+                };
+
+                return result;
+            };
+           
+        </script>
+        <%- include('../_layouts/layout_bodyend') -%>
+    </body>
+
+</html>

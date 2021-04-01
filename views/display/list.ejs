@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+    <head>
+        <%- include('../_layouts/header') -%>
+        <%- include('../_layouts/layout_bodyscript') -%>
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_bodystart') -%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <ul class="nav nav-tabs">
+                <li class="nav-item text-center" style="width: 50%;">
+                    <span class="nav-link active" id="display-all" onclick="onDisplayStatus('all');">전체</span>
+                </li>
+                <li class="nav-item text-center" style="width: 50%;">
+                    <span class="nav-link" id="display-my" onclick="onDisplayStatus('my');">MY</span>
+                </li>
+            </ul>
+            
+            <%- include('../display/layout_list') -%>  
+            
+            <!-- Content -->
+        </div>
+
+        <%- include('../_parts/_footer') -%>
+        <script type="text/javascript">
+            $(function () {
+                setHeader('back', 'save');
+            });
+            
+            function onRegist() {
+                location.href="/display/write";
+            }
+            
+            function onDisplayStatus(type) {
+                $("[id^=display-]").removeClass("active");
+                $("#display-"+type).addClass("active");
+                getList(type);
+            }
+
+            function onRejectMemo(id) {
+
+            }
+        </script>
+        <%- include('../_layouts/layout_bodyend') -%>
+    </body>
+
+</html>

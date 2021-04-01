@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="container-fluid p-0 m-0">
+                <div class="p-3 border-0" id="memoArea"></div>
+            </div>
+            <!-- content -->
+            <%-include('../_parts/_footer')%>
+        </div>
+
+        <%-include('../_layouts/layout_bodyscript')%>
+
+        <script type="text/javascript">
+            (function () {
+                setHeader('back','')
+                getList(1);
+            })();
+
+            function getList(a) {
+                if (a) $('#memoArea').empty();
+                var url = '/setting/memoList';
+                if ($("[name=usrmemo]").length > 0) url += '/' + $("[name=usrmemo]").last().data('id');
+
+                $.get({
+                    url: url,
+                    success: function (html, status, xhr) {
+                        var b = $('.memoArea').length;
+                        $('#memoArea').append(html);
+                        var a = $('.memoArea').length;
+                        //    if(a==b) $('#btnMoreFaq').html("마지막입니다.").prop('disabled',true)
+                        typeof callback === 'function' && callback(list, status, xhr);
+                    },
+                    error: function (xhr, status, err) {
+                        typeof callback === 'function' && callback(null, false, xhr);
+                    }
+                });
+            }
+
+            var delMemo = (obj) => {
+                $.ajax({
+                        method: 'delete',
+                        url: '/setting/memo',
+                        data: {
+
+                            id:$(obj).data('id')
+                        },
+                        success: function (data, status, xhr) {
+                            if(data && data.code =="OK") {
+                                $('#'+$(obj).data('id')).remove()
+                            } 
+
+                            if($("[name=usrmemo]").length ==0 ) {
+                                var nodata = '<div class="nodata p-4 "><div><i class="icon-excl-area-sm icon-excl"></i></div><div class="p-2">내용이 없습니다.</div></div>'
+                                $('#memoArea').append($(nodata));
+                            }
+                        },
+                        error: function (xhr, status, err) {
+                        },
+                        complete: function () {
+                        }
+                    })
+
+
+
+            }
+              
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

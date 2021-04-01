@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+
+       <link rel="stylesheet" href="/css/write.css?2020072101" />
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+
+        <div class="app header footer">
+          <%-include('../_parts/_header')%>
+          <!-- content -->
+          <div class="container-fluid p-0 m-0"> 
+            <!--body-->
+            <div class="p-3">
+              
+              <% if(data && data.length==0){ %>
+              <div class="nodata p-4 ">
+                  <div>
+                    <i class="icon-excl-area-sm icon-excl"></i>
+                  </div>
+                <div class="p-2">
+                    차단한 사용자가 없습니다. 
+                </div>
+              </div>
+              <% } %>
+
+              <% for(var i=0;i < data.length ; i++){%>
+              <div class="media align-items-center pb-3 mb-3 border border-left-0 border-right-0 border-top-0">
+                <i class="icon-my-footer list-noimage"></i>
+                <div class="media-body ml-3 mr-1">
+                  <a href="javascript:void(0)" class="list_nickname mr-2"><%=data[i].targetUserNickname%></a>
+                  <div class="list_memo pr-1"><%=data[i].targetUserMemo%></div>
+                </div>
+                <span onclick="onBlockRelease(this)" data-action="i" data-id="<%=data[i].targetUserId%>" data-nm="<%=data[i].targetUserNickname%>" class="btn btn-text-normal btn-sm list_btn_text">해제</span>
+              </div>
+              <% } %>
+
+            </div>
+            <!--body-->
+          </div>
+          <!-- content -->
+          <%-include('../_parts/_footer')%>
+        </div>
+        
+        <%-include('../_layouts/layout_bodyscript')%>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/additional-methods.min.js" integrity="sha256-vb+6VObiUIaoRuSusdLRWtXs/ewuz62LgVXg2f1ZXGo=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/localization/messages_ko.min.js" integrity="sha256-2MPaDIgwuO0zMFW6Rlrc857sIWkxu1mP23Lv+t0L6Rs=" crossorigin="anonymous"></script>
+
+        <script type="text/javascript">
+            (function () {
+                setHeader('back','')
+            })();
+
+            function onBlockRelease(obj){
+              console.log($(obj).data())
+              
+              $.ajax({
+              type: 'PUT',
+              url: '/profile/block/',
+              data: $(obj).data(),
+              success: function (data) {
+                  console.log(data);
+                  if (data.code=="OK") {
+                    if (data.action=="d") {
+                      $(obj).removeClass("btn-fill-blue").addClass("btn-text-normal").text("해제").data("action","i");
+                    } else {
+                      $(obj).removeClass("btn-text-normal").addClass("btn-fill-blue").text("차단").data("action","d");
+                    }
+                  } else {
+                      //메세지 처리
+                  }
+              }, error: function (error) {
+                  //오류처리 팝업창 띄우기 코딩
+                  console.log(error);
+              }
+          });
+            }
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>
