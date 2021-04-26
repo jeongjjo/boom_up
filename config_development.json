@@ -97,6 +97,10 @@
 	    "facebook": {
 		    "clientId": "2780254578892203",
 		    "clientSecret": "9bf6d5c4143237948e711508f801cd57"
+	    },
+	    "kakao": {
+		    "clientId": "d4687a08c53054ccf957a7e9109ad970",
+		    "javascriptKey": "38ba507bd2b37d4e1c7732e408021f73"
 	    }
     },
     "aws": {

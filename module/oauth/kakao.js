@@ -301,7 +301,7 @@ async function webSignup(req, res, rStat) {
       form: {
         // params: {
         grant_type: 'authorization_code',
-        client_id: 'e8b83ffc9489c16237ccf2d4862a7de5',
+        client_id: global.config.login3rd.kakao.clientId,
         redirect_uri: global.config.serviceinfo.defaultUrl + req.path,
         code: req.query.code
         // }
@@ -444,7 +444,7 @@ async function webSignin(req, res, rStat) {
       form: {
         // params: {
         grant_type: 'authorization_code',
-        client_id: 'e8b83ffc9489c16237ccf2d4862a7de5',
+        client_id: global.config.login3rd.kakao.clientId,
         redirect_uri: global.config.serviceinfo.defaultUrl + req.path,
         code: req.query.code
         // }
@@ -554,6 +554,6 @@ module.exports = {
 };
 // curl -v -X POST https://kauth.kakao.com/oauth/token \
 //  -d 'grant_type=authorization_code' \
-//  -d 'client_id=e8b83ffc9489c16237ccf2d4862a7de5' \
+//  -d 'client_id=d4687a08c53054ccf957a7e9109ad970' \
 //  -d 'redirect_uri=https://dev.5inyon.com:7002/api/auth/oauth/callback/kakao' \
 //  -d 'code=1435YlfsT3xFS9KX5CxuQ670KQhg3FSLVHIRhK7vz32YV_7DdNgl_xLgDprGH0XzjMSr6wo9dNoAAAFxd7l0uA'

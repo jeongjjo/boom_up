@@ -298,8 +298,8 @@ async function webSignup(req, res, rStat) {
       uri: 'https://graph.facebook.com/v6.0/oauth/access_token',
       method: 'GET',
       qs: {
-        client_id: '198725284527297',
-        client_secret: 'ec19d11d36f0531801769373764dd7f2',
+        client_id: global.config.login3rd.facebook.clientId,
+        client_secret: global.config.login3rd.facebook.clientSecret,
         redirect_uri: global.config.serviceinfo.defaultUrl + req.path,
         code: req.query.code
         // },
@@ -440,8 +440,8 @@ async function webSignin(req, res, rStat) {
       uri: 'https://graph.facebook.com/v6.0/oauth/access_token',
       method: 'GET',
       qs: {
-        client_id: '198725284527297',
-        client_secret: 'ec19d11d36f0531801769373764dd7f2',
+        client_id: global.config.login3rd.facebook.clientId,
+        client_secret: global.config.login3rd.facebook.clientSecret,
         redirect_uri: global.config.serviceinfo.defaultUrl + req.path,
         code: req.query.code
         // },
