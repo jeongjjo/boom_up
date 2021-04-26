@@ -1,7 +1,7 @@
 {
     "bindhost": "0.0.0.0",
     "bindport": 3000,
-    "redirect2https": false,
+    "redirect2https": true,
     "useGoogleAnalytics": false,
     "locales": [
         "ko",
@@ -23,9 +23,8 @@
         "port2": 6379
     },
     "mongodb": {
-        "host": "3.36.234.37:27017:30012/",
-        "host2": "localhost:27017/",
-        "hostRead": "3.36.234.37:30012/",
+        "host": "3.34.248.152:30011/",
+        "hostRead": "3.34.248.152:30011/",
         "database": "INKIUP",
         "username": "",
         "password": "",
@@ -42,9 +41,9 @@
         "limitSize": 104857600,
         "src": "/attach"
     },
-    "googleAuthClientKey": "742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com",
+    "googleAuthClientKey": "987748836333-krkf3hq5av08r3jn8ouivs6ikdp4b48v.apps.googleusercontent.com",
     "appleAuthClientKey": "com.inkiup.inkiup",
-    "firebaseDatabaseUrl": "https://inkiup.firebaseio.com",
+    "firebaseDatabaseUrl": "https://inkiup-6302a.firebaseio.com",
     "servicemodule": {
         "home": "",
         "account": "auth",
@@ -68,15 +67,15 @@
         "sitename": "인끼업(inkiup) *DEV*",
         "sid": "inkiupmobileweb",
         "contactperson": "관리자",
-        "sitelogourl": "https://dev.5inyon.com:7002/app-logo-512.png",
+        "sitelogourl": "https://boomup.co.kr/app-logo-512.png",
         "description": "",
         "retailcategory": "COMMUNITY",
         "businessevent": "WEB",
         "phone": "",
         "fax": "",
         "email": "noreplay@nothings.not",
-        "defaultUrl": "https://dev.5inyon.com:7002",
-        "appUrl": "https://dev.5inyon.com:7002",
+        "defaultUrl": "https://boomup.co.kr",
+        "appUrl": "https://boomup.co.kr",
         "mailSender": {
             "from": "No Replay <noreplay@nothings.not>",
             "replyto": "No Replay <noreplay@nothings.not>"
@@ -87,21 +86,27 @@
             "title": "인끼업(inkiup) 실시간 소셜 랭킹 커뮤니티",
             "keywords": "인끼업,실시간,소셜,랭킹,커뮤니티,realtime,rank,social,community,inkiup,유머,humor",
             "description": "인끼업(inkiup) 대한민국 최초의 실시간 랭킹 커뮤니티로 대한민국 모든 인터넷 커뮤니티의 인기글들과 인끼업 내의 업로더들의 컨텐츠들을 함께 다루고 경쟁하고 유저들은 한 눈에 핫한 정보들을 확인할 수 있습니다.",
-            "image": "https://dev.5inyon.com:7002/app-logo-512.png"
+            "image": "https://boomup.co.kr/app-logo-512.png"
         }
+    },
+    "login3rd": {
+	    "naver": {
+		    "clientId": "whePhYTEtI9r7ZLQ6Ack",
+		    "clientSecret": "_ploR01csy"
+	    }
     },
     "aws": {
         "enabled": true,
-        "AWSAccessKeyId": "AKIAJWKJN2ESTCVO3XXA",
-        "AWSSecretKey": "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",
+        "AWSAccessKeyId": "AKIA54QUNDNC6LNZTTW6",
+        "AWSSecretKey": "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",
         "REGION": "ap-northeast-2",
-        "Bucket": "filesinkiup",
-        "S3Url": "https://d39rw2lh9ylrhv.cloudfront.net",
-        "S3UrlOrignal": "https://filesinkiup.s3.ap-northeast-2.amazonaws.com/"
+        "Bucket": "boomup-files",
+        "S3Url": "https://dal1w1haizu6z.cloudfront.net",
+        "S3UrlOrignal": "https://boomup-files.s3.amazonaws.com/"
     },
     "smtp": {
-        "id": "dev5inyon@gmail.com",
-        "pass": "dhdlsdyd$4"
+        "id": "inkiup.dev@gmail.com",
+        "pass": "Snowman1234!"
     },
     "invalidUrlRegex": "^(?!http[s]?:\\/{2}(\\w*)\\.?inkiup\\.com(:\\d)*|https:\\/{2}appleid\\.apple\\.com|https:\\/{2}dev\\.5inyon\\.com(:\\d)*|https:\\/{2}d39rw2lh9ylrhv\\.cloudfront\\.net|https:\\/{2}filesinkiup\\.s3\\.ap-northeast-2\\.amazonaws\\.com|https:\\/{2}(\\w*)\\.?youtube\\.com\\/embed\\/|https:\\/{2}(\\w*)\\.?hotjar\\.com).*$"
 }

@@ -5,7 +5,7 @@
     <head>
         <%- include('../_layouts/headerEmpty') -%>
         <meta name="google-signin-scope" content="profile email" />
-        <meta name="google-signin-client_id" content="742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com" />
+        <meta name="google-signin-client_id" content="987748836333-krkf3hq5av08r3jn8ouivs6ikdp4b48v.apps.googleusercontent.com" />
     </head>
 
     <body>
@@ -86,7 +86,7 @@
         <script>
             window.fbAsyncInit = function () {
                 FB.init({
-                    appId: '198725284527297',
+                    appId: '2780254578892203',
                     xfbml: true,
                     version: 'v6.0'
                 });
@@ -135,7 +135,7 @@
                                 d: pdata.getObject('__d__', ''),
                                 r: getQueryString('r') || '/'
                             });
-                            location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=Nm4tK40AcGaKsMWH0H5g&redirect_uri=${encodeURIComponent('<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver')}&state=${encodeURIComponent(encodeURIComponent(state))}`;
+                            location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=whePhYTEtI9r7ZLQ6Ack&redirect_uri=${encodeURIComponent('<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver')}&state=${encodeURIComponent(encodeURIComponent(state))}`;
                             break;
                         }
                         case 'facebook': {
@@ -149,7 +149,7 @@
                         }
                         case 'google': {
                             gapi.auth2.authorize({
-                                client_id: '742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com',
+                                client_id: '987748836333-krkf3hq5av08r3jn8ouivs6ikdp4b48v.apps.googleusercontent.com',
                                 scope: 'profile email',
                                 prompt: 'select_account',
                                 response_type: 'id_token permission'

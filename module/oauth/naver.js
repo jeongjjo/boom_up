@@ -299,15 +299,15 @@ async function webSignup(req, res, rStat) {
       qs: {
         // params: {
         grant_type: 'authorization_code',
-        client_id: 'Nm4tK40AcGaKsMWH0H5g',
-        client_secret: 'pHAVn9cSI4',
+        client_id: global.config.login3rd.naver.clientId,
+        client_secret: global.config.login3rd.naver.clientSecret,
         redirect_uri: global.config.serviceinfo.defaultUrl + req.path,
         code: req.query.code
       },
       headers: {
         // 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-        'X-Naver-Client-Id': 'Nm4tK40AcGaKsMWH0H5g',
-        'X-Naver-Client-Secret': 'pHAVn9cSI4'
+        'X-Naver-Client-Id': global.config.login3rd.naver.clientId,
+        'X-Naver-Client-Secret': global.config.login3rd.naver.clientSecret
       },
       json: true
     });
@@ -443,15 +443,15 @@ async function webSignin(req, res, rStat) {
       qs: {
         // params: {
         grant_type: 'authorization_code',
-        client_id: 'Nm4tK40AcGaKsMWH0H5g',
-        client_secret: 'pHAVn9cSI4',
+        client_id: global.config.login3rd.naver.clientId,
+        client_secret: global.config.login3rd.naver.clientSecret,
         redirect_uri: global.config.serviceinfo.defaultUrl + req.path,
         code: req.query.code
       },
       headers: {
         // 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-        'X-Naver-Client-Id': 'Nm4tK40AcGaKsMWH0H5g',
-        'X-Naver-Client-Secret': 'pHAVn9cSI4'
+        'X-Naver-Client-Id': global.config.login3rd.naver.clientId,
+        'X-Naver-Client-Secret': global.config.login3rd.naver.clientSecret
       },
       json: true
     });
