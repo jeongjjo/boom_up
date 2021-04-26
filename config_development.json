@@ -93,6 +93,10 @@
 	    "naver": {
 		    "clientId": "whePhYTEtI9r7ZLQ6Ack",
 		    "clientSecret": "_ploR01csy"
+	    },
+	    "facebook": {
+		    "clientId": "2780254578892203",
+		    "clientSecret": "9bf6d5c4143237948e711508f801cd57"
 	    }
     },
     "aws": {

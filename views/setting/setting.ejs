@@ -5,7 +5,8 @@
     <head>
         <%-include('../_layouts/header')%>
         <meta name="google-signin-scope" content="profile email" />
-        <meta name="google-signin-client_id" content="742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com" />
+	<!--<meta name="google-signin-client_id" content="742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com" /> -->
+        <meta name="google-signin-client_id" content="987748836333-krkf3hq5av08r3jn8ouivs6ikdp4b48v.apps.googleusercontent.com" />
     </head>
 
     <body>
@@ -124,7 +125,7 @@
         <script>
             window.fbAsyncInit = function () {
                 FB.init({
-                    appId: '198725284527297',
+                    appId: '2780254578892203',
                     xfbml: true,
                     version: 'v6.0'
                 });
@@ -140,7 +141,7 @@
             Kakao.init('9cfe7beef00ed4406492fb303309aa41');
             var naverLogin = new naver.LoginWithNaverId(
                 {
-                    clientId: "Nm4tK40AcGaKsMWH0H5g",
+                    clientId: "whePhYTEtI9r7ZLQ6Ack",
                     callbackUrl: "<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver",
                 }
             );
