@@ -17,10 +17,8 @@
         "namespace": "chatlist"
     },
     "redis": {
-        "host": "localhost",
-        "port": 6379,
-        "host2": "localhost",
-        "port2": 6379
+        "host": "3.34.248.152",
+        "port": 6311
     },
     "mongodb": {
         "host": "3.34.248.152:30011/",

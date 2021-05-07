@@ -17,12 +17,12 @@
         "namespace": "chatlist"
     },
     "redis": {
-        "host": "inkiup-redis.h7y6wf.ng.0001.apn2.cache.amazonaws.com",
-        "port": 6379
+        "host": "3.34.248.152",
+        "port": 6311
     },
     "mongodb": {
-        "host": "172.31.39.138:18017/",
-        "hostRead": "172.31.40.88:18017/",
+        "host": "3.34.248.152:30011/",
+        "hostRead": "3.34.248.152:30011/",
         "database": "INKIUP",
         "username": "",
         "password": "",
@@ -30,17 +30,21 @@
             "useNewUrlParser": true,
             "native_parser": true,
             "poolSize": 20,
-            "useUnifiedTopology": true
+            "useUnifiedTopology": true,
+	    "authenticationDatabase": "admin"
         }
     },
+
+
     "temppath": "../temp",
     "attach": {
         "limitSize": 104857600,
         "src": "/attach"
     },
-    "googleAuthClientKey": "742084818967-b7rre3fd212tlek6nfg3ebmu28k8pqqr.apps.googleusercontent.com",
+    "googleAuthClientKey": "987748836333-krkf3hq5av08r3jn8ouivs6ikdp4b48v.apps.googleusercontent.com",
     "appleAuthClientKey": "com.inkiup.inkiup",
-    "firebaseDatabaseUrl": "https://inkiup.firebaseio.com",
+    "firebaseDatabaseUrl": "https://inkiup-6302a.firebaseio.com",
+
     "servicemodule": {
         "home": "",
         "account": "auth",
@@ -59,44 +63,59 @@
         "board": "board"
     },
     "serviceinfo": {
-        "domain": "inkiup.com",
-        "sitename": "인끼업 inkiup",
+        "domain": "boomup.co.kr",
+        "sitename": "붐업 boomup",
         "sid": "inkiupmobileweb",
         "contactperson": "관리자",
-        "sitelogourl": "https://inkiup.com/app-logo-512.png",
+        "sitelogourl": "https://boomup.co.kr/app-logo-512.png",
         "description": "인끼업 실시간 소셜 랭킹 커뮤니티 ",
         "retailcategory": "COMMUNITY",
         "businessevent": "WEB",
         "phone": "",
         "fax": "",
         "email": "noreplay@nothings.not",
-        "defaultUrl": "https://inkiup.com",
-        "appUrl": "https://m.inkiup.com",
+        "defaultUrl": "https://boomup.co.kr",
+        "appUrl": "https://boomup.co.kr",
         "mailSender": {
             "from": "No Replay <noreplay@nothings.not>",
             "replyto": "No Replay <noreplay@nothings.not>"
         },
         "og": {
-            "sitename": "인끼업 닷컴 inkiup.com",
-            "author": "인끼업 inkiup inc.",
-            "title": "인끼업(inkiup) 실시간 소셜 랭킹 커뮤니티",
-            "keywords": "인끼업,실시간,소셜,랭킹,커뮤니티,realtime,rank,social,community,inkiup,유머,humor",
+            "sitename": "붐업 닷컴 boomup.co.kr",
+            "author": "붐업 boomup inc.",
+            "title": "붐업(boomup) 실시간 소셜 랭킹 커뮤니티",
+            "keywords": "붐업,실시간,소셜,랭킹,커뮤니티,realtime,rank,social,community,inkiup,유머,humor,boomup",
             "description": "실시간 랭킹 소셜 커뮤니티 인끼업은 타격감 넘치는 실시간 투표를 통해 지금 이 순간 가장 인기있는 글들을 제공 해드립니다.",
-            "image": "https://inkiup.com/app-logo-512.png"
+            "image": "https://boomup.co.kr/app-logo-512.png"
         }
+    },
+    "login3rd": {
+	    "naver": {
+		    "clientId": "whePhYTEtI9r7ZLQ6Ack",
+		    "clientSecret": "_ploR01csy"
+	    },
+	    "facebook": {
+		    "clientId": "2780254578892203",
+		    "clientSecret": "9bf6d5c4143237948e711508f801cd57"
+	    },
+	    "kakao": {
+		    "clientId": "d4687a08c53054ccf957a7e9109ad970",
+		    "javascriptKey": "38ba507bd2b37d4e1c7732e408021f73"
+	    }
     },
     "aws": {
         "enabled": true,
-        "AWSAccessKeyId": "AKIAJWKJN2ESTCVO3XXA",
-        "AWSSecretKey": "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",
+        "AWSAccessKeyId": "AKIA54QUNDNC6LNZTTW6",
+        "AWSSecretKey": "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",
         "REGION": "ap-northeast-2",
-        "Bucket": "filesinkiup",
-        "S3Url": "https://d39rw2lh9ylrhv.cloudfront.net",
-        "S3UrlOrignal": "https://filesinkiup.s3.ap-northeast-2.amazonaws.com/"
+        "Bucket": "boomup-files",
+        "S3Url": "https://dal1w1haizu6z.cloudfront.net",
+        "S3UrlOrignal": "https://boomup-files.s3.amazonaws.com/"
     },
     "smtp": {
-        "id": "dev5inyon@gmail.com",
-        "pass": "dhdlsdyd$4"
+        "id": "inkiup.dev@gmail.com",
+        "pass": "Snowman1234!"
     },
+
     "invalidUrlRegex": "^(?!http[s]?:\\/{2}(\\w*)\\.?inkiup\\.com(:\\d)*|https:\\/{2}appleid\\.apple\\.com|https:\\/{2}d39rw2lh9ylrhv\\.cloudfront\\.net|https:\\/{2}filesinkiup\\.s3\\.ap-northeast-2\\.amazonaws\\.com|https:\\/{2}(\\w*)\\.?youtube\\.com\\/embed\\/|https:\\/{2}(\\w*)\\.?hotjar\\.com).*$"
 }
