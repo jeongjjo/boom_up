@@ -31,8 +31,8 @@
                             <img src="/img/selectfilter.png" />
                         </div>
                         <select class="custom-select write-input-line bg-light main-select-width main-font-size" id="list_filter" onchange="onFilterChange(this);">
-                            <option value="all">전체 인끼</option>
-                            <option value="day">일간 인끼</option>
+                            <option value="all">전체 붐업</option>
+                            <option value="day">일간 붐업</option>
                             <option value="new">최신순</option>
                         </select>
                     </div>
@@ -141,7 +141,7 @@
                     if (filter) {
                         filterName = getFilterName(filter)
                     } else {
-                        filterName = "일간 인끼"
+                        filterName = "일간 붐업"
                     }
                     $(".icon-home-footer").addClass("font-weight-bold");
                     /*const ptr = PullToRefresh.init({
@@ -416,7 +416,7 @@
                     var category=$("#main-category-area .mainmenu-line-botton").text()
                     var cnt = shareRankCount;
                     var boards = ""+cnt;
-                    var description = "인끼업 ["+category+"] Top RANK - " + moment().format('MM월 DD일 HH시') + "\r\n\r\n";
+                    var description = "붐업 ["+category+"] Top RANK - " + moment().format('MM월 DD일 HH시') + "\r\n\r\n";
                     var listcnt=$("#board-list-area div[id|=board-area]").length
 
                     if(listcnt<10){

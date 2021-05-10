@@ -188,21 +188,22 @@ screen\9 {
 }
 .logotitle {
     display: inline-block;
-    background: url('../img/logotitle.svg') no-repeat center center;
+    background: url('../img/boomup_logotitle.svg') no-repeat center center;
     background-size: auto;
     min-height: 28px;
     min-width: 92px;
 }
 .logotitle2 {
     display: inline-block;
-    background: url('../img/logotitle.svg') no-repeat center center;
+    background: url('../img/boomup_logotitle.svg') no-repeat center center;
     background-size: auto;
     min-height: 50px;
     min-width: 163px;
 }
 .logotitle3 {
     display: inline-block;
-    background: url('../img/logotitle.svg') no-repeat center center;
+    /* background: url('../img/logotitle.svg') no-repeat center center; */
+    background: url('../img/boomup_logotitle.svg') no-repeat center center;
     background-size: auto;
     min-height: 36.1px;
     min-width: 153.2px;
