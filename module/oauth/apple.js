@@ -13,8 +13,8 @@ const appleAuth = require('auth-with-apple');
 const key = fs.readFileSync(path.join(__dirname, "../../config_applesigninkey.p8")).toString();
 const swpParams = {
   authKey: key,
-  team_id: 'VS5CVYBVM4',
-  key_identifier: 'C4Q5P24WW6'
+  team_id: '49443Y9M4G',
+  key_identifier: 'M4Q947TPH5'
 };
 
 async function signup(deviceId, userId, token, nickname, req) {

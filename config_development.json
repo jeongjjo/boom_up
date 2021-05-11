@@ -40,7 +40,7 @@
         "src": "/attach"
     },
     "googleAuthClientKey": "987748836333-krkf3hq5av08r3jn8ouivs6ikdp4b48v.apps.googleusercontent.com",
-    "appleAuthClientKey": "com.inkiup.inkiup",
+    "appleAuthClientKey": "com.boomup.boomup",
     "firebaseDatabaseUrl": "https://inkiup-6302a.firebaseio.com",
     "servicemodule": {
         "home": "",

@@ -42,7 +42,7 @@
         "src": "/attach"
     },
     "googleAuthClientKey": "987748836333-krkf3hq5av08r3jn8ouivs6ikdp4b48v.apps.googleusercontent.com",
-    "appleAuthClientKey": "com.inkiup.inkiup",
+    "appleAuthClientKey": "com.boomup.boomup",
     "firebaseDatabaseUrl": "https://inkiup-6302a.firebaseio.com",
 
     "servicemodule": {
@@ -63,30 +63,30 @@
         "board": "board"
     },
     "serviceinfo": {
-        "domain": "boomup.co.kr",
+        "domain": "boomup.com",
         "sitename": "붐업 boomup",
         "sid": "inkiupmobileweb",
         "contactperson": "관리자",
-        "sitelogourl": "https://boomup.co.kr/app-logo-512.png",
+        "sitelogourl": "https://boomup.com/app-logo-512.png",
         "description": " 붐업 실시간 소셜 랭킹 커뮤니티 ",
         "retailcategory": "COMMUNITY",
         "businessevent": "WEB",
         "phone": "",
         "fax": "",
         "email": "noreplay@nothings.not",
-        "defaultUrl": "https://boomup.co.kr",
-        "appUrl": "https://boomup.co.kr",
+        "defaultUrl": "https://boomup.com",
+        "appUrl": "https://boomup.com",
         "mailSender": {
             "from": "No Replay <noreplay@nothings.not>",
             "replyto": "No Replay <noreplay@nothings.not>"
         },
         "og": {
-            "sitename": "붐업 닷컴 boomup.co.kr",
+            "sitename": "붐업 닷컴 boomup.com",
             "author": "붐업 boomup inc.",
             "title": "붐업(boomup) 실시간 소셜 랭킹 커뮤니티",
             "keywords": "붐업,실시간,소셜,랭킹,커뮤니티,realtime,rank,social,community,inkiup,유머,humor,boomup",
             "description": "실시간 랭킹 소셜 커뮤니티 붐업은 타격감 넘치는 실시간 투표를 통해 지금 이 순간 가장 인기있는 글들을 제공 해드립니다.",
-            "image": "https://boomup.co.kr/app-logo-512.png"
+            "image": "https://boomup.com/app-logo-512.png"
         }
     },
     "login3rd": {
