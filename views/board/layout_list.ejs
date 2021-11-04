@@ -1,13 +1,13 @@
 <div id="board-list-area">
     <!-- START 처음 로딩시 데이터가 있는 경우 START -->
     <% if (typeof board !== 'undefined' && board !== null) { %>
-    <%- include('../board/list', {data: board.data, kind: board.kind, page: board.page, sort: board.sort, lineup: board.lineup}) -%>
+        <%- include('../board/list', {data: board.data, kind: board.kind, page: board.page, sort: board.sort, lineup: board.lineup}) -%>
     <% } %>
     <!-- END 처음 로딩시 데이터가 있는 경우 END -->
 </div>
 
 <!-- <div class="get_more p-2" onclick="getContent();" class="text-666" id="btnMoreFaq">
-    더보기 <i  class="icon-arrow-down setting_right_icon"></i> 
+    더보기 <i  class="icon-arrow-down setting_right_icon"></i>
 </div>-->
 
 <div class="get_more p-2 hidden" onclick="getContent();" class="text-666" id="miniloading">
@@ -18,14 +18,13 @@
 
 <div id="board-list-nocontent" class="main-nocontent hidden">
     <div class="text-center">
-        <i class="icon-inkiup"></i>
         <span class="nocontent-text"></span>
     </div>
 </div>
 
 <script type="text/javascript">
 (function () {
-    //sessionStorage.setItem('INKIUP_SC:' + location.href, JSON.parse({html: 'test', scroll: $(".app").scrollTop()}));
+    sessionStorage.setItem('INKIUP_SC:' + location.href, JSON.parse({html: 'test', scroll: $(".app").scrollTop()}));
 });
 
 cashePage({
@@ -41,6 +40,7 @@ cashePage({
 });
 
 function getBoardList(data, cb) {
+    let type = '<%= typeof type !== 'undefined'?type: null%>'
     var oldReq = $("#board-list-area").data("req");
     if (typeof oldReq !== 'undefined' && oldReq !== null && data.reset !== true) {
         return;
@@ -63,6 +63,7 @@ function getBoardList(data, cb) {
     if (data.cashe !== false && loadCachPage && loadCachPage((cdata) => {
         $("#board-list-area").data("kind", cdata.kind || null);
         $("#board-list-area").data("sort", cdata.sort || null);
+        $("#board-list-area").data("limit", cdata.limit || null);
         $("#board-list-area").data("keyword", cdata.keyword || null);
         $("#board-list-area").data("casheSelector", cdata.casheSelector || null);
         $("#board-list-area").data("end", cdata.end || false);
@@ -110,24 +111,33 @@ function getBoardList(data, cb) {
     }
 
     var count = $("#board-list-area > div[id|=board-area]").length || 0;
+    console.log('test',data)
     if(kind == "updown") {
         count = data.count || 30;
     }
     //console.log(count);
     var limit = data.limit || 40;
     var url = '/board/list/' + kind + '/' + count + '/' + sort + '/' + limit + '/' + keyword;
-    //blockPage();
+    blockPage();
     var req = $.get({
         url: url,
         data: {id: targetId},
         success: function (html, status, xhr) {
-            
+
             unblockPage();
             $("#board-list-area").data("req", null);
             $("#board-list-area").append(html);
             listLoadEnd(data);
 
             var newCount = $("#board-list-area > div[id|=board-area]").length;
+
+            console.log('type', typeof type)
+            if(type === 'inkiup_ranking' || typeof type === 'undefined' || type === null || type === ''){
+                if(newCount >= 100){
+                    $("#board-list-area").data("end", true);
+                    $(".get_more").addClass('hidden');
+                }
+            }
             if (newCount == count) {
                 $("#board-list-area").data("end", true);
             }

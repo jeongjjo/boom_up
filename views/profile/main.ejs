@@ -12,113 +12,46 @@
             <%-include('../_parts/_header')%>
             <!-- content -->
             <div class="app-width-size container-fluid p-0 m-0" style="background-color:#ffffff" id="mainbody">
-                <!--profile-->
-                <div id="main-hidden-menu">
-                    <div class="d-flex flex-column media nprofile-bg-infobox mb-2"> <!-- pf-userinfo -->
-                        <div class="w-100 h-100">
-                            <% if (Userinfo.BGPhoto == undefined || Userinfo.BGPhoto === null || Userinfo.BGPhoto == "" ) { %>
-                                <img class="nprofile-bg-infobox" src="/img/pro-banner.png"/>
-                            <% } else { %>
-                                <img class="nprofile-bg-infobox" alt="..." src="<%=getPhoto(Userinfo.BGPhoto,0)%>">
-                            <% } %>
+                <div class="main-profile-wrapper">
+                    <div class="flex-fill <% if (Userinfo.photo == undefined || Userinfo.photo === null || Userinfo.photo == "" ) { %> nprofile-bg-photo1 <% } else { %> nprofile-bg-photo1 <% } %> ">
+                        <% if (Userinfo.photo == undefined || Userinfo.photo === null || Userinfo.photo == "" ) { %>
+                            <img class="npf-img-profile target_photo" alt="..." src="/img/pro-image.png" onclick="onprofilePhoto(this, 'new');">
+                        <% } else { %>
+                            <img class="npf-img-profile target_photo" alt="..." src="<%=getPhotoEx(Userinfo.photo,2,0)%>" onclick="onprofilePhoto(this, 'edit');">
+                        <% } %>
+                        <div class="nickname-wrapper" onclick="javascript:void(0);modNick()">
+                            <img src="/img/new/ID_reform.svg"/>
+                            <span class="profile-name"><%= Userinfo ? Userinfo.nickname : '' %></span>
                         </div>
                     </div>
-
-                    <div class="d-flex" style="height:3.5em">
-                        <div class="flex-fill pl-3 <% if (Userinfo.photo == undefined || Userinfo.photo === null || Userinfo.photo == "" ) { %> nprofile-bg-photo1 <% } else { %> nprofile-bg-photo1 <% } %> ">
-                            <% if (Userinfo.photo == undefined || Userinfo.photo === null || Userinfo.photo == "" ) { %>
-                                <img class="mr-3 ml-1 npf-img-profile target_photo" alt="..." src="/img/pro-image.png">
-                            <% } else { %>
-                                <img class="mr-3 ml-1 npf-img-profile target_photo" alt="..." src="<%=getPhotoEx(Userinfo.photo,2,0)%>">
-                            <% } %>
-                        </div>
-                        
-                        <div class="flex-fill text-center main-font-size">
-                            <div class="nprofile-div-height" style="font-weight:bold"><%=Userinfo.power %></div>
-                            <div class="nprofile-div-height">Power</div>
-                        </div>
-                        <div class="flex-fill text-center main-font-size" onclick='location.href="/profile/subUser/t/<%=Userinfo._id %>"'>
-                            <div class="nprofile-div-height" style="font-weight:bold" >
-                                <% if(Userinfo) {%>
-                                    <%=Userinfo.subscriberCount || 0  %>
-                                <% } %>
-                            </div>
-                            <div class="nprofile-div-height"><%= __('FOLLOWER')%></div>
-                        </div>
-
-                        <div class="flex-fill text-center main-font-size mr-5" onclick='location.href="/profile/subUser/f/<%=Userinfo._id %>"'>
-                            <div class="nprofile-div-height" style="font-weight:bold" >
-                                <% if(Userinfo) {%>
-                                    <%=Userinfo.subscribeUserCount || 0  %>
-                                <% } %>
-                            </div>
-                            <div class="nprofile-div-height"><%= __('SUB_ING')%></div>
-                        </div>
+                </div>
+                <div class="main-point-wrapper">
+                    <div class="point-title">
+                        <img src="/img/new/point_badge2.svg"/>
+                        <span>붐업 활동을 통해 얻을 수 있는 포인트</span>
                     </div>
-
-                    <div class="d-flex flex-column pl-3 mb-2">
-                        <div class="mb-1">
-                            <span class="font-weight-bold mr-2"><%= Userinfo ? Userinfo.nickname : '' %></span>
-                            <span><%-getLevelIcon(Userinfo.level,true)%></span>
-                        </div>
-                        <div>
-                            <span class="my-nicknamesub">
-                                <% if(Userinfo && Userinfo.message != "" && Userinfo.message != null ) {%>
-                                    <%=Userinfo.message %>
-                                    <% } else { %>
-                                    <%- __('PROFILE_SELFINFO')%>
-                                    <% } %>
-                            </span>
-                        </div>
+                    <div class="point-content" onclick="event.stopPropagation();location.href='/profile/point/<%=Userinfo._id.toHexString()%>';">
+                        <span class="point"><%=Userinfo.boomPower?Userinfo.boomPower.toLocaleString():0%></span>
+                        <img src="/img/new/profile_right_arrow.svg"/>
                     </div>
-
-                    <% if (_isAuthed) { %>
-                        <div class="pl-3 pr-3 mb-2">
-                            <button class="btn btn-sm nprofile-btn-border nprofile-btn-modify mr-2 <%=isMine?'' : 'hidden'%>" onclick="onGoProfileModify(this, '<%=Userinfo._id %>');"><%= __('PROFILEMODIFY')%></button>
-                            <button class="btn btn-sm nprofile-btn-border nprofile-btn-modify mr-2 <%=isMine?'hidden' : ''%>" id="btnSub" onclick="onsub(this)" data-action="<%= followed ? 'i' : 'd' %>" data-id="<%= Userinfo._id %>" data-nm="<%= Userinfo.nickname %>">
-                                <%= followed ?  __('SUB_ING') : __('SUB_READY1')  %>
-                            </button>
-                            <button class="btn btn-sm nprofile-btn-border nprofile-btn-msg <%=isMine?'' : 'hidden'%>" onclick="onGoMsg();"><img src="/img/mymemo.png"></button>
-                            <button class="btn btn-sm nprofile-btn-border nprofile-btn-msg <%=isMine?'hidden' : ''%>" onclick="location.href = '/chat/chatmsg/0/<%= Userinfo._id.toHexString() %>/<%= Userinfo.nickname %>'"><i class="icon-email align-middle"></i></button>
-                        </div>
-                    <% } %>
-                </div>
-
-                
-                <div id="scroll-fixed-area" class="d-flex text-center nprofile-category-tep pt-3" style="background-color:#fff;">
-                    <div id="tap_post" class="icon-excl-text flex-fill nprofile-category-highlight" onclick="onProfileTap(this, 'post');"><span><%= __('POST')%> </span><span><%=Userinfo.countPost||0%></span></div>
-                    <div id="tap_reply" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'reply');"><span><%= __('REPLY')%> </span><span><%=Userinfo.countComment||0%></span></div>
-                    <div id="tap_updown" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'updown');"><span><%= __('UPDOWN')%> </span><span><%=Userinfo.countVote||0%></span></div>
-                </div>
-                <!--profile-->
-
-                <!--checkbox-->
-                
-                <!--checkbox-->
-
-                <!--ㅂㅣ공개 -->
-                
-                <!--ㅂㅣ공개-->
-            </div>
-            <!--list-->
-            <div class="">
-                <div id="main_list" class="<%=blocked || ( !isMine && shareProfile=='N') ? 'hidden' : '' %>" >
-                    <%- include('../board/layout_list', {board: typeof board !== 'undefined' ? board : null}) -%>
-                </div>
-                <div id="comment_list" class="hidden">
-                    <%- include('../comment/layout_list') -%>
+                    <div class="point-title">
+                        <img src="/img/new/level_badge.svg"/>
+                        <span>붐포인트로 게시물 베팅을 통해 배당금을 받고 레벨UP</span>
+                    </div>
+                    <div class="point-content" onclick="event.stopPropagation();location.href='/profile/level/<%=Userinfo._id.toHexString()%>';">
+                        <span class="point"><%=Userinfo.boomLevel?Userinfo.boomLevel.toLocaleString():0%></span>
+                        <img src="/img/new/profile_right_arrow.svg"/>
+                    </div>
+                    <div class="point-title">
+                        <img src="/img/new/coin_badge.svg"/>
+                        <span>거래소에서 가상화폐로 사용가능한 코인</span>
+                    </div>
+                    <div class="point-content" onclick="event.stopPropagation();location.href='/profile/coin/<%=Userinfo._id.toHexString()%>';">
+                        <span class="point"><%=Userinfo.boomCoin?Userinfo.boomCoin.toLocaleString():0%></span>
+                        <img src="/img/new/profile_right_arrow.svg"/>
+                    </div>
                 </div>
             </div>
-
-            <div class="nodata p-4 m-2 <%=blocked || ( !isMine && shareProfile=='N') ? '' : 'hidden' %> nprofile-list-block">
-                <div>
-                    <i class="icon-excl-area-sm icon-excl"></i>
-                </div>
-                <div class="p-2">
-                    <%= blocked ?  __('BLOCKUSER_PROFILE')  : __('PRIVATE_USER')%>
-                </div>
-            </div>
-            <!--list-->
         </div>
         <%-include('../_parts/_footer')%>
 
@@ -131,7 +64,7 @@
             var ismine = "<%= isMine %>";
             var maintype = "inkiup";
             var g_fliter = "24rank";
-            var limit = 20; 
+            var limit = 20;
             var isBlocked = <%= blocked %>
             var isTap = "post";
 
@@ -155,9 +88,9 @@
                             uploader.start();
                             return false;
                     },
-                    FileUploaded: function (up, file, response) {            
+                    FileUploaded: function (up, file, response) {
                         if($("#action_img").length > 0) {
-                            phototype = "edit";
+                            photoVBtype = "edit";
                         } else {
                             phototype = "new";
                         }
@@ -187,7 +120,7 @@
                 }
             });
 
-            
+
             (function () {
                 setHeader(<%=isMain %> ? '' : 'back', 'more',
                 {
@@ -211,7 +144,7 @@
                                     profileResultPopup(val);
                                 }, 300);
                             });
-                            
+
                         }
                     }
                 });
@@ -284,7 +217,7 @@
                 $("#comment-list-area").addClass("mb-4");
             })();
 
-            
+
             $("#contentbody").naaEvent({
                 main: '#main_list',
                 onMore: () => {
@@ -295,36 +228,32 @@
                 }
             });
 
-            // function getContent() {
-            //     if(isTap == "post") {
-            //         getBoardList({
-            //             kind: 'mycontent',
-            //             targetId: targetid,
-            //             limit: 60
-            //         }, (msg) => {
-            //         });
-            //     } else if (isTap == "reply") {
-            //         getCommentList({
-            //             contentId: targetid,
-            //             sort: "date-down",
-            //             limit: 30,
-            //             isProfile: "myprofile"
-            //         }, () => {
-            //             $("[name=delete-button-group]").hide();
-            //         });
-            //     } else if (isTap == "updown") {
-            //         getBoardList({
-            //             kind: 'myupdown',
-            //             targetId: targetid,
-            //             count: 30,
-            //             limit: 30
-            //         }, () => {
-            //             $(".ismemo").hide();
-            //             $("[name=delete-button-group]").hide();
-            //             unblockPage();
-            //         });
-            //     }
-            // }
+            function modNick(){
+                let nm = prompt('변경할 닉네임을 입력해주세요')
+                if(!onCheckVal(nm)){
+                    onPopup("alert", "<%= __('VALIDATOR_INVALIDNN')%>", function(cb){ });
+                    return;
+                }
+                if (nm.length<2){
+                    onPopup("alert", "<%= __('NICKNAMEDUP')%>", function(cb){ });
+                    return
+                }
+                $.ajax({
+                    type: "put",
+                    url: "/profile/modify",
+                    data: { nickname: nm },
+                    success: function(res) {
+                        if(res.result == "ok") {
+                            location.reload()
+                        } else if(res.result == "dup") {
+                            onPopup("alert", "<%= __('AUTH_ALREADYUSE')%>", function(cb){ });
+                        }
+                    },
+                    error: function(error) {
+
+                    }
+                })
+            }
 
             function myProfileResultPopup(val) {
                 //console.log(val);
@@ -456,12 +385,12 @@
             function onprofilePhoto($this, type) {
                 if(!(<%= _isInApp %>)) {
                     onPopup("alert", "<%= __('AUTH_PROFILEINAPP')%>", function(cb){ });
-                } else {    
+                } else {
                     phototype = type;
                     blockPage();
                     window.Attach && window.Attach.postMessage(JSON.stringify({ count: 1, video: false, iwidth: 1280, iheight: 720, iqual: 95, vqual: 0, vdur: -1, vaud: true }));
                 }
-                
+
             }
 
             function onResultData(result) {
@@ -517,11 +446,11 @@
                     location.href="/profile/main/" + userId
                         <% } %>
             }
-            
+
             function onGoPostDetail($this, id) {
                 var url = window.location.href;
                 var parameters = (url.slice(url.indexOf('?') + 1, url.length)).split('&');
-                var keyvalue 
+                var keyvalue
                 var category="inkiup"
                 for (var i=0; i<parameters.length;i++){
                     keyvalue = parameters[i].split('=');
@@ -530,14 +459,14 @@
                         category=keyvalue[1]
                     }
                 }
-            
-                var pathHash = category 
+
+                var pathHash = category
                 location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id;
             }
 
             function onGoPostDetailComment($this, id) {
                 var pathHash = window.location.hash.replace("#", "");
-                location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id+"?cyn=Y"; 
+                location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id+"?cyn=Y";
             }
 
             // function onGoPostDetail(id) {
@@ -675,7 +604,7 @@
                             unblockPage();
                         });
                     break;
-                    case "updown": 
+                    case "updown":
                         isTap = "updown";
                         $("#main_list").removeClass("hidden");
                         $("#comment_list").addClass("hidden");

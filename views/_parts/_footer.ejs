@@ -1,12 +1,12 @@
 <footer class="position-fixed">
     <div class="w-100 btn-group d-flex flex-wrap align-content-center ">
-        <div class="btn" onclick="goTabMenu('/', 'home')">
-            <i class="icon-home-footer"></i>
+        <div class="btn" onclick="goTabMenu('/?k=inkiup_ranking', 'home')">
+            <img src="/img/new/home.svg">
             <P><%= __('FOOTER_HOME')%></P>
         </div>
         <div class="btn" onclick="goTabMenu('/keep', 'keep')">
-            <i class="icon-keep-footer"></i>
-            <p><%= __('FOOTER_KEEP')%></p>
+            <img src="/img/new/betting.svg">
+            <p><%= __('FOOTER_BETTING')%></p>
         </div>
 
         <!-- <div class="btn displayNone" onclick="onFliter(this)" id="mainFilter">
@@ -15,24 +15,17 @@
         </div> -->
 
         <div class="btn" onclick="onGoWrite();">
-            <i class="newwrite"></i>
+            <img src="/img/new/Write.svg">
         </div>
 
         <div class="btn" onclick="onTabTopshareCheck();">
-            <i class="newshare"></i>
-            <P>Top10공유</P>
+            <img src="/img/new/Alarm.svg">
+            <P><%= __('FOOTER_ALARM')%></P>
         </div>
-        <% if (_isAuthed) {%>
-        <div class="btn" onclick="goTabMenu('/profile/main', 'mypage')">
-            <i class="icon-my-footer"></i>
-            <p><%= __('FOOTER_PROFILE')%></p>
+        <div class="btn" onclick="location.href='/market';">
+            <img src="/img/new/boom_AD.svg">
+            <p><%= __('FOOTER_COIN')%></p>
         </div>
-        <% } else {  %>
-        <div class="btn" onclick="location.href='/auth/login';">
-            <i class="newlogin"></i>
-            <p>Login</p>
-        </div>
-        <% } %>
     </div>
 </footer>
 <script type="text/javascript">
@@ -44,7 +37,7 @@ function goTabMenu(val, type){
         else location.href= val;
         //location.href=val;
     <% } else {  %>
-        if(val!='/' && val!='/search/index/s'){
+        if(val!='/' && val!='/search/index/s' && val!='/?k=inkiup_ranking'){
             onPopup("confirm", "<%- __('NEEDLOGIN')%>", function(cb){
                 if(cb==1){
                     location.href='/auth/login';
@@ -55,25 +48,25 @@ function goTabMenu(val, type){
             else location.href= val;
             //location.href=val;
         }
-        
+
     <% } %>
 }
 
 function onTabTopshareCheck(){
     var val=$("#list_filter").val()||"no"
-    
+
     if(val=="all" || val=="day"){
         share8rank();
     }else if(val=="new"){
-         onPopup("alert", "필터를 '전체인끼' 또는 '일간인끼'로 변경해서 이용해주세요", function(cb){
-        
+         onPopup("alert", "필터를 '전체인끼' 또는 '일간인끼'로 변경해서 이용해주세요", function(cb){f
+
         });
     }else{
         onPopup("alert", "랭킹순위 목록에서만 공유가 가능합니다.", function(cb){
-        
+
         });
     }
-    
+
 }
 
 function onFliter(obj) {
@@ -93,9 +86,9 @@ function onFliter(obj) {
             });
         }
     <% } %>
-    
+
     var text = $("#text_filter").text();
-    
+
     MenuOn(text, (val, tex) => {
         console.log(val, tex);
     });
@@ -108,6 +101,6 @@ function onGoWrite() {
         location.href = url;
     } else {
         onPopup("confirm", "<%- __('NEEDLOGIN')%>", function (cb) { if (cb == 1) { location.href = '/auth/login'; } });
-    } 
+    }
 }
 </script>

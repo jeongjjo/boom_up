@@ -40,6 +40,10 @@ module.exports = async function (user, kind, page, s, limit, keyword, id, share)
         case 'inkiup': {
             break;
         }
+        case 'inkiup_ranking': {
+            kind = 'inkiup';
+            break;
+        }
         case 'event': {
             where = { finish: false };
             break;

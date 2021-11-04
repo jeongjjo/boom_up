@@ -1,5 +1,5 @@
 <% for (i in data) {
-    var rank = (sort == '24rank' || sort == 'allrank') || (kind == "search") ? (page*1)+(i*1)+1 : 0
+    var rank = (sort == '24rank' || sort == 'allrank') || (sort == "betting") || (kind == "search") ? (page*1)+(i*1)+1 : 0
 %>
 <%- include('../board/item', {data: data[i], idx: i, rank: rank}) -%>
 <% } %>

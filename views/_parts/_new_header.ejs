@@ -1,0 +1,182 @@
+<header class="position-fixed d-flex flex-row header-wrapper">
+    <div class="header-left">
+        <div class="text-center align-self-center  header-side-width">
+            <% var backFlag %>
+            <% if (_isAuthed && !backFlag) {%>
+                <div class="profile" onclick="goTabMenu('/profile/main', 'mypage')">
+                    <img src="<%=getPhotoEx(user.photo,3,1, '/img/new/profile.png')%>" class="img-profile2" alt="profile">
+                </div>
+            <% } else if (backFlag) {%>
+                <div class="back_btn" onclick="history.go(-1)">
+                    <img src="/img/new/arrow_back.svg"/>
+                </div>
+            <% } else {  %>
+                <div class="profile" onclick="location.href='/auth/login';"></div>
+            <% } %>
+        </div>
+    </div>
+    <!--<div class="centre flex-fill text-center align-self-center"><span onclick="event.stopPropagation(); $('.app').animate({scrollTop: '0'}, 200);" class="<%= title && title.length > 0 ? '' : 'icon-inkiup' %>"><%= title && title.length > 0 ? title : ''%></span></div>-->
+    <div class="header-center">
+        <% if(title && title.length > 0) { %>
+            <div class="centre flex-fill text-center align-self-center font-weight-bold">
+                <% if(title && title.length > 0) { %>
+                    <span onclick='location.href="/"' style="line-height:33px;">
+                        <%= title%>
+                    </span>
+                <% } else { %>
+                    <i class="logotitle" onclick="goTabMenu('/?k=inkiup_ranking', 'home')"></i>
+                <% } %>
+            </div>
+        <% } else { %>
+            <div class="block">
+                <ul id="ticker">
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>1.</span> 코레일</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>2.</span> 국민건강보험공단</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>3.</span> 11번가 아마존</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>4.</span> 재난지원금</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>5.</span> 연우</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>6.</span> 희망회복자금</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>7.</span> 엔씨소프트 주가</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>8.</span> 홍천기</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>9.</span> 5차 재난지원금</a></li>
+                    <li><a href="javascript:void(0);goTabMenu('/search/index/s', 'search')"><span>10.</span> 국민비서</a></li>
+                </ul>
+            </div>
+        <% } %>
+    </div>
+    <div class="header-right" style="min-width:44px">
+        <% if (_isAuthed){ %>
+            <div class="text-center align-self-center  header-side-width-right auth">
+        <% }else{ %>
+            <div class="text-center align-self-center  header-side-width-right">
+        <% } %>
+            <% var searchFlag%>
+            <% if (_isAuthed && !searchFlag) {%>
+                <div class="boomInfo">
+                    <img src="/img/new/point_badge.svg"/>
+                    <% let day
+                       if(moment().day()-7 === 0){
+                        day = 'day'
+                       } else {
+                        day = moment().day()-7
+                       }
+                    %>
+                    <span class="point"><%= user.boomPower?user.boomPower.toLocaleString():0 %></span><span class="day">D-<%= day%></span>
+                </div>
+            <% } else if (searchFlag) {%>
+                <div class="text-center align-self-center">
+                </div>
+            <% } %>
+        </div>
+    </div>
+</header>
+<%- include('_popup') -%>
+<script type="text/javascript">
+    var setHeader = (left, right, cb) => {
+    if (left != 'hidden') {
+        switch(left) {
+            case "back" :
+                $('.left .icon-arrow-left').removeClass('hidden');
+                break;
+            case "cancel" :
+                $('.left .left-cancel').removeClass('hidden');
+                break;
+            default:
+                $('.left .icon-left-menu').removeClass('hidden');
+                break;
+        }
+    }}
+    var ticker = function()
+    {
+        timer = setTimeout(function(){
+            $('#ticker li:first').animate( {marginTop: '-20px'}, 400, function()
+            {
+                $(this).detach().appendTo('ul#ticker').removeAttr('style');
+            });
+            ticker();
+        }, 2000);
+    };
+    // 4 끝
+    ticker();
+    var _auth = <%= _isAuthed %>;
+    function goTabMenu(val, type){
+        cashePageClearAll();
+        <% if (_isAuthed) {%>
+        if(type == "search") location.href= val+"/"+moment().valueOf();
+        else location.href= val;
+        //location.href=val;
+
+        <% } else {  %>
+        if(val!='/' && val!='/search/index/s' && val!='/?k=inkiup_ranking'){
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function(cb){
+                if(cb==1){
+                    location.href='/auth/login';
+                }
+            });
+        }else{
+            if(type == "search") location.href= val+"/"+moment().valueOf();
+            else location.href= val;
+            //location.href=val;
+        }
+
+        <% } %>
+    }
+</script>
+<style>
+    .profile{
+        width: 27.4px;
+        height: 27.4px;
+        border-radius: 100%;
+        background-image: url('/img/new/profile.png');
+        margin-left: 16px;
+    }
+    .profile>img{
+        width:100%;
+        height:auto;
+    }
+    .header-side-width{
+        width: 44px !important;
+    }
+    .header-side-width-right{
+        width: 1px;
+    }
+    .header-side-width-right.auth{
+        width: 77px;
+        padding-left: 6px;
+    }
+    .boomInfo{
+        position: relative;
+        width: 77px;
+        height: 31px;
+        vertical-align:top;
+    }
+    .boomInfo img{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 50%;
+    }
+    .boomInfo .point{
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        font-size:14px;
+        letter-spacing: -0.75px;
+        color: #1C1C1E;
+    }
+    .boomInfo .day{
+        position: absolute;
+        font-size:10px;
+        right: 12px;
+        bottom: 2px;
+        letter-spacing: -0.5px;
+        color:#8E8E93;
+    }
+    .none{display:none}
+    #ticker{float:left;width:150px;}
+    .navi{float:right;}
+    .block {border:1.5px solid #FF3B30; padding:0 5px; height:100%; overflow:hidden; background:#fff; width:100%; font-size:12px;float:left;}
+    .block ul,
+    .block li {margin:0; padding:0; list-style:none;}
+    .block li a {display:block; height:100%; line-height:30px; color:#555; font-weight:bold; text-decoration:none;}
+</style>

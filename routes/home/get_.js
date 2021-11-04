@@ -9,7 +9,7 @@ module.exports = [null, null, async function (req, res, next) {
 
     var setting = await db.get("syscode", {sysCode: "02", use: true});
     console.log(setting.code);
-    var board = await getBoard(req.user, req.query.k || 'inkiup', 0, req.query.f || setting.code, 10, '', null, req.query.s);
+    var board = await getBoard(req.user, req.query.k || 'inkiup_ranking', 0, req.query.f || setting.code, 10, '', null, req.query.s);
     var concernKeywordMy = await db.getList('concernKeywordMy', {"userId":userid}, 0, 0, {text:1});
 
     //인기키워드
@@ -46,6 +46,8 @@ module.exports = [null, null, async function (req, res, next) {
         concernKeywordMy:concernKeywordMy,
         concernKeywordInki:concernKeywordInki,
         setting: setting.code,
-        popen
+        popen,
+        type:req.query.k||'inkiup_ranking',
+        viewRanking:req.query.v
     });
 }];

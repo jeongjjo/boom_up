@@ -13,84 +13,151 @@
         <div class="app header footer">
             <%-include('../_parts/_header')%>
             <!-- Content -->
-            <div class="d-flex flex-column">
+            <div class="detail-section">
                 <input type="hidden" name="id" value="<%= detail._id%>" />
                 <input type="hidden" name="userid" value="<%= detail.userId%>" />
                 <input type="hidden" name="name" value="<%= detail.nickname%>" />
                 <input type="hidden" name="title" value="<%= detail.title%>" />
                 <input type="hidden" name="uid" />
                 <input type="hidden" name="cid" />
+                <div class="detail-header-section">
+                    <div class="detail-header-title">
+                        <span onclick="event.stopPropagation();goLineup('<%=detail.lineupKey%>');" class="post-lineup-<%= detail.lineupKey%> post-lineup">
+                            [<%= detail.lineup.lineup%>]
+                        </span>
+                        <span class="post-title"><%= detail.title%></span>
 
-                <div class="d-flex flex-row flex-shrink-1 ml-3 mr-3 mt-2 mb-1 align-slef-center">
-                    <div style="min-width:17%"><span onclick="event.stopPropagation();goLineup('<%=detail.lineupKey%>');" class="post-lineup-<%= detail.lineupKey%> " style="<%= typeof detail.lineup.color !== 'undefined' && typeof detail.lineup.background !== 'undefined' ? 'color:'+detail.lineup.color+'; background-color: '+detail.lineup.background+';' : '' %>"><%= detail.lineup.lineup%></span></div>
-                    <div class="ml-1 mr-1"><%= detail.title%></div>
-                    <div class="ml-auto"><i id="board-<%= detail._id %>-keep" class="<% if (mykeep) { %> icon-keep-fill text-warning <% } else { %> icon-keep <% } %>clock-icon align-middle" onclick="putKeep('<%= detail._id%>');"></i> <% if(_isAdmin){ %><span style="font-size:12px"><%=detail.readCount%></span><%}%> </div>
-                </div>
-                <div class="flex-shrink-1 ml-3 mr-3 list-postdesc-title">
-
-                </div>
-                <div class="d-flex flex-row ml-3 mr-3 mt-2 pb-2  detail-div-line">
-                    <div onclick='event.stopPropagation();popupProfile("<%= detail.userId%>")'>
-                        <img src="<%=getPhotoEx(userinfo.photo,3,1, '/img/pro-image.png')%>" class="img-profile" alt="profile"></div>
-                    <div class="d-flex flex-column flex-grow-1">
-                        <div class="d-flex flex-row">
-                            <div><span class="post-nickname" onclick='event.stopPropagation();popupProfile("<%= detail.userId%>")'><%= detail.nickname%></span></div>
-                            <div><%-getLevelIcon(userinfo.level,false)%></div>
-                            <div class="ml-0 ml-auto"><i class="icon-time postdesc-votecount-l"><%= detail.createTS.formatted%></i></div>
-                        </div>
-                        <div class="d-flex flex-row pt-1">
-                            <span class="post-user-memo"><%=usermemo%></span>
-                        </div>
+    <!--                     <div class="ml-auto"><i id="board-<%= detail._id %>-keep" class="<% if (mykeep) { %> icon-keep-fill text-warning <% } else { %> icon-keep <% } %>clock-icon align-middle" onclick="putKeep('<%= detail._id%>');"></i> <% if(_isAdmin){ %><span style="font-size:12px"><%=detail.readCount%></span><%}%> </div> -->
                     </div>
-                    <!-- <div class="flex-grow-1">작성자정보</div> -->
+    <!--                 <div class="flex-shrink-1 ml-3 mr-3 list-postdesc-title"> -->
+
+    <!--                 </div> -->
+                    <div class="detail-header-writer">
+    <!--                     <div onclick='event.stopPropagation();popupProfile("<%= detail.userId%>")'> -->
+    <!--                         <img src="<%=getPhotoEx(userinfo.photo,3,1, '/img/pro-image.png')%>" class="img-profile" alt="profile"> -->
+    <!--                     </div> -->
+                                <div class="writer-wrapper">
+                                    <span class="post-nickname" onclick='event.stopPropagation();popupProfile("<%= detail.userId%>")'><%= detail.nickname%></span>
+                                    <div class="post-between-wrapper"><div class="post-between-dot"></div></div>
+                                    <span class="post-day"><%= detail.createTS.formatted%></span>
+                                    <div class="voting-wrapper detail-voting-wrapper">
+                                    <div class="voting-common">
+                                        <div class="voting-info up">
+                                            <img src="/img/new/votingUp.svg"/>
+                                            <span><%= detail.votingUp%></span>
+                                        </div>
+                                    </div>
+                                    <div class="voting-common">
+                                        <div class="voting-info down">
+                                            <img src="/img/new/votingDown.svg"/>
+                                            <span><%= detail.votingDown%></span>
+                                        </div>
+                                    </div>
+                                </div>
+    <!--                             <div><%-getLevelIcon(userinfo.level,false)%></div> -->
+    <!--                             <div class="ml-0 ml-auto"></div> -->
+    <!--                         <div class="d-flex flex-row pt-1"> -->
+    <!--                             <span class="post-user-memo"><%=usermemo%></span> -->
+    <!--                         </div> -->
+                        <!-- <div class="flex-grow-1">작성자정보</div> -->
+                    </div>
                 </div>
             </div>
 
 
-            <div class="ml-3 mr-3 mt-2">
+            <div class="content-wrapper">
                 <div class="list-postdesc-contents">
                     <%-detail.content%>
                 </div>
-                <div class="d-flex justify-content-center mt-2 mb-2 pb-2 detail-div-line " id="detail-vote-line">
-                    <div id="board-<%= detail._id.toHexString()%>-button-area" class="d-flex group_voting <%= (myvote ? (myvote[0].type == 'UP' ? 'up' : 'down' ) : '')%>">
-                        <div class="mr-2">
-                            <!-- <i id="board-<%= detail._id.toHexString()%>-vote-up" style="font-size:12px" class="icon-up post-up bounce-up post-up-down" onclick="onBoardVotiong('<%= detail._id%>', 'UP');"><%= detail.votingUp%></i> -->
-                            <i id="board-<%= detail._id %>-vote-up" onclick="onBoardVotiong('<%= detail._id%>', 'UP');" class="newdescarrowup<%= (myvote ? (myvote[0].type == 'UP' ? '-sel' : '' ) : '')%> post-up-down "></i>
-                            <div id="board-<%= detail._id %>-vote-up-count" class="newvoteupcnt text-center"><%=countDisplay(detail.votingUp)%></div>
-                        </div>
-                        <div class="ml-4">
-                            <!--  <i id="board-<%= detail._id.toHexString()%>-vote-down" style="font-size:12px"  class="icon-down post-down bounce-down post-up-down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');"><%= detail.votingDown%></i> -->
-                            <i id="board-<%= detail._id %>-vote-down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');" class="newdescarrowdown<%= (myvote ? (myvote[0].type == 'DOWN' ? '-sel' : '' ) : '')%> post-up-down "></i>
-                            <div id="board-<%= detail._id %>-vote-down-count" class="newvotedowncnt text-center"><%=countDisplay(detail.votingDown)%></div>
-                        </div>
+            </div>
+            <div class="detail-vote-wrapper">
+                <div class="detail-vote-title">
+                    이 글을 평가해주세요
+                </div>
+                <div class="detail-vote-btn-group">
+                    <div class="detail-vote-btn up" onclick="onBoardVotiong('<%= detail._id%>', 'UP');">
+                        <img src="/img/new/vote_up.svg">
+                        <span class="vote-title">좋아요</span>
+                        <span class="vote-count up"><%= detail.votingUp%></span>
+                    </div>
+                    <div class="detail-vote-between"></div>
+                    <div class="detail-vote-btn down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');">
+                        <img src="/img/new/vote_down.svg">
+                        <span class="vote-title">별로에요</span>
+                        <span class="vote-count down"><%= detail.votingDown%></span>
                     </div>
                 </div>
+<!--                 <div class="d-flex justify-content-center mt-2 mb-2 pb-2 detail-div-line " id="detail-vote-line"> -->
+<!--                     <div id="board-<%= detail._id.toHexString()%>-button-area" class="d-flex group_voting <%= (myvote ? (myvote[0].type == 'UP' ? 'up' : 'down' ) : '')%>"> -->
+<!--                         <div class="mr-2"> -->
+<!--                              --><!-- <i id="board-<%= detail._id.toHexString()%>-vote-up" style="font-size:12px" class="icon-up post-up bounce-up post-up-down" onclick="onBoardVotiong('<%= detail._id%>', 'UP');"><%= detail.votingUp%></i> -->
+<!--                             <i id="board-<%= detail._id %>-vote-up" onclick="onBoardVotiong('<%= detail._id%>', 'UP');" class="newdescarrowup<%= (myvote ? (myvote[0].type == 'UP' ? '-sel' : '' ) : '')%> post-up-down "></i> -->
+<!--                             <div id="board-<%= detail._id %>-vote-up-count" class="newvoteupcnt text-center"><%=countDisplay(detail.votingUp)%></div> -->
+<!--                         </div> -->
+<!--                         <div class="ml-4"> -->
+<!--                              --><!--  <i id="board-<%= detail._id.toHexString()%>-vote-down" style="font-size:12px"  class="icon-down post-down bounce-down post-up-down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');"><%= detail.votingDown%></i> -->
+<!--                             <i id="board-<%= detail._id %>-vote-down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');" class="newdescarrowdown<%= (myvote ? (myvote[0].type == 'DOWN' ? '-sel' : '' ) : '')%> post-up-down "></i> -->
+<!--                             <div id="board-<%= detail._id %>-vote-down-count" class="newvotedowncnt text-center"><%=countDisplay(detail.votingDown)%></div> -->
+<!--                         </div> -->
+<!--                     </div> -->
+                </div>
             </div>
-            <div class="mt-3"></div>
-            <!-- 핫잉슈 -->
-            <div class="ml-3 mr-3">
-                <div class="hotissue-title mb-1"> <% if(_isAuthed){ %>핫이슈 추천글<% }else{ %>핫이슈 인끼글<% } %></div>
-                <% for(var i=0;i < hotissuelist.length ; i++) { %>
-                <div class="hotissue-content mb-1" onclick="onGoPostDetail(this, '<%=hotissuelist[i]._id%>')""><%=hotissuelist[i].title.length>30?hotissuelist[i].title.substring(0,30)+"...":hotissuelist[i].title%></div>
-                <% } %>
-            </div>
-            
             <!-- 댓글 -->
-            <div class="d-flex flex-column">
-                <div class="d-flex flex-row list-postdesc-replytitle">
-                    <div class="mr-auto d-flex justify-content-center">
-                        <span class="reply-titleleft mr-2"><%= __('DETAIL_COMMENTCOUNT')%> (<span id="comment_count"><%= detail.comment%></span>)</span>
-                        <span onclick="onCommentReload(this);"><i class="icon-reload-footer"></i></span>
-                    </div>
-                    <div class="d-flex justify-content-center" id="btn_rank" onclick="onRankUpDown(this)">
-                        <i class="icon-up-slim i-rank reply-arrow-size align-item-center" style="margin-top:2px"></i><span class="ml-1 reply-titleright"><%= __('DETAIL_RANK')%></span>
-                    </div>
-                    <div class=" d-flex justify-content-center ml-3 mr-3" style="margin-top:2px"><img src="/img/bar.png" class="reply-bardiv"></div>
-                     <div class="d-flex justify-content-center" id="btn_newest" onclick="onNewest(this)">
-                        <i class="icon-updown-slim i-newest reply-arrow-size" style="margin-top:2px"></i><span class="ml-1 reply-titleright"><%= __('DETAIL_NEWEST')%></span>
+            <!-- 댓글 입력 -->
+            <div class="comment-write-wrapper">
+                <div class="comment-title">
+                    <div class="title">댓글 <%=detail.comment%></div>
+                    <img class="comment-arrow" src="/img/new/reply_arrow_down.svg" onclick="toggleArea()"/>
+                </div>
+                <div class="comment-line"></div>
+                <div class="comment-input" onclick="openPop()">
+                    댓글을 입력해주세요
+                </div>
+            </div>
+            <div id="popuplayerAdv-betting" class="hidden position-fixed" onclick="event.stopPropagation();">
+                <div class="popup-layer" onclick="event.stopPropagation();">
+                    <header class="position-fixed d-flex flex-row" style="padding:22px 0;">
+                        <div class="left d-flex default-header-left">
+                            <div class="text-center align-self-center  header-side-width">
+                                <div id="idHeaderLeft" class="header-arrow-left" onclick="closePopBet()"></div>
+                            </div>
+                        </div>
+                        <div class="centre flex-fill text-center align-self-center font-weight-bold">
+                            <span>
+                                베팅 하기
+                            </span>
+                        </div>
+                    </header>
+                    <div class="popup-bottom">
+                        <div class="main-title">하단의 버튼을 좌우로 움직여<br>베팅가를 정하세요.</div>
+                        <div class="boom-power">사용가능한 붐포인트 : <input type="text" class="point" readonly style="border:0; color:#AEAEB2; font-weight:bold;" value="<%=user.boomPower?user.boomPower:0%>"></div>
+                        <div id="slider"></div>
+                        <input type="text" class="betting-point" readonly style="border:0; color:#3C3C3C;" value="0">
+                        <div class="betting-btn"><input type="text" class="betting-point" readonly style="border:0; color:#FFF;" value="0">포인트 베팅하기</div>
                     </div>
                 </div>
-
+            </div>
+            <div id="popuplayerAdv-comment" class="hidden position-fixed" onclick="event.stopPropagation();">
+                <div class="popup-layer" onclick="event.stopPropagation();">
+                    <header class="position-fixed d-flex flex-row" style="padding:22px 0;">
+                        <div class="left d-flex default-header-left">
+                            <div class="text-center align-self-center  header-side-width">
+                                <div id="idHeaderLeft" class="header-arrow-left" onclick="closePop()"></div>
+                            </div>
+                        </div>
+                        <div class="centre flex-fill text-center align-self-center font-weight-bold">
+                            <span>
+                                댓글 작성
+                            </span>
+                        </div>
+                    </header>
+                    <div class="popup-bottom">
+                        <textarea class="comment-text" id="input_comment" placeholder="2글자 이상 입력해주세요." onkeyup="lengthCheck()"></textarea>
+                        <div class="submit-btn">댓글 남기기</div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-column">
                 <%- include('../comment/layout_list') -%>
             </div>
             <!-- Content -->
@@ -120,8 +187,14 @@
                 </ul>
             </div>
         </div>
-
-        <%- include('../_parts/_footer_detail') -%>
+        <% if(_isAuthed) {%>
+        <footer class="position-fixed betting-btn-wrapper">
+            <div class="footer-betting-btn" onclick="openPopBet()">
+                이 글에 베팅하기
+            </div>
+        </div>
+        <% } %>
+        <%- include('../_parts/_footer') -%>
 
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
         <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
@@ -135,6 +208,65 @@
             var commentyn = "<%= cyn %>";
             var isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent) && !window.MSStream;
             var isAOS = /Android/i.test(navigator.userAgent);
+            let userPower = Math.floor(parseInt('<%= user.boomPower?user.boomPower:0 %>')/1000)*1000||0
+            function openPopBet(){
+                let data = {
+                    cId:'<%= detail._id%>',
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '/bettingCheck',
+                    data: data,
+                     success: function (req) {
+                        if(req.data > 0){
+                            alert('이미 베팅한 게시물 입니다.')
+                            return
+                        }
+                        $('#popuplayerAdv-betting').removeClass('hidden')
+                        $( ".point" ).val(userPower);
+                    }, error: function (error) {
+                        console.log(error);
+                    }
+                });
+
+            }
+            function closePopBet(){
+                $('#popuplayerAdv-betting').addClass('hidden')
+            }
+            $( "#slider" ).slider({
+              value:0,
+              min: 0,
+              max: userPower,
+              step: 1000,
+              slide: function( event, ui ) {
+                $( ".point" ).val(userPower - ui.value);
+                $( ".betting-point").val(ui.value);
+                if(ui.value > 0){
+                    $('.betting-btn').addClass('betting-on')
+                }else{
+                    $('.betting-btn').removeClass('betting-on')
+                }
+              }
+            });
+            $( ".point" ).val($( "#slider" ).slider("value"));
+            $('.betting-btn').on('click', function(){
+                //console.log($('.betting-point').val());
+                let data = {
+                    cId:'<%= detail._id%>',
+                    boomPower: $('.betting-point').val()
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '/betting',
+                    data: data,
+                     success: function (req) {
+                        closePopBet();
+                        location.reload();
+                    }, error: function (error) {
+                        console.log(error);
+                    }
+                });
+            });
 
             <%if (!_isInApp) {%>
                 var popuplayerAdvYN = getCookie('popuplayerAdv');
@@ -146,7 +278,7 @@
 
                 $(function () {
 
-                    
+
                     $("#idFooterKeep").attr("onclick","putKeep('<%= detail._id%>')");
                     <% if (mykeep) { %>
                     $("#idFooterKeep i").removeClass("icon-keep-footer").addClass("icon-keep-fill text-warning");
@@ -176,7 +308,7 @@
                     });
 
                     onCommentList("ranking-up");
-                    
+
                     <% if (backchangeuse) { %>
                         $("#idHeaderLeft").attr('onclick', '').unbind('click');
                         $("#idHeaderLeft").on("click", function () {
@@ -186,7 +318,7 @@
                     <% } %>
 
                     isScrollEvent();
-                    
+
                     setMydetailMenu("pushmsg",'<%=detail.pushmsg?'알람 끄기':'알람 켜기' %>');
 
                     $("#idHeaderLeft").attr("onclick","goBackBefore()")
@@ -202,7 +334,7 @@
                     var sh = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).prop('scrollHeight');
                     if($(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop() <= 0) {
                         $("#comm-input-area").removeClass("hidden");
-                        $("footer").removeClass("hidden");
+                        //$("footer").removeClass("hidden");
                         //$("#comm-more-area").removeClass("hidden");
                         
                         $("#comm-btn-area").addClass("hidden");
@@ -213,7 +345,7 @@
                         
                         // $("#comm-btn-area").removeClass("hidden");
                         $("#comm-input-area").removeClass("hidden");
-                        $("footer").removeClass("hidden");
+                        //$("footer").removeClass("hidden");
                         //$("#comm-more-area").removeClass("hidden");
                         
                         $("#comm-btn-area").addClass("hidden");
@@ -226,13 +358,13 @@
                     } else if($(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop() < scrollHeight){ 
                         //업 스크롤
                         $("#comm-input-area").removeClass("hidden");
-                        $("footer").removeClass("hidden");
-                        //$("#comm-more-area").removeClass("hidden");
+                        //$("footer").removeClass("hidden");
+                        //$("#comm-more-area").removeClass("1");
                         
                         $("#comm-btn-area").addClass("hidden");
                     } else {
                         $("#comm-input-area").addClass("hidden");
-                        $("footer").addClass("hidden");
+                        //$("footer").addClass("hidden");
                         //$("#comm-more-area").addClass("hidden");
                         
                         $("#comm-btn-area").removeClass("hidden");
@@ -250,13 +382,14 @@
 
 
             function goBackBefore(){
-                var t=$("textarea.form-control.input_msg").val();
+                goBack();
+                /*var t=$("textarea.form-control.input_msg").val();
                 
                 if(t!=""){
                     onPopup("confirm", "작성중인 댓글이 있습니다<br>계속 진행 하시겠습니까?", function (cb) { if (cb == 1) { goBack(); } });
                 }else{
                     goBack();
-                }
+                }*/
             }
             function onGoPostDetail($this, id) {
                 var pathHash='<%=pathhash%>>'

@@ -189,5 +189,17 @@ module.exports = {
             console.error(e);
         }
         return null;
+    },
+    getIndexData: async function (db, index) {
+        try {
+            var coll = mongodb.db(db).find();
+            var sort = {_id: -1}
+            sort && coll.sort(sort);
+            coll.limit(2)
+            var list = await coll.toArray();
+            return list[index] || "";
+        } catch (e) {
+            console.error(e);
+        }
     }
 };

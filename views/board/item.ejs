@@ -19,7 +19,7 @@
         <% if (data.blockUser || data.block) { %>
             <div class="p-0 m-0 blocked_list _search flex-grow-1" id="temp_block">
                 <div class="blocked_post_list d-flex justify-content-center p-3">
-                    <i class="icon-block block_icon_sm mr-2 "></i> 
+                    <i class="icon-block block_icon_sm mr-2 "></i>
                     <span class="blindmsg">
                     <% if (data.block) { %>
                         <%= __('REPORT_POST')%>
@@ -30,72 +30,99 @@
                 </div>
             </div>
         <% } else { %>
-            <div id="board-<%= data._id %>-vote-group" class="flex-grow-0 flex-shrink-1 list-post-vote <%= data.vote == 'UP' ? 'up' : (data.vote == 'DOWN' ? 'down' : '') %>">
-                <div class="d-flex flex-column h-100 pb-2">
-                    <div class="d-flex flex-column flex-grow-0 flex-shrink-1 align-self-center main-font-size">
-                        <i id="board-<%= data._id %>-vote-up" onclick="onBoardVoting(event, '<%= data._id %>', 'UP');" class="newlistarrowup<%= data.vote == 'UP' ? '-sel' : '' %> post-up-down"></i>
-                        <div id="board-<%= data._id %>-vote-up-count" class="newvoteupcnt text-center mt-1"><%=countDisplay(data.votingUp)%></div>
-                    </div>
-                    <div class="flex-grow-1 flex-shrink-1 align-items-center d-flex justify-content-center desc-minheight">
-                        <!-- <span class="post-rank"><%= typeof rank !== 'undefined' && rank > 0 ? (rank > 9 ? rank : rank + "위") : '' %></span>  -->
-                    </div>
-                    <div class="flex-grow-0 flex-shrink-1 align-self-center main-font-size">
-                        <div id="board-<%= data._id %>-vote-down-count" class="newvotedowncnt text-center"><%=countDisplay(data.votingDown)%></div>
-                        <i id="board-<%= data._id %>-vote-down" onclick="onBoardVoting(event, '<%= data._id %>', 'DOWN');" class="newlistarrowdown<%= data.vote == 'DOWN' ? '-sel' : '' %> post-up-down "></i>
-                    </div>
-                </div>
-            </div>
+<!--             <div id="board-<%= data._id %>-vote-group" class="flex-grow-0 flex-shrink-1 list-post-vote <%= data.vote == 'UP' ? 'up' : (data.vote == 'DOWN' ? 'down' : '') %>"> -->
+<!--                 <div class="d-flex flex-column h-100 pb-2"> -->
+<!--                     <div class="d-flex flex-column flex-grow-0 flex-shrink-1 align-self-center main-font-size"> -->
+<!--                         <i id="board-<%= data._id %>-vote-up" onclick="onBoardVoting(event, '<%= data._id %>', 'UP');" class="newlistarrowup<%= data.vote == 'UP' ? '-sel' : '' %> post-up-down"></i> -->
+<!--                         <div id="board-<%= data._id %>-vote-up-count" class="newvoteupcnt text-center mt-1"><%=countDisplay(data.votingUp)%></div> -->
+<!--                     </div> -->
+<!--                     <div class="flex-grow-1 flex-shrink-1 align-items-center d-flex justify-content-center desc-minheight"> -->
+<!--                          --><!-- <span class="post-rank"><%= typeof rank !== 'undefined' && rank > 0 ? (rank > 9 ? rank : rank + "위") : '' %></span>  -->
+<!--                     </div> -->
+<!--                     <div class="flex-grow-0 flex-shrink-1 align-self-center main-font-size"> -->
+<!--                         <div id="board-<%= data._id %>-vote-down-count" class="newvotedowncnt text-center"><%=countDisplay(data.votingDown)%></div> -->
+<!--                         <i id="board-<%= data._id %>-vote-down" onclick="onBoardVoting(event, '<%= data._id %>', 'DOWN');" class="newlistarrowdown<%= data.vote == 'DOWN' ? '-sel' : '' %> post-up-down "></i> -->
+<!--                     </div> -->
+<!--                 </div> -->
+<!--             </div> -->
             <div class="flex-grow-1 flex-shrink-1">
+                <div class="voting-wrapper">
+                    <% if(rank <= 5) {%>
+                        <div class="voting-rank hidden"><span><%= rank %></span></div>
+                    <% }else{ %>
+                        <div class="voting-rank other hidden"><span><%= rank %></span></div>
+                    <% } %>
+                <% if (data.votingUp === data.votingDown) { %>
+                    <div class="voting-common">
+                        <div class="voting-info up">
+                            <img src="/img/new/votingUp.svg"/>
+                            <span><%= data.votingUp%></span>
+                        </div>
+                    </div>
+                    <div class="voting-common">
+                        <div class="voting-info down">
+                            <img src="/img/new/votingDown.svg"/>
+                            <span><%= data.votingDown%></span>
+                        </div>
+                    </div>
+                <% }else if(data.votingUp > data.votingDown){ %>
+                    <div class="voting-common">
+                        <div class="voting-info up">
+                            <img src="/img/new/votingUp.svg"/>
+                            <span><%= data.votingUp%></span>
+                        </div>
+                    </div>
+                <% }else{ %>
+                    <div class="voting-common">
+                        <div class="voting-info down">
+                            <img src="/img/new/votingDown.svg"/>
+                            <span><%= data.votingDown%></span>
+                        </div>
+                    </div>
+                <% } %>
+                </div>
                 <div class="list_margin_left text-break list-post-title"  onclick="<% if (kind == 'event') { %>onGoEventDetail(this, '<%=data._id%>');<%}else{%> <% if (!data.blockUser && !data.block) { %> onGoPostDetail(this, '<%=data._id%>');<%}%><%}%>">
                     <span class="warn_text"></span>
+                    <% data.lineup = data.lineup || {}; %>
+                    <span class="post-lineup-<%=data.lineupKey%>">[<%= data.lineup.lineup %>]</span>
                     <span class="main-data-title">
                     <% if (data.title.length>34){ %>
                         <%- data.title.substring(0,34) %>...
                     <% } else { %>
                         <%- data.title %>
-                    <% } %></span>
-                    <span class="post-recount"> (<%= data.comment %>)</span>
-                </div>
-                <div class="d-flex">
-                    <div class="align-self-center">
-                        <span class="icon-time post-time-icon"></span>
-                        <span class="post-time ">
-                        <% if (moment().add(-3,'d').valueOf()>data.createTS ){ %>
-                            <%= moment(data.createTS).format("MM/DD") %>
-                        <% } else { %>
-                            <%= fn_dateTimeToFormatted(data.createTS).formatted %>
-                        <% } %>
-                        </span>
-                        <% data.lineup = data.lineup || {}; %>
-                        <span class="ml-4 mr-4 post-lineup-<%=data.lineupKey%>" style="<%= typeof data.lineup.color !== 'undefined' && typeof data.lineup.background !== 'undefined' ? 'color:'+data.lineup.color+'; background-color: '+data.lineup.background+';' : '' %>" ><%= data.lineup.lineup %></span>
-                    </div>
-                    <div class="flex-grow-1 ">
-                        <span id="board-<%= data._id %>-keep" onclick="putKeep('<%= data._id %>')" class="post-keep-icon clock-icon align-middle icon-keep<%=data.keep ? '-fill text-warning' : ''%> "></span>
-                        <% if(_isAdmin){ %><span style="font-size:12px"><%=data.readCount%></span><%}%>
-                    </div>
-                </div>
-                <div class="d-flex list-post-profile">
-                    <div class="d-flex">
-                        <div>
-                            <img src="<%= getPhotoEx(data.userPhoto,3,1,'/img/pro-image.png') %>" class="img-profile" alt="">
-                        </div>
-                        <div class="d-flex align-self-center"><span class="post-nickname "><span class="warn_text"></span><%= data.nickname %></span><div><span><%-getLevelIcon(data.userLevel,false)%></span></div></div>
-                    </div>
-                    <% if (_isAuthed && data.userMemo!="" ) { %>
-                    <div class="flex-grow-1 align-self-center ismemo">
-                        <span data-toggle="tooltip" data-placement="bottom" title="<%=data.userMemo%>">
-                            <i class="icon-user-memo-area icon-user-memo" ></i>
-                        </span>
-                    </div>
                     <% } %>
+                    </span>
+                </div>
+                <div class="d-flex post-sub-wrapper">
+                    <span class="post-time">
+                    <% if (moment().add(-3,'d').valueOf()>data.createTS ){ %>
+                        <%= moment(data.createTS).format("MM/DD") %>
+                    <% } else { %>
+                        <%= fn_dateTimeToFormatted(data.createTS).formatted %>
+                    <% } %>
+                    </span>
+                    <div class="post-between-wrapper"><div class="post-between-dot"></div></div>
+                    <span class="post-recount">댓글 <%= data.comment %></span>
+                    <div class="post-between-wrapper"><div class="post-between-dot"></div></div>
+                    <span class="post-recount">포인트 <%= data.point %></span>
+<!--                     <div class="flex-grow-1 "> -->
+<!--                         <span id="board-<%= data._id %>-keep" onclick="putKeep('<%= data._id %>')" class="post-keep-icon clock-icon align-middle icon-keep<%=data.keep ? '-fill text-warning' : ''%> "></span> -->
+<!--                         <% if(_isAdmin){ %><span style="font-size:12px"><%=data.readCount%></span><%}%> -->
+<!--                     </div> -->
                 </div>
             </div>
-            <div class="flex-grow-0 flex-shrink-1 align-self-end" onclick="<% if (kind == 'event') { %>onGoEventDetail(this, '<%=data._id%>');<%}else{%> <% if (!data.blockUser && !data.block) { %> onGoPostDetail(this, '<%=data._id%>');<%}%><%}%>">
+            <div class="flex-grow-0 flex-shrink-1 align-self-end list-wrapper" onclick="<% if (kind == 'event') { %>onGoEventDetail(this, '<%=data._id%>');<%}else{%> <% if (!data.blockUser && !data.block) { %> onGoPostDetail(this, '<%=data._id%>');<%}%><%}%>">
                 <% if ( data.representationImage && data.representationImage.length > 1 && data.representationImage.indexOf("$REMOVE") == -1) { %>
                 <img src="<%=getPhotoEx(data.representationImage,3,1)%>" class="post-thumnail" onerror="this.src='/img/block.png';">
                 <% } %>
-                <div class="listranknum text-right"><%= typeof rank !== 'undefined' && rank > 0 ? (rank > 9 ? rank : rank ) : '' %></div>
             </div>
         <% } %>
     <% } %>
 </div>
+<script type="text/javascript">
+    if(getQueryString('k') === 'inkiup_ranking'){
+        $('.voting-rank').removeClass('hidden')
+    }else{
+        $('.voting-rank').addClass('hidden')
+    }
+</script>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+<head>
+    <%- include('../_layouts/header')-%>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+</head>
+
+<body>
+<%- include('../_layouts/layout_bodystart') -%>
+<div class="app header footer">
+    <%-include('../_parts/_new_header')%>
+    <!-- Content -->
+    <div class="container pl-0 pr-0">
+    </div>
+    <!-- Content -->
+</div>
+<%- include('../_parts/_footer') -%>
+<% if (_isAuthed) {} else {%>
+
+<% } %>
+<%- include('../_layouts/layout_bodyscript') -%>
+
+<%if(_isInApp){%>
+<script type="text/javascript">
+if (window.Utils && window.Utils.postMessage) { var iur = "<%-_invalidUrlRegex.replace(/\\/g,"\\\\")%>"; var prev = pdata.getObject("_iur"); if (iur !== prev) { window.Utils.postMessage(JSON.stringify({ type: 'invalidurl', regex: iur })); pdata.setObject("_iur", iur); } }
+</script>
+<%}%>
+<script type="text/javascript">
+var _auth = <%= _isAuthed %>;
+
+</script>
+<%- include('../_layouts/layout_bodyend') -%>
+</body>
+
+</html>

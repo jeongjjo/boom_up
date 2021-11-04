@@ -13,7 +13,7 @@
                 <%= title%>
             </span>
         <% } else { %>
-            <i class="logotitle" onclick="goTabMenu('/', 'home')"></i>
+            <i class="logotitle" onclick="goTabMenu('/?k=inkiup_ranking', 'home')"></i>
         <% } %>
     </div>
     <div class="right d-flex">
@@ -82,8 +82,8 @@
             </div>
 
             <% } %>
-            
-            <div class="d-flex flex-column lm-line-heignt pb-2 lm-bg-white" id="LeftLineupList" > 
+
+            <div class="d-flex flex-column lm-line-heignt pb-2 lm-bg-white" id="LeftLineupList" >
                 <div class="lm-title-area">
                     <span><%= __('INKIKEYWORD')%></span>
                 </div>
@@ -94,8 +94,8 @@
                 </div>
                 <% } %>
             </div>
-            
-            <div class="d-flex flex-column pb-3 mb-2 lm-line-heignt lm-bg-white" id="LeftLineupList" > 
+
+            <div class="d-flex flex-column pb-3 mb-2 lm-line-heignt lm-bg-white" id="LeftLineupList" >
                 <div class="d-flex lm-title-area-padding ">
                     <span>관심 키워드별 회원 랭킹</span>
                     <span class="flex-grow-1"></span>
@@ -115,7 +115,7 @@
                         <% } %>
                     </div>
                     <div id="idUserRank">
-                        
+
                     </div>
                 <% } %>
             </div>
@@ -199,7 +199,7 @@
     }
 
     function onUserRank(val) {
-        
+
         var tag="";
 
         $("#ldLeftMenuPanel span[name='userkeywrodtab']").each(function(i){
@@ -223,16 +223,16 @@
                     tag+='</div>'
                     $("#idUserRank").append(tag);
                 }else{
-                    for(var i=0;i < data.list.length; i++) { 
+                    for(var i=0;i < data.list.length; i++) {
                         tag='<div class="lm-list-area d-flex lm-subtext" >'
                         tag+=    '<span class="font-weight-bold" style="margin-right:16pt">'+(i+1)+'</span>'
                         tag+=    '<span name="llineupname" class="mr-2"><span onclick="event.stopPropagation();onProfileMoveHeader(\''+data.list[i].userId+'\')"">'+data.list[i].nickname+'</span><img class="ml-1" src="https://d39rw2lh9ylrhv.cloudfront.net/attachesmgmt/level_'+(data.list[i].level||1)+'.png" width="24px" height="20px"></span>'
                         tag+='</div>'
                         $("#idUserRank").append(tag);
-                    } 
+                    }
                 }
-                
-                
+
+
             }, error: function (error) {
                 //오류처리 팝업창 띄우기 코딩
                 console.log(error);
@@ -293,8 +293,8 @@
         $("#ldLeftMenuPanel").removeClass("lm-close").addClass("lm-open").off('touchmove').on('touchmove', (e) => {
             e.stopPropagation();
         });
-        
-        
+
+
         <% if (_isAuthed &&  (typeof concernKeywordMy !== 'undefined' && concernKeywordMy.length > 0)   ) {%>
             onUserRank('<%=concernKeywordMy[0].text%>')
         <% } %>
@@ -302,7 +302,7 @@
     }
 
     function onLeftLineup(c) {
-        var fliter = getQueryString('f') || "24rank"; 
+        var fliter = getQueryString('f') || "24rank";
         location.href = '/?k=' + c + '&t=' + (fliter || '24rank') + '&ts=' + moment().valueOf();//기존24rank
         lmClose();
         return false;
@@ -318,17 +318,17 @@
                 case "cancel" :
                     $('.left .left-cancel').removeClass('hidden');
                 break;
-                default: 
+                default:
                     $('.left .icon-left-menu').removeClass('hidden');
                 break;
             }
         }
-        
+
         var $right = $("header .right");
         $("div.text-center", $right).addClass('hidden');
 
         right = typeof right === 'string' ? [right] : right;
-        
+
         if (right.indexOf('more') >= 0) {
             var $btn = $(".icon-more", $right).parent();
             $btn.removeClass('hidden');

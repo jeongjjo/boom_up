@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%- include('../_layouts/header')-%>
+        <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    </head>
+
+    <body>
+       <%- include('../_layouts/layout_bodystart') -%>
+       <div class="app header footer">
+           <!-- Content -->
+           <div class="container pl-0 pr-0">
+            <div class="dim hidden">
+                <img src="img/ajax-loader.gif"/>
+            </div>
+                <div class="btn-grp">
+                    <div class="btn-test" onclick="javascript:void(0);scheduleFunc('rank')">게시글 포인트 계산</div>
+                    <div class="btn-test" onclick="javascript:void(0);scheduleFunc('day')">일 초기화</div>
+                    <div class="btn-test" onclick="javascript:void(0);scheduleFunc('week')">주 초기화</div>
+                </div>
+           </div>
+       </div>
+       </body>
+       <style>
+        .dim{
+            position: absolute;
+            top: 0;
+            width: var(--app-width);
+            min-height: var(--app-height);
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .dim img{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .btn-grp{
+            width: 90%;
+            margin: 0 auto;
+        }
+        .btn-test{
+            width: 100%;
+            margin-top: 30px;
+            padding: 20px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+        }
+        .btn-test:nth-child(1){
+            background: red;
+        }
+        .btn-test:nth-child(2){
+            background: blue;
+        }
+        .btn-test:nth-child(3){
+            background: green;
+        }
+       </style>
+       <script>
+        function scheduleFunc(type){
+            let data = {type: type}
+            $('.dim').removeClass('hidden')
+            $.ajax({
+                type: 'POST',
+                url: '/test',
+                data: data,
+                success: function (res) {
+                    if(res.result === true){
+                        $('.dim').addClass('hidden')
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    $('.dim').addClass('hidden')
+                }
+            })
+        }
+       </script>
+</html>

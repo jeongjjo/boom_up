@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+<head>
+    <%-include('../_layouts/header')%>
+    <%-include('../_layouts/layout_bodyscript')%>
+</head>
+
+<body>
+<%-include('../_layouts/layout_bodystart')%>
+<div class="app header footer" id="contentbody">
+    <%-include('../_parts/_new_header')%>
+    <!-- content -->
+    <div class="app-width-size container-fluid p-0 m-0" style="background-color:#ffffff" id="mainbody">
+        <div class="d-flex flex-column lm-line-heignt pb-2 lm-bg-white" id="LeftLineupList" >
+            <div class="lm-title-area">
+                <span><%= __('INKIKEYWORD')%></span>
+            </div>
+            <% for(var i=0;i < concernKeywordInki.length; i++) { %>
+            <div class="lm-list-area d-flex lm-subtext" >
+                <span class="font-weight-bold " style="margin-right:16pt"><%=i+1%> <%=concernKeywordInki[i].text%></span>
+            </div>
+            <% } %>
+        </div>
+    </div>
+    <!--list-->
+</div>
+<%-include('../_parts/_footer')%>
+
+
+<script src="/js/plupload/plupload.full.min.js"></script>
+<script type="text/javascript">
+
+</script>
+<%-include('../_layouts/layout_bodyend')%>
+</body>
+
+</html>
