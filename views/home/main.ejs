@@ -10,22 +10,32 @@
     <body>
         <%- include('../_layouts/layout_bodystart') -%>
         <div class="app header footer">
-            <%-include('../_parts/_header')%>
+            <%-include('../_parts/_new_header')%>
             <!-- Content -->
             <div class="container pl-0 pr-0">
-                <div class="position-fixed" style="z-index: 1000;" ontouchmove="event.stopPropagation()" id="main-category-area">
-                    <div class="d-flex bg-white flex-row mainmenu-line">
+                <div class="menu-wrapper" style="z-index: 1000;" ontouchmove="event.stopPropagation()" id="main-category-area">
+                    <div class="bg-white flex-row mainmenu-line">
                         <!-- flex-fill 제거-->
-                        <div class="category-arrow-left hidden" id="category_left" onclick="moveCategory('left');"><i class="icon-arrow-left"></i></div>
-                        <div class="cagegory-check pt-2 pb-2 pl-2 pr-2 font-weight-bold text-center <% if (!_isAuthed) {%>hidden<%}%>" id="menu-myinkiup" onclick="location.href = '/?k=myinkiup&f='+g_fliter+'&ts='+moment().valueOf();" style="margin-left: 4px;"><%= __('MENU_MYINKIUP')%></div>
-                        <div class="cagegory-check pt-2 pb-2 pl-2 pr-2 mainmenu-line-botton text-center" id="menu-inkiup" onclick="location.href = '/?k=inkiup&f='+g_fliter+'&ts='+moment().valueOf();"><%= __('MENU_INKIUP')%></div>
+<!--                         <div class="category-arrow-left hidden" id="category_left" onclick="moveCategory('left');"><i class="icon-arrow-left"></i></div> -->
+                        <!-- <div class="cagegory-check pt-2 pb-2 pl-2 pr-2 font-weight-bold text-center <% if (!_isAuthed) {%>hidden<%}%>" id="menu-myinkiup" onclick="location.href = '/?k=myinkiup&f='+g_fliter+'&ts='+moment().valueOf();" style="margin-left: 4px;"><%= __('MENU_MYINKIUP')%></div>-->
+                        <div class="cagegory-check text-center" id="menu-inkiup_ranking" onclick="location.href = '/?k=inkiup_ranking&f='+g_fliter+'&ts='+moment().valueOf();">랭킹 100</div>
+                        <div class="cagegory-check text-center" id="menu-inkiup" onclick="location.href = '/?k=inkiup&f='+g_fliter+'&ts='+moment().valueOf();"><%= __('MENU_INKIUP')%></div>
                         <!-- <div class="cagegory-check pt-2 pb-2 pl-4 pr-4 text-center" id="menu-event" onclick="location.href = '/?k=event&f='+g_fliter+'&ts='+moment().valueOf();"><%= __('EVENT')%></div> -->
                         <% for (var i=0; i < lineup.length; i++) { %>
-                        <div class="cagegory-check pt-2 pb-2 pl-2 pr-2 text-center" id="menu-<%= lineup[i].lineupKey %>" onclick="location.href = '/?k=<%= lineup[i].lineupKey %>&f='+g_fliter+'&ts='+moment().valueOf();"><%= lineup[i].lineup %></div>
+                        <div class="cagegory-check text-center" id="menu-<%= lineup[i].lineupKey %>" onclick="location.href = '/?k=<%= lineup[i].lineupKey %>&f='+g_fliter+'&ts='+moment().valueOf();"><%= lineup[i].lineup %></div>
                         <% } %>
-                        <div class="category-arrow-right" id="category_right" onclick="moveCategory('right');"><i class="icon-arrow-right"></i></div>
+<!--                         <div class="category-arrow-right" id="category_right" onclick="moveCategory('right');"><i class="icon-arrow-right"></i></div> -->
+                    </div>
+                    <div class="menu-bar mainmenu-line">
+                        <div class="default-bar" id="menu-inkiup_ranking-bottom"></div>
+                        <div class="default-bar" id="menu-inkiup-bottom"></div>
+                        <% for (var i=0; i < lineup.length; i++) { %>
+                        <div class="default-bar" id="menu-<%= lineup[i].lineupKey %>-bottom"></div>
+                        <% } %>
                     </div>
 
+                    <% var type %>
+                    <% if(type !== 'inkiup_ranking' && typeof type === 'undefined' && type !== null){ %>
                     <div class="bg-light">
                         <div class="d-inline-block ml-3" id="filter_img" data-checked="all" onclick="onFilterClick(this);">
                             <img src="/img/selectfilter.png" />
@@ -36,7 +46,7 @@
                             <option value="new">최신순</option>
                         </select>
                     </div>
-
+                    <% }%>
                     <% if(notice.length>0) {%>
                     <div class="swiper-container swiper-container-menu notice-line" id="notice-area">
                         <div class="swiper-wrapper">
@@ -68,14 +78,14 @@
 
 
                 <div class="main-list" id="main_list">
-                    <%- include('../board/layout_list', {board: typeof board !== 'undefined' ? board : null}) -%>
+                    <%- include('../board/layout_list', {board: typeof board !== 'undefined' ? board : null, type: type}) -%>
                 </div>
-            </div> 
+            </div>
             <!-- Content -->
         </div>
         <%- include('../_parts/_footer') -%>
         <% if (_isAuthed) {} else {%>
-        
+
         <% } %>
         <%- include('../_layouts/layout_bodyscript') -%>
 
@@ -87,19 +97,25 @@
 
             <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
             <script type="text/javascript">
+                var kindType = getQueryString('k');
                 var _auth = <%= _isAuthed %>;
                 var ismine = "<%= isMine %>";
-                var maintype = "inkiup";
+                var maintype = "inkiup_ranking";
                 var g_fliter = "<%= setting %>"//"allrank";setting
-                var limit = 20; 
+                var offset = 0;
+//                 if(kindType === 'inkiup_ranking'){
+//                     offset = 10;
+//                 }
+                var limit = 10;
+
                 var lineupList = <%-JSON.stringify(notice ? notice || [] : []) %>;
 
                 var _getNotificationCountTimeout = null;
 
                 var moreDelayFlag = false;
-                
+
                 function getNotificationCount() {
-        <% if (_isAuthed) {%>
+                <% if (_isAuthed) {%>
                         clearTimeout(_getNotificationCountTimeout);
                         _getNotificationCountTimeout = setTimeout(() => {
                             let $alert = $("header .icon-alert");
@@ -123,11 +139,11 @@
                                 }
                             }));
                         }, 500);
-        <% } %>
-        }
+                <% } %>
+                }
 
                 $(function () {
-                    
+
                     var mwidth = $(".mainmenu-line").width();
                     mwidth = mwidth+"px";
                     $(".notice-area").each(function (i){
@@ -184,7 +200,7 @@
                             });
                         };
                     }
-                    
+
                     $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).naaEvent(option);
 
                     $("#text_filter", footerObj).text(filterName);
@@ -200,19 +216,18 @@
                             }
                         });
                     //}, 1000);
-                    
+
 
                     init();
 
                     $(".mainmenu-line").scroll(function (e) {
                         if ((this.scrollLeft + this.clientWidth) >= (this.scrollWidth)) {
-
                             $("#category_right").addClass("hidden");
                             $("#category_left").removeClass("hidden");
-                        } else if (this.scrollLeft <= 0) { 
-                            $("#category_left").addClass("hidden"); $("#category_right").removeClass("hidden"); 
+                        } else if (this.scrollLeft <= 0) {
+                            $("#category_left").addClass("hidden"); $("#category_right").removeClass("hidden");
                         } else {
-                            $("#category_left").removeClass("hidden"); $("#category_right").removeClass("hidden"); 
+                            $("#category_left").removeClass("hidden"); $("#category_right").removeClass("hidden");
                         }
                     });
 
@@ -222,19 +237,19 @@
                     <% } %>
 
                 });
-                    
+
                 function ongoNoticeDatail(id) {
                     location.href = "/left/noticedetail/" + id;
                 }
-                
+
                 function onGoEventDetail($this, id) {
                     location.href = "/eventdetail/" + id;
                 }
-                
+
                 function onGoPostDetail($this, id) {
                     var url = window.location.href;
                     var parameters = (url.slice(url.indexOf('?') + 1, url.length)).split('&');
-                    var keyvalue 
+                    var keyvalue
                     var category="inkiup"
                     for (var i=0; i<parameters.length;i++){
                         keyvalue = parameters[i].split('=');
@@ -243,47 +258,46 @@
                             category=keyvalue[1]
                         }
                     }
-                
-                    var pathHash = category 
+
+                    var pathHash = category
                     location.href = '/detail/' + (pathHash || 'inkiup-'+g_fliter) + "/" + id;
                 }
 
                 function onGoPostDetailComment($this, id) {
                     var pathHash = window.location.hash.replace("#", "");
-                    location.href = '/detail/' + (pathHash || 'inkiup-'+g_fliter) + "/" + id+"?cyn=Y"; 
+                    location.href = '/detail/' + (pathHash || 'inkiup-'+g_fliter) + "/" + id+"?cyn=Y";
                 }
-                
+
                 function moveCategory(type) {
                     if (type == "left") {
                         $(".mainmenu-line").animate({ scrollLeft: 0 }, 500);
                     } else {
-                        $(".mainmenu-line").animate({ scrollLeft: $(".mainmenu-line").width() }, 500); 
+                        $(".mainmenu-line").animate({ scrollLeft: $(".mainmenu-line").width() }, 500);
                     }
                 }
-                
+
                 function init() {
                     $("#lineupnotice-area").hide();
                     onLoadContents(false, <%- typeof board !== 'undefined' ? true : false %>);
                 }
-                
+
                 function goinkiup($this) {
                     var v = $($this).data("lineupkey");
                     $("#" + v).trigger("click");
                 }
 
                 function onLoadContents(reset, inited = false) {
-                    
-                    var type = getQueryString('k') || 'inkiup';
+                    var type = getQueryString('k') || 'inkiup_ranking';
                     g_fliter = getQueryString('f') || g_fliter;//"allrank";
                     //console.log(g_fliter);
-                    var a = $(".mainmenu-line").outerWidth(); 
-                    var b = $("#menu-" + type).offset().left - $(".mainmenu-line").offset().left; 
-                    var c = $(".mainmenu-line").scrollLeft(); 
+                    var a = $(".mainmenu-line").outerWidth();
+                    var b = $("#menu-" + type).offset().left - $(".mainmenu-line").offset().left;
+                    var c = $(".mainmenu-line").scrollLeft();
                     var moving = b + c;
                     var d = (a/2);
                     $(".mainmenu-line").animate({ scrollLeft: (moving-d) }, 200);
-                    
-                    
+
+
                     switch (type) {
                         case 'event': {
                             $("#notice-area").hide();
@@ -291,6 +305,7 @@
                             break;
                         }
                         case 'inkiup':
+                        case 'inkiup_ranking':
                         case 'myinkiup': {
                             $("#notice-area").show();
                             $("#lineupnotice-area").hide();
@@ -316,14 +331,18 @@
                                     $("#notice-area").hide();
                                 // }
                             }
-                            
+
                             break;
                         }
                     }
                     $("[id|=menu]").removeClass("mainmenu-line-botton");
+                    $("[id|=menu]-bottom").removeClass("active-bar");
+
+                    var queryType = getQueryString('k')
                     $("#menu-" + type).addClass("mainmenu-line-botton");
+                    $("#menu-"+ type +"-bottom").addClass("active-bar");
                     maintype = type;
-                    
+
                     switch(g_fliter) {
                         case "24rank" :
                             $("#list_filter").val("day");
@@ -373,9 +392,9 @@
                             $(".category-arrow-right").addClass("hidden");
                         }
                     }, 400);
-                    
+
                 }
-                
+
                 var shareRankCount = 10;
 
                 function getContent(fliter, reset, inited, callback) {
@@ -384,13 +403,14 @@
                     } else {
                         moreDelayFlag = true;
                         g_fliter = fliter || g_fliter;
-                        
                         getBoardList({
                             kind: maintype,
                             sort: g_fliter,
+                            offset: offset,
                             limit: limit,
-                            reset: reset, 
-                            inited: inited
+                            reset: reset,
+                            inited: inited,
+                            options: 'test'
                         }, () => {
                             // 공유하기 기능 추가
                             /*
@@ -406,10 +426,10 @@
                             if(typeof callback === "function") {
                                 callback();
                             }
-                            
+
                         });
                     }
-                    
+
                 }
 
                 function share8rank() {
@@ -422,7 +442,7 @@
                     if(listcnt<10){
                         onPopup("alert", "공유할 글 목록이 충분하지 않으니<br>필터를 변경해주세요.", function(cb){
                             if(cb==1){
-                                
+
                             }
                         });
                         return;
@@ -523,7 +543,7 @@
                             $("#list_filter").val("all").trigger("change");
                         break;
                     }
-                    
+
                 }
             </script>
         <%- include('../_layouts/layout_bodyend') -%>
