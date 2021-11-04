@@ -1,0 +1,382 @@
+<header class="position-fixed d-flex flex-row">
+    <div class="left d-flex">
+        <div class="text-center align-self-center  header-side-width">
+            <i class="icon-left-menu p-2 ml-1 hidden" onclick="lmOpen()"></i>
+            <i class="left-cancel ml-1 hidden" onclick="goBack()">취소</i>
+            <i id="idHeaderLeft" class="icon-arrow-left p-2 mr-1 hidden" onclick="goBack()"></i>
+        </div>
+    </div>
+    <!--<div class="centre flex-fill text-center align-self-center"><span onclick="event.stopPropagation(); $('.app').animate({scrollTop: '0'}, 200);" class="<%= title && title.length > 0 ? '' : 'icon-inkiup' %>"><%= title && title.length > 0 ? title : ''%></span></div>-->
+    <div class="centre flex-fill text-center align-self-center font-weight-bold">
+        <% if(title && title.length > 0) { %>
+            <span onclick='location.href="/"'>
+                <%= title%>
+            </span>
+        <% } else { %>
+            <i class="logotitle" onclick="goTabMenu('/', 'home')"></i>
+        <% } %>
+    </div>
+    <div class="right d-flex">
+        <div class="text-center align-self-center header-side-width hidden">
+            <i class="icon-share2 p-2 mr-1"></i>
+        </div>
+        <% if(title && title.length > 0) { %>
+        <% } else { %>
+        <div class="text-center align-self-center  pr-1">
+            <i class="icon-search-footer"  onclick="goTabMenu('/search/index/s', 'search')"></i>
+        </div>
+        <% } %>
+        <div class="text-center align-self-center  hidden">
+            <i class="icon-alert p-2  mr-1" onclick="onHAlert()"></i>
+        </div>
+        <div class="text-center align-self-center header-side-width hidden">
+            <i class="icon-more p-2 mr-1"></i>
+        </div>
+        <div class="text-center align-self-center header-tempright-width px-0 hidden">
+            <span class="btn-fill-white btn-tempsave pt-2 pb-2 text-nowrap" onclick="onTempRegist()"><%= __('TEMPREGIST')%></span>
+        </div>
+        <div class="text-center align-self-center header-tempright-width hidden">
+            <span class="btn-fill-blue btn-save mr-2 pt-2 pb-2" onclick="onRegist()"><%= __('REGIST')%></span>
+        </div>
+    </div>
+</header>
+
+<div id="notification" onclick="onClickNotification();">
+    <i class="align-self-center bell ml-2 mr-2 icon-alert hidden"></i><img class="align-self-center ml-2 mr-2"><i class="flex-grow align-self-center" id="notification-message"></i>
+</div>
+
+<% if (typeof lineup !== 'undefined' && lineup.length > 0) { %>
+<!-- left menu -->
+<div id="ldLeftMenuPanel" class="lm-menu-container lm-close lm-scroll-y lm-bg-silver">
+    <div class="d-flex flex-row lm-panel " >
+        <div class="d-flex flex-column flex-grow-1 lm-menu-area lm-bg-silver" style="margin:14px;height:100vh">
+            <% if (_isAuthed) {%>
+            <div class="d-flex flex-column pt-2 pl-3 pr-3 pb-2  lm-bg-white">
+                <div class="d-flex flex-row mb-2">
+                    <div class="mt-1">
+                        <img src="<%=getPhotoEx(user.photo,3,1, '/img/pro-image.png')%>" class="img-profile2" alt="profile">
+                    </div>
+                    <div class="align-self-center flex-grow-1 flex-shrink-1 ml-2 mr-2">
+                        <div class="d-flex align-item-center"><span class="lm-user-nickname mr-1" onclick="event.stopPropagation();location.href='/profile/main/<%=user._id.toHexString()%>';"><%=user.nickname%></span>
+                        <%-getLevelIcon(user.level,false)%>
+                        </div>
+                        <div><span style="font-size:13px;color:#666666"><%= __('LOGIN_MESSAGE')%></span></div>
+                    </div>
+                    <div class="align-self-start m-0 p-0">
+                        <span class="icon-x lm-icon-x d-flex mt-1" onclick="lmClose()"></span>
+                    </div>
+                </div>
+                <div class="text-center lm-line-top pt-1">
+                    <img src="/img/setting.png" width="18px" height="18px" onclick="onHSetting()"></span>
+                    <span style="font-size:14px" onclick="onHSetting()">앱 및 계정설정</span>
+                </div>
+            </div>
+            <% } else { %>
+            <div class="d-flex flex-row justify-content-center p-3 lm-bg-white" >
+                <span class="d-flex flex-grow-1 lm-btn-login justify-content-center align-items-center" onclick="location.href='/auth/login'"><%= __('LOGIN')%></span>
+                <span class="lm-btn-empty"></span>
+                <span class="d-flex flex-grow-1 lm-btn-join justify-content-center align-items-center" onclick="location.href='/auth/login'"><%= __('JOIN')%></span>
+                <div class="flex-grow-1  mt-2 d-flex justify-content-end">
+                    <span class="icon-x lm-icon-x d-flex mt-1" onclick="lmClose()"></span>
+                </div>
+            </div>
+
+            <% } %>
+            
+            <div class="d-flex flex-column lm-line-heignt pb-2 lm-bg-white" id="LeftLineupList" > 
+                <div class="lm-title-area">
+                    <span><%= __('INKIKEYWORD')%></span>
+                </div>
+                <% for(var i=0;i < concernKeywordInki.length; i++) { %>
+                <div class="lm-list-area d-flex lm-subtext" >
+                    <span class="font-weight-bold " style="margin-right:16pt"><%=i+1%></span>
+                    <span name="llineupname" class="mr-2" onclick="event.stopPropagation();goSearchKeyword('<%=concernKeywordInki[i].text%>')"><%=concernKeywordInki[i].text%></span>
+                </div>
+                <% } %>
+            </div>
+            
+            <div class="d-flex flex-column pb-3 mb-2 lm-line-heignt lm-bg-white" id="LeftLineupList" > 
+                <div class="d-flex lm-title-area-padding ">
+                    <span>관심 키워드별 회원 랭킹</span>
+                    <span class="flex-grow-1"></span>
+                    <% if (_isAuthed && concernKeywordMy && concernKeywordMy.length>0) {%>
+                    <span class="margin-right:0px"><a href="javascript:concernKeywordAdd()"><img src="/img/setting.png" width="18px" height="18px"></a></span>
+                    <% } %>
+                </div>
+                <% if (!_isAuthed || (concernKeywordMy && concernKeywordMy.length<=0)) {%>
+                <div class="lm-list-area d-flex flex-column lm-subtext mt-2 mb-2" >
+                    <div class="text-center mb-2">나만의 관심 키워드가 아직 없습니다.</div>
+                    <div class="text-center" name="llineupname" class="mr-2"><span class="lm-btn-keyword-add" onclick="concernKeywordAdd()">추가하기</span></div>
+                </div>
+                <% } else { %>
+                    <div class="lm-keyword-list-margin  d-flex lm-subtext  mb-2 lm-scroll-x">
+                        <% for(var i=0;i < concernKeywordMy.length; i++) { %>
+                        <span name="userkeywrodtab" class="user-keyword-tab " onclick="event.stopPropagation();onUserRank('<%=concernKeywordMy[i].text%>')"><%=concernKeywordMy[i].text%></span>
+                        <% } %>
+                    </div>
+                    <div id="idUserRank">
+                        
+                    </div>
+                <% } %>
+            </div>
+
+            <div class="flex-grow-1" style="background-color:#f1f1f1;"></div>
+            <div class="left_bottom" >
+                <div class="d-flex justify-content-around">
+                    <div class="mt-1 mb-3">
+                        <a href="/support/terms" class="left_bottom_text"><%= __('LB_MENU1')%></a> | <a href="/support/privacy" class="left_bottom_text"><%= __('LB_MENU2')%></a> | <a href="/left/faq" class="left_bottom_text"><%= __('LB_MENU3')%></a> | <a href="/left/notice" class="left_bottom_text"><%= __('LB_MENU4')%></a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<% } %>
+<%- include('_popup') -%>
+<script type="text/javascript">
+    function goSearchKeyword(val){
+        location.href= "/search/index/s/"+moment().valueOf()+"/"+val
+    }
+    function concernKeywordAdd(){
+        <% if (!_isAuthed) { %>
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function (cb) {
+                if (cb == 1) {
+                    location.href = '/auth/login';
+                }
+            });
+        <% } else { %>
+        var path=location.href.split('/')[3]||'main'
+        if(path.indexOf('/')<0) path='main';
+        location.href="/setting/keyword/"+path
+        <% } %>
+    }
+    function onHAlert() {
+        <% if (!_isAuthed) { %>
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function (cb) {
+                if (cb == 1) {
+                    location.href = '/auth/login';
+                }
+            });
+        <% } else { %>
+            location.href = '/notification';
+        <% } %>
+    }
+    function onHSetting() {
+        location.href = '/setting/main';
+    }
+    function onUpdateLiniup(e, obj) {
+        e.stopPropagation();
+        <% if (!_isAuthed) { %>
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function (cb) {
+                if (cb == 1) {
+                    location.href = '/auth/login';
+                }
+            });
+        <% } else { %>
+        //console.log(JSON.stringify($(obj).data()))
+        var data = null;
+
+            $.ajax({
+                type: 'PUT',
+                url: '/profile/lineup/',
+                data: $(obj).data(),
+                success: function (data) {
+                    console.log(data);
+                    if ($(obj).hasClass("btn-fill-blue")) {
+                        $(obj).removeClass("btn-fill-blue").addClass("btn-text-normal").text("<%= __('SUB_ING')%>").data("now", "i");
+                    } else {
+                        $(obj).removeClass("btn-text-normal").addClass("btn-fill-blue").text("<%= __('SUB_READY')%>").data("now", "d");
+                    }
+                }, error: function (error) {
+                    //오류처리 팝업창 띄우기 코딩
+                    console.log(error);
+                }
+            });
+        <% } %>
+        return false;
+    }
+
+    function onUserRank(val) {
+        
+        var tag="";
+
+        $("#ldLeftMenuPanel span[name='userkeywrodtab']").each(function(i){
+            var $this=$(this);
+            if( $this.text()==val){
+                $this.addClass("selected")
+            }else{
+                $this.removeClass("selected")
+            }
+        })
+
+        $.ajax({
+            type: 'GET',
+            url: '/left/userrank',
+            data: {"ck":val},
+            success: function (data) {
+                $("#idUserRank").empty();
+                if(data.list.length==0){
+                    tag='<div class="lm-list-area d-flex justify-content-center lm-subtext" >'
+                    tag+=    '<span class="pt-2" style="height:40px">해당 키워드에 기여한 회원이 없습니다.</span>'
+                    tag+='</div>'
+                    $("#idUserRank").append(tag);
+                }else{
+                    for(var i=0;i < data.list.length; i++) { 
+                        tag='<div class="lm-list-area d-flex lm-subtext" >'
+                        tag+=    '<span class="font-weight-bold" style="margin-right:16pt">'+(i+1)+'</span>'
+                        tag+=    '<span name="llineupname" class="mr-2"><span onclick="event.stopPropagation();onProfileMoveHeader(\''+data.list[i].userId+'\')"">'+data.list[i].nickname+'</span><img class="ml-1" src="https://d39rw2lh9ylrhv.cloudfront.net/attachesmgmt/level_'+(data.list[i].level||1)+'.png" width="24px" height="20px"></span>'
+                        tag+='</div>'
+                        $("#idUserRank").append(tag);
+                    } 
+                }
+                
+                
+            }, error: function (error) {
+                //오류처리 팝업창 띄우기 코딩
+                console.log(error);
+            }
+        });
+    }
+
+    function onProfileMoveHeader(val){
+        location.href="/profile/main/"+val;
+    }
+
+    function onNotification(msg, type) {
+        msg = typeof msg == "string" ? JSON.parse(msg) : msg;
+        var message = msg.aps && msg.aps.alert && msg.aps.alert.body ? msg.aps.alert.body : msg.notification && msg.notification.body ? msg.notification.body : null;
+        var photo = msg.aps && msg.aps.alert && msg.aps.alert.image ? msg.aps.alert.image : msg.image || (msg.data && msg.data.image ? msg.data.image : null);
+        var url = msg.url || (msg.data && msg.data.url ? msg.data.url : null);
+
+        if (type && url) {
+
+            location.href = url;
+        }
+
+        if (url) {
+            $("#notification").prop("url", url);
+        }
+
+        if (message) {
+            if (photo) {
+                $("#notification img").removeClass("hidden").attr('src', photo);
+                $("#notification .bell").addClass('hidden');
+            } else {
+                $("#notification img").addClass("hidden").attr('src', '');
+                $("#notification .bell").removeClass('hidden');
+            }
+            $("header .right .icon-alert").addClass("new");
+            $("#notification-message").html(message).parent().addClass("animateOpen").bind('oanimationend animationend webkitAnimationEnd', function () {
+                $(this).removeClass("animateOpen");
+            });
+        }
+    }
+
+    function onClickNotification() {
+        var url = $("#notification").prop("url");
+        console.log(url)
+        if (url && url.length > 0) {
+            $("#notification").removeClass("animateOpen");
+            location.href = url;
+        }
+    }
+
+    function lmClose() {
+        $("#ldLeftMenuPanel").removeClass("lm-open").addClass("lm-close");
+    }
+
+    function lmOpen() {
+        //event.preventDefault();
+        //event.stopPropagation();
+        $("#ldLeftMenuPanel").removeClass("lm-close").addClass("lm-open").off('touchmove').on('touchmove', (e) => {
+            e.stopPropagation();
+        });
+        
+        
+        <% if (_isAuthed &&  (typeof concernKeywordMy !== 'undefined' && concernKeywordMy.length > 0)   ) {%>
+            onUserRank('<%=concernKeywordMy[0].text%>')
+        <% } %>
+
+    }
+
+    function onLeftLineup(c) {
+        var fliter = getQueryString('f') || "24rank"; 
+        location.href = '/?k=' + c + '&t=' + (fliter || '24rank') + '&ts=' + moment().valueOf();//기존24rank
+        lmClose();
+        return false;
+    }
+
+    var goBack = () => history.back();
+    var setHeader = (left, right, cb) => {
+        if (left != 'hidden') {
+            switch(left) {
+                case "back" :
+                    $('.left .icon-arrow-left').removeClass('hidden');
+                break;
+                case "cancel" :
+                    $('.left .left-cancel').removeClass('hidden');
+                break;
+                default: 
+                    $('.left .icon-left-menu').removeClass('hidden');
+                break;
+            }
+        }
+        
+        var $right = $("header .right");
+        $("div.text-center", $right).addClass('hidden');
+
+        right = typeof right === 'string' ? [right] : right;
+        
+        if (right.indexOf('more') >= 0) {
+            var $btn = $(".icon-more", $right).parent();
+            $btn.removeClass('hidden');
+            $btn.off('click');
+            if (cb && cb.more) {
+                $btn.on('click', cb.more);
+            }
+        }
+
+        if (right.indexOf('share') >= 0) {
+            var $btn = $(".icon-share2", $right).parent();
+            $btn.removeClass('hidden');
+            $btn.off('click');
+            if (cb && cb.share) {
+                $btn.on('click', cb.share);
+            }
+        }
+
+        if (right.indexOf('alert') >= 0) {
+            var $btn = $(".icon-alert", $right).parent();
+            $btn.removeClass('hidden');
+
+            var $btn = $(".icon-search-footer", $right).parent();
+            $btn.removeClass('hidden');
+        }
+
+        if (right.indexOf('save') >= 0) {
+            var $btn = $(".btn-save", $right).parent();
+            $btn.removeClass('hidden');
+        }
+
+        if (right.indexOf('tempsave') >= 0) {
+            var $btn = $(".btn-save", $right).parent();
+            $btn.removeClass('hidden');
+            var $tbtn = $(".btn-tempsave", $right).parent();
+            $tbtn.removeClass('hidden');
+        }
+    }
+    var setLeft = (type) => {
+        type == 'back' ? $('.left .icon-arrow-left').removeClass('hidden') : $('.left .icon-left-menu').removeClass('hidden');
+    }
+
+    function shareLink(title, text, url, imageUrl) {
+        if ((window.Utils && Utils.postMessage) || (/InkiupApp$/.test(navigator.userAgent))) {
+            window.Utils && Utils.postMessage(JSON.stringify({ type: 'share', title: title, text: text, url: url, image: imageUrl, chooserTitle: "<%= __('SHARETITLE')%>" }));
+        } else {
+            alert("<%= __('ERROR_NOTSUPPORTFUNC')%>");
+        }
+    }
+
+</script>

@@ -1,0 +1,113 @@
+<footer class="position-fixed">
+    <div class="w-100 btn-group d-flex flex-wrap align-content-center ">
+        <div class="btn" onclick="goTabMenu('/', 'home')">
+            <i class="icon-home-footer"></i>
+            <P><%= __('FOOTER_HOME')%></P>
+        </div>
+        <div class="btn" onclick="goTabMenu('/keep', 'keep')">
+            <i class="icon-keep-footer"></i>
+            <p><%= __('FOOTER_KEEP')%></p>
+        </div>
+
+        <!-- <div class="btn displayNone" onclick="onFliter(this)" id="mainFilter">
+            <i class="icon-message"></i>
+            <p id="text_filter"><%= __('SETTING_MESSAGE')%></p>
+        </div> -->
+
+        <div class="btn" onclick="onGoWrite();">
+            <i class="newwrite"></i>
+        </div>
+
+        <div class="btn" onclick="onTabTopshareCheck();">
+            <i class="newshare"></i>
+            <P>Top10공유</P>
+        </div>
+        <% if (_isAuthed) {%>
+        <div class="btn" onclick="goTabMenu('/profile/main', 'mypage')">
+            <i class="icon-my-footer"></i>
+            <p><%= __('FOOTER_PROFILE')%></p>
+        </div>
+        <% } else {  %>
+        <div class="btn" onclick="location.href='/auth/login';">
+            <i class="newlogin"></i>
+            <p>Login</p>
+        </div>
+        <% } %>
+    </div>
+</footer>
+<script type="text/javascript">
+var _auth = <%= _isAuthed %>;
+function goTabMenu(val, type){
+    cashePageClearAll();
+    <% if (_isAuthed) {%>
+        if(type == "search") location.href= val+"/"+moment().valueOf();
+        else location.href= val;
+        //location.href=val;
+    <% } else {  %>
+        if(val!='/' && val!='/search/index/s'){
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function(cb){
+                if(cb==1){
+                    location.href='/auth/login';
+                }
+            });
+        }else{
+            if(type == "search") location.href= val+"/"+moment().valueOf();
+            else location.href= val;
+            //location.href=val;
+        }
+        
+    <% } %>
+}
+
+function onTabTopshareCheck(){
+    var val=$("#list_filter").val()||"no"
+    
+    if(val=="all" || val=="day"){
+        share8rank();
+    }else if(val=="new"){
+         onPopup("alert", "필터를 '전체인끼' 또는 '일간인끼'로 변경해서 이용해주세요", function(cb){
+        
+        });
+    }else{
+        onPopup("alert", "랭킹순위 목록에서만 공유가 가능합니다.", function(cb){
+        
+        });
+    }
+    
+}
+
+function onFliter(obj) {
+    cashePageClearAll();
+    <% if (_isAuthed) {%>
+        if($(obj).find("i").hasClass("icon-message")){
+            location.href='/chat/chatroom';
+            return;
+        }
+    <% } else {  %>
+        if($(obj).find("i").hasClass("icon-message")){
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function(cb){
+                if(cb==1){
+                    location.href='/auth/login';
+                    return
+                }
+            });
+        }
+    <% } %>
+    
+    var text = $("#text_filter").text();
+    
+    MenuOn(text, (val, tex) => {
+        console.log(val, tex);
+    });
+}
+
+function onGoWrite() {
+    var pathHash = window.location.hash.replace("#", "");
+    var url = '/write/' + (pathHash || 'inkiup-24rank');
+    if (_auth) {
+        location.href = url;
+    } else {
+        onPopup("confirm", "<%- __('NEEDLOGIN')%>", function (cb) { if (cb == 1) { location.href = '/auth/login'; } });
+    } 
+}
+</script>

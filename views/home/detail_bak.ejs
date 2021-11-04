@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed">
+
+    <head>
+        <%- include('../_layouts/header') -%>
+        <link rel="stylesheet" href="/css/write.css?2020072101" />
+        <%- include('../_layouts/layout_bodyscript') -%>
+    </head>
+
+    <body>
+        <%- include('../_layouts/layout_bodystart') -%>
+        <div class="app header footer">
+            <%-include('../_parts/_header')%>
+            <!-- Content -->
+            <div class="d-flex flex-column">
+                <input type="hidden" name="id" value="<%= detail._id%>" />
+                <input type="hidden" name="userid" value="<%= detail.userId%>" />
+                <input type="hidden" name="name" value="<%= detail.nickname%>" />
+                <input type="hidden" name="title" value="<%= detail.title%>" />
+                <input type="hidden" name="uid" />
+                <input type="hidden" name="cid" />
+
+                <div class="d-flex flex-row flex-shrink-1 ml-3 mr-3 mt-2 mb-1 align-slef-center">
+                    <div style="min-width:17%"><span onclick="event.stopPropagation();goLineup('<%=detail.lineupKey%>');" class="post-lineup-<%= detail.lineupKey%> " style="<%= typeof detail.lineup.color !== 'undefined' && typeof detail.lineup.background !== 'undefined' ? 'color:'+detail.lineup.color+'; background-color: '+detail.lineup.background+';' : '' %>"><%= detail.lineup.lineup%></span></div>
+                    <div class="ml-1 mr-1"><%= detail.title%></div>
+                    <div class="ml-auto"><i id="board-<%= detail._id %>-keep" class="<% if (mykeep) { %> icon-keep-fill text-warning <% } else { %> icon-keep <% } %>clock-icon align-middle" onclick="putKeep('<%= detail._id%>');"></i> <% if(_isAdmin){ %><span style="font-size:12px"><%=detail.readCount%></span><%}%> </div>
+                </div>
+                <div class="flex-shrink-1 ml-3 mr-3 list-postdesc-title">
+
+                </div>
+                <div class="d-flex flex-row ml-3 mr-3 mt-2 pb-2  detail-div-line">
+                    <div onclick='event.stopPropagation();popupProfile("<%= detail.userId%>")'>
+                        <img src="<%=getPhotoEx(userinfo.photo,3,1, '/img/pro-image.png')%>" class="img-profile" alt="profile"></div>
+                    <div class="d-flex flex-column flex-grow-1">
+                        <div class="d-flex flex-row">
+                            <div><span class="post-nickname" onclick='event.stopPropagation();popupProfile("<%= detail.userId%>")'><%= detail.nickname%></span></div>
+                            <div><%-getLevelIcon(userinfo.level,false)%></div>
+                            <div class="ml-0 ml-auto"><i class="icon-time postdesc-votecount-l"><%= detail.createTS.formatted%></i></div>
+                        </div>
+                        <div class="d-flex flex-row pt-1">
+                            <span class="post-user-memo"><%=usermemo%></span>
+                        </div>
+                    </div>
+                    <!-- <div class="flex-grow-1">작성자정보</div> -->
+                </div>
+            </div>
+
+
+            <div class="ml-3 mr-3 mt-2">
+                <div class="list-postdesc-contents">
+                    <%-detail.content%>
+                </div>
+                <div class="d-flex justify-content-center mt-2 mb-2 pb-2 detail-div-line " id="detail-vote-line">
+                    <div id="board-<%= detail._id.toHexString()%>-button-area" class="d-flex group_voting <%= (myvote ? (myvote[0].type == 'UP' ? 'up' : 'down' ) : '')%>">
+                        <div class="mr-2">
+                            <!-- <i id="board-<%= detail._id.toHexString()%>-vote-up" style="font-size:12px" class="icon-up post-up bounce-up post-up-down" onclick="onBoardVotiong('<%= detail._id%>', 'UP');"><%= detail.votingUp%></i> -->
+                            <i id="board-<%= detail._id %>-vote-up" onclick="onBoardVotiong('<%= detail._id%>', 'UP');" class="newdescarrowup<%= (myvote ? (myvote[0].type == 'UP' ? '-sel' : '' ) : '')%> post-up-down "></i>
+                            <div id="board-<%= detail._id %>-vote-up-count" class="newvoteupcnt text-center"><%=countDisplay(detail.votingUp)%></div>
+                        </div>
+                        <div class="ml-4">
+                            <!--  <i id="board-<%= detail._id.toHexString()%>-vote-down" style="font-size:12px"  class="icon-down post-down bounce-down post-up-down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');"><%= detail.votingDown%></i> -->
+                            <i id="board-<%= detail._id %>-vote-down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');" class="newdescarrowdown<%= (myvote ? (myvote[0].type == 'DOWN' ? '-sel' : '' ) : '')%> post-up-down "></i>
+                            <div id="board-<%= detail._id %>-vote-down-count" class="newvotedowncnt text-center"><%=countDisplay(detail.votingDown)%></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3"></div>
+            <!-- 핫잉슈 -->
+            <div class="ml-3 mr-3">
+                <div class="hotissue-title mb-1"> <% if(_isAuthed){ %>핫이슈 추천글<% }else{ %>핫이슈 인끼글<% } %></div>
+                <% for(var i=0;i < hotissuelist.length ; i++) { %>
+                <div class="hotissue-content mb-1" onclick="onGoPostDetail(this, '<%=hotissuelist[i]._id%>')""><%=hotissuelist[i].title.length>30?hotissuelist[i].title.substring(0,30)+"...":hotissuelist[i].title%></div>
+                <% } %>
+            </div>
+            
+            <!-- 댓글 -->
+            <div class="d-flex flex-column">
+                <div class="d-flex flex-row list-postdesc-replytitle">
+                    <div class="mr-auto d-flex justify-content-center">
+                        <span class="reply-titleleft mr-2"><%= __('DETAIL_COMMENTCOUNT')%> (<span id="comment_count"><%= detail.comment%></span>)</span>
+                        <span onclick="onCommentReload(this);"><i class="icon-reload-footer"></i></span>
+                    </div>
+                    <div class="d-flex justify-content-center" id="btn_rank" onclick="onRankUpDown(this)">
+                        <i class="icon-up-slim i-rank reply-arrow-size align-item-center" style="margin-top:2px"></i><span class="ml-1 reply-titleright"><%= __('DETAIL_RANK')%></span>
+                    </div>
+                    <div class=" d-flex justify-content-center ml-3 mr-3" style="margin-top:2px"><img src="/img/bar.png" class="reply-bardiv"></div>
+                     <div class="d-flex justify-content-center" id="btn_newest" onclick="onNewest(this)">
+                        <i class="icon-updown-slim i-newest reply-arrow-size" style="margin-top:2px"></i><span class="ml-1 reply-titleright"><%= __('DETAIL_NEWEST')%></span>
+                    </div>
+                </div>
+
+                <%- include('../comment/layout_list') -%>
+            </div>
+            <!-- Content -->
+        </div>
+
+        <div id="popuplayerAdv" class="hidden position-fixed" onclick="event.stopPropagation(); if($('#7day-checkbox').is(':checked')){setCookie('popuplayerAdv', 'Y', 7);} $(this).hide();">
+            <div class="popup-layer" onclick="event.stopPropagation();">
+                <ul class="list-group list-group-flush popup-border">
+                    <li class="list-group-item">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="7day-checkbox" class="custom-control-input">
+                            <label class="custom-control-label" for="7day-checkbox"><%= __('WEBBROWSER_DONOTSEEAFTER')%></label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex flex-row align-items-center">
+                            <img src="/img/logo4.svg">
+                            <div class="flex-fill ml-2"><%= __('WEBBROWSER_CONTINUEWITHAPP')%></div>
+                            <button class="btn btn-app" onclick="event.stopPropagation(); location.href='https://go.inkiup.com/?link=<%=encodeURIComponent(serviceinfo.appUrl+"/detail/"+pathhash+"/"+detail._id.toHexString())%>&afl=<%=encodeURIComponent(serviceinfo.appUrl+"/detail/"+pathhash+"/"+detail._id.toHexString())%>&apn=com.inkiup.app&amv=1&ibi=com.inkiup.app&ifl=<%=encodeURIComponent(serviceinfo.appUrl+"/detail/"+pathhash+"/"+detail._id.toHexString())%>&isi=1501274378&efr=1&sd=<%=encodeURIComponent(detail.content.replace(/(<\/?[^>]+(>|$)|\n)/mg, "").substring(0, 64))%>&si=<%=encodeURIComponent(getPhotoEx(detail.representationImage,3,1))%>';">Open</button>
+                        </div>
+                        <div class="d-flex flex-row align-items-center">
+                            <img src="/img/webbrowser.svg">
+                            <div class="flex-fill ml-2"><%= __('WEBBROWSER_CONTINUEWITHCURR')%></div>
+                            <button class="btn" onclick="event.stopPropagation(); if($('#7day-checkbox').is(':checked')){setCookie('popuplayerAdv', 'Y', 7);} $('#popuplayerAdv').hide();">Continue</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <%- include('../_parts/_footer_detail') -%>
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+        <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+        <script type="text/javascript">
+            var _auth = <%= _isAuthed %>;
+            var myyn = "<%= myyn %>";
+            var ismine = "<%= isMine %>";
+            var moreyn = "<%= moreyn %>";
+            var orderby = null;
+            var commentyn = "<%= cyn %>";
+            var isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent) && !window.MSStream;
+            var isAOS = /Android/i.test(navigator.userAgent);
+
+            <%if (!_isInApp) {%>
+                var popuplayerAdvYN = getCookie('popuplayerAdv');
+                if ((isIOS || isAOS) && popuplayerAdvYN !== 'Y') {
+                    $('#popuplayerAdv').removeClass('hidden');//.find('img').attr('src', isIOS ? '/img/appstore.svg' : isAOS ? '/img/googleplay.svg' : '/android-chrome-192x192.png');
+                }
+                $('a[href]').attr('target','_blank');
+            <%}%>
+
+                $(function () {
+
+                    
+                    $("#idFooterKeep").attr("onclick","putKeep('<%= detail._id%>')");
+                    <% if (mykeep) { %>
+                    $("#idFooterKeep i").removeClass("icon-keep-footer").addClass("icon-keep-fill text-warning");
+                    <% } else { %>
+                    $("#idFooterKeep i").removeClass("icon-keep-fill text-warning").addClass("icon-keep-footer");
+                    <% }  %>
+
+                    if (moreyn == "Y") {
+                        $("#comment_more").removeClass("hidden");
+                    }
+
+                    setHeader('back', 'more', {
+                        more: (e) => {
+                            e.preventDefault();
+                            if (myyn == "Y") {
+                                PopupOn('', mydetailMenu, function (val) {
+                                    setTimeout(function () {
+                                        resultPopup(val);
+                                    }, 300);
+                                });
+                            } else {
+                                PopupOn('', postMenu, function (val) {
+                                    onGoReport(val);
+                                });
+                            }
+                        }
+                    });
+
+                    onCommentList("ranking-up");
+                    
+                    <% if (backchangeuse) { %>
+                        $("#idHeaderLeft").attr('onclick', '').unbind('click');
+                        $("#idHeaderLeft").on("click", function () {
+                            location.href = "/#<%=pathhash%>"
+                        });
+                    <% } else {%>
+                    <% } %>
+
+                    isScrollEvent();
+                    
+                    setMydetailMenu("pushmsg",'<%=detail.pushmsg?'알람 끄기':'알람 켜기' %>');
+
+                    $("#idHeaderLeft").attr("onclick","goBackBefore()")
+                    $("footer div.btn[onclick='goBack()']").attr("onclick","goBackBefore()")
+            });
+
+            function isScrollEvent() {
+                var scrollHeight = 0;
+                $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scroll(function(){ 
+                    //console.log(scrollHeight)
+                    var st = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
+                    var ih = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).innerHeight();
+                    var sh = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).prop('scrollHeight');
+                    if($(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop() <= 0) {
+                        $("#comm-input-area").removeClass("hidden");
+                        $("footer").removeClass("hidden");
+                        //$("#comm-more-area").removeClass("hidden");
+                        
+                        $("#comm-btn-area").addClass("hidden");
+                    } else if (st + ih >= sh) {
+                        // $("#comm-input-area").addClass("hidden");
+                        // $("footer").addClass("hidden");
+                        // $("#comm-more-area").addClass("hidden");
+                        
+                        // $("#comm-btn-area").removeClass("hidden");
+                        $("#comm-input-area").removeClass("hidden");
+                        $("footer").removeClass("hidden");
+                        //$("#comm-more-area").removeClass("hidden");
+                        
+                        $("#comm-btn-area").addClass("hidden");
+                        //다운 스크롤
+
+                        //숨길때 값초기화
+                        $("#relay-comment-info").addClass("hidden");
+                        $("#relay-comment-info div").text("");
+                        $("#input_comment").data("cId", null).data("uId",null).data("nickname", null);
+                    } else if($(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop() < scrollHeight){ 
+                        //업 스크롤
+                        $("#comm-input-area").removeClass("hidden");
+                        $("footer").removeClass("hidden");
+                        //$("#comm-more-area").removeClass("hidden");
+                        
+                        $("#comm-btn-area").addClass("hidden");
+                    } else {
+                        $("#comm-input-area").addClass("hidden");
+                        $("footer").addClass("hidden");
+                        //$("#comm-more-area").addClass("hidden");
+                        
+                        $("#comm-btn-area").removeClass("hidden");
+                        //다운 스크롤
+
+                        //숨길때 값초기화
+                        $("#relay-comment-info").addClass("hidden");
+                        $("#relay-comment-info div").text("");
+                        $("#input_comment").data("cId", null).data("uId",null).data("nickname", null);
+
+                    }
+                    scrollHeight = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
+                });
+            }
+
+
+            function goBackBefore(){
+                var t=$("textarea.form-control.input_msg").val();
+                
+                if(t!=""){
+                    onPopup("confirm", "작성중인 댓글이 있습니다<br>계속 진행 하시겠습니까?", function (cb) { if (cb == 1) { goBack(); } });
+                }else{
+                    goBack();
+                }
+            }
+            function onGoPostDetail($this, id) {
+                var pathHash='<%=pathhash%>>'
+                location.href = '/detail/'+(pathHash||'inkiup')+"/"+id
+            }
+            
+            function onCommentList(ob) {
+                orderby = ob;
+                getCommentList({
+                    contentId: '<%= detail._id.toHexString()%>',
+                    sort: ob,
+                    limit: 30,
+                    cyn: commentyn
+                });
+            }
+
+            function goLineup(c) {
+                location.href = '/?k=' + c + '&t=24rank&ts=' + moment().valueOf();
+                return false;
+            }
+
+            function onBoardVotiong(cid, vote) {
+                putVoting(cid, vote, 'board', (req) => {
+                    if (req && req.result == 'ok') {
+                        if (req.data) {
+                            console.log(req.data.votingUp,req.data.votingDown)
+                            $("#board-" + cid + "-vote-up-count").text(req.data.votingUp);
+                            $("#board-" + cid + "-vote-down-count").text(req.data.votingDown);
+
+                            if(vote=="DOWN"){
+                                $("#board-" + cid + "-vote-up").removeClass("newdescarrowup-sel").addClass("newdescarrowup")
+                                if($("#board-" + cid + "-vote-down").hasClass("newdescarrowdown")){
+                                    $("#board-" + cid + "-vote-down").removeClass("newdescarrowdown").addClass("newdescarrowdown-sel")
+                                }else{
+                                    $("#board-" + cid + "-vote-down").removeClass("newdescarrowdown-sel").addClass("newdescarrowdown")
+                                }
+                            }else{
+                                $("#board-" + cid + "-vote-down").removeClass("newdescarrowdown-sel").addClass("newdescarrowdown")
+                                if($("#board-" + cid + "-vote-up").hasClass("newdescarrowup")){
+                                    $("#board-" + cid + "-vote-up").removeClass("newdescarrowup").addClass("newdescarrowup-sel")
+                                }else{
+                                    $("#board-" + cid + "-vote-up").removeClass("newdescarrowup-sel").addClass("newdescarrowup")
+                                }
+                            }
+                            /*
+                            $("#board-" + cid + "-button-area").removeClass("down up");
+                            if (req.data.vote == "UP") {
+                                $("#board-" + cid + "-button-area").addClass("up");
+                            } else if (req.data.vote == "DOWN") {
+                                $("#board-" + cid + "-button-area").addClass("down");
+                            }
+                            */
+                        }
+                    }
+                });
+            }
+
+            function onRankUpDown($this) {
+                $(".i-newest").removeClass("icon-up-slim").removeClass("icon-down-slim").addClass("icon-updown-slim");
+                if ($("#btn_newest").hasClass("nup")) $("#btn_newest").removeClass("nup").addClass("ndown");
+                if ($($this).find("i").hasClass("icon-up-slim")) {
+                    $($this).find("i").addClass("icon-down-slim").removeClass("icon-up-slim");
+                } else if ($($this).find("i").hasClass("icon-down-slim")) {
+                    $($this).find("i").addClass("icon-up-slim").removeClass("icon-down-slim");
+                } else {
+                    $($this).find("i").addClass("icon-up-slim").removeClass("icon-down-slim");
+                }
+                $("#comment-list-area").empty();
+                if ($($this).hasClass("rup")) {
+                    $($this).removeClass("rup").addClass("rdown");
+                    onCommentList("ranking-down");
+                } else if ($($this).hasClass("rdown")) {
+                    $($this).removeClass("rdown").addClass("up");
+                    onCommentList("ranking-up");
+                } else {
+                    $($this).removeClass("rdown").addClass("rup");
+                    onCommentList("ranking-up");
+                }
+
+                //$(".icon-updown-slim")
+            }
+
+            function onNewest($this) {
+                $(".i-rank").removeClass("icon-up-slim").removeClass("icon-down-slim").addClass("icon-updown-slim");
+                if ($("#btn_rank").hasClass("rup")) $("#btn_rank").removeClass("rup").addClass("rdown");
+                if ($($this).find("i").hasClass("icon-up-slim")) {
+                    $($this).find("i").addClass("icon-down-slim").removeClass("icon-up-slim");
+                } else if ($($this).find("i").hasClass("icon-down-slim")) {
+                    $($this).find("i").addClass("icon-up-slim").removeClass("icon-down-slim");
+                } else {
+                    $($this).find("i").addClass("icon-up-slim").removeClass("icon-down-slim");
+                }
+                $("#comment-list-area").empty();
+                if ($($this).hasClass("nup")) {
+                    $($this).removeClass("nup").addClass("ndown");
+                    onCommentList("date-down");
+                } else if ($($this).hasClass("ndown")) {
+                    $($this).removeClass("ndown").addClass("nup");
+                    onCommentList("date-up");
+                } else {
+                    $($this).removeClass("ndown").addClass("nup");
+                    onCommentList("date-up");
+                }
+            }
+
+            function fn_dateTimeToFormatted(dt) {
+                var min = 60 * 1000;
+                var c = new Date()
+                var d = new Date(dt);
+                var minsAgo = Math.floor((c - d) / (min));
+
+                var result = {
+                    'raw': d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) + '-' + (d.getDate() > 9 ? '' : '0') + d.getDate() + ' ' + (d.getHours() > 9 ? '' : '0') + d.getHours() + ':' + (d.getMinutes() > 9 ? '' : '0') + d.getMinutes() + ':' + (d.getSeconds() > 9 ? '' : '0') + d.getSeconds(),
+                    'formatted': '',
+                };
+
+                if (minsAgo < 60) { // 1시간 내
+                    result.formatted = minsAgo + '분 전';
+                } else if (minsAgo < 60 * 24) { // 하루 내
+                    result.formatted = Math.floor(minsAgo / 60) + '시간 전';
+                } else { // 하루 이상
+                    result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
+                };
+
+                return result;
+            };
+
+            function callbackPopup(val, id) {
+                if (val == 'block' || val == 'unblock') location.reload();
+            }
+            function showPofilePop(id, nm) {
+                if (!<%= _isAuthed %>) return;
+                Popup2On('list', id, (val, id) => { callbackPopup(val, id) });
+            }
+
+            // TODO: 팝업 변경 처리 필요 전역변수 임시 사용.
+            var _type = "";
+            var _cid = "";
+            var _uid = "";
+            var _name = "";
+            var _title = "";
+            function onGoReport(val) {
+                if (val == "share") {
+                    <%if (!_isInApp) {%>
+                    if (typeof ClipboardJS !== 'undefined') {
+                        // html += `<li class="list-group-item text-center"><input type="text" class="w-100" id="copyUrl2CB" value="<%=serviceinfo.defaultUrl+"/detail/"+pathhash+"/"+detail._id.toHexString()%>"/><button class="btnCnP btn btn-block" data-clipboard-action="copy" data-clipboard-target="#copyUrl2CB">${val[x].txt}</button></li>`;
+                        // html += `<li class="list-group-item text-center"><button class="btnCnP btn btn-block" data-clipboard-text="Just <%=serviceinfo.defaultUrl+"/detail/"+pathhash+"/"+detail._id.toHexString()%>">${val[x].txt}</button></li>`;
+                        $('#copypasteModal').on('show.bs.modal', function (event) {
+                            var modal = $(this);
+                            modal.find('#copy-url').val('<%=serviceinfo.defaultUrl+"/detail/"+pathhash+"/"+detail._id.toHexString()%>');
+                        }).on('shown.bs.modal', function (event) {
+                            var modal = $(this);
+                            if (typeof ClipboardJS !== 'undefined') {
+                                var clipboard = new ClipboardJS('.btnCnP');
+
+                                clipboard.on('success', function (e) {
+                                    $('#copypasteModal').modal('hide');
+                                    _cid = $("input[name=id]").val();
+                                    putShare(_cid);
+                                });
+                                clipboard.on('error', function (e) {
+                                    $('#copypasteModal').modal('hide');
+                                });
+                            }
+                        }).modal();
+                    }
+                    <% } else { %>
+                        shareLink("<%=detail.title%>", "<%=detail.content.replace(/(<\/?[^>]+(>|$)|\n)/g, "").substring(0, 64)%>", "/detail/<%=pathhash%>/<%=detail._id.toHexString()%>", "<%=getPhotoEx(detail.representationImage,3,1)%>");
+                        _cid = $("input[name=id]").val();
+                        putShare(_cid);
+                    <% } %>
+                } else {
+                    _type = "board";
+                    _cid = $("input[name=id]").val();
+                    _uid = $("input[name=userid]").val();
+                    _name = $("input[name=name]").val();
+                    _title = $("input[name=title]").val();
+                    PopupOn('report', [], function (a, b) {
+                        postReport(_cid, _uid, _name, _title, _type, a, b)
+                    });
+                }
+
+            }
+
+            function contentDelete(id) {
+                cashePageClearAll();
+    
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/content/' + id,
+                    success: function (data) {
+                        if (data.result == "ok") {
+                            if ("<%=pathhash%>" == "") {
+                                history.back();
+                            } else if ("<%=pathhash%>" == "myprofile") {
+                                location.href = "/profile/main";
+                            } else {
+                                location.href = "/#<%=pathhash%>";
+                            }
+                        } else {
+                            onPopup("alert", "<%= __('BOARDDELETEFAIL')%>", function (cb) { });
+                        }
+                    }, error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            function getVoteCount(kind,id,cb){
+                $.ajax({
+                    type: 'GET',
+                    url: '/votecount/'+kind+'/'+id,
+                    success : function (ret) {
+                        if (ret.result && ret.result == "success") {
+                            return cb(ret.data);
+                        }
+                    }, error : function (error) {
+                        return false;
+                    }
+                })
+            }
+
+            function resultPopup(val) {
+                var id = $("input[name=id]").val();
+                
+                if (val == "modify") {
+                    
+                    getVoteCount('board',id,(data)=>{
+                        var ts=moment();
+                        var tsc=moment(<%= detail.createTS2 %>);
+                        var tsDiss=ts.diff(tsc,'hours');
+                        console.log(data.total,data.check)
+                        if (data.check || tsDiss > 1) {
+                            onPopup("alert", "등록 후 1시간이 경과하거나<br> 50표 이상 득표한 글은 수정할 수 없습니다.", function (cb) {
+
+                            })
+                            return;
+                        }
+                        
+                        location.href = "/modify/" + id + "/<%=pathhash%>";
+                    });
+
+                    
+                } else if (val == "delete") {
+                    onPopup("confirm", "삭제시 득표로 얻은 점수<br>+a의 파워가 차감됩니다.<br><%= __('DETAIL_DELETE')%>", function (cb) {
+                        if (cb == 1) {
+                            contentDelete(id);
+                        }
+                    });
+                } else if (val == "share") {
+                    <%if (!_isInApp) {%>
+                    if (typeof ClipboardJS !== 'undefined') {
+                        // html += `<li class="list-group-item text-center"><input type="text" class="w-100" id="copyUrl2CB" value="<%=serviceinfo.defaultUrl+"/detail/"+pathhash+"/"+detail._id.toHexString()%>"/><button class="btnCnP btn btn-block" data-clipboard-action="copy" data-clipboard-target="#copyUrl2CB">${val[x].txt}</button></li>`;
+                        // html += `<li class="list-group-item text-center"><button class="btnCnP btn btn-block" data-clipboard-text="Just <%=serviceinfo.defaultUrl+"/detail/"+pathhash+"/"+detail._id.toHexString()%>">${val[x].txt}</button></li>`;
+                        $('#copypasteModal').on('show.bs.modal', function (event) {
+                            var modal = $(this);
+                            modal.find('#copy-url').val('<%=serviceinfo.defaultUrl+"/detail/"+pathhash+"/"+detail._id.toHexString()%>');
+                        }).on('shown.bs.modal', function (event) {
+                            var modal = $(this);
+                            if (typeof ClipboardJS !== 'undefined') {
+                                var clipboard = new ClipboardJS('.btnCnP');
+
+                                clipboard.on('success', function (e) {
+                                    $('#copypasteModal').modal('hide');
+                                });
+                                clipboard.on('error', function (e) {
+                                    $('#copypasteModal').modal('hide');
+                                });
+                            }
+                        }).modal();
+                    }
+                    <% } else { %>
+                        shareLink("<%=detail.title%>", "<%=detail.content.replace(/(<\/?[^>]+(>|$)|\n)/g, "").substring(0, 64)%>", "/detail/<%=pathhash%>/<%=detail._id.toHexString()%>", "<%=getPhotoEx(detail.representationImage,3,1)%>");
+                    <% } %>
+                } else if (val=="pushmsg") {
+                    var text=getMydetailMenu(val)
+                    var blnMsg=(text.indexOf("끄기")>-1)?false:true;
+                    onPushMsg(val,blnMsg);
+                }
+            }
+
+            function onCommentReload($this) {
+                getCommentList({
+                    contentId: '<%= detail._id.toHexString()%>',
+                    sort: orderby,
+                    limit: 30,
+                    reload: "Y",
+                    cyn: commentyn
+                });
+            }
+
+            function getMydetailMenu(val){
+                for(var i=0; i<mydetailMenu.length;i++){
+                    if(mydetailMenu[i].val==val){
+                        return mydetailMenu[i].txt;
+                    }
+                }
+            }
+            function setMydetailMenu(val,text){
+                for(var i=0; i<mydetailMenu.length;i++){
+                     if(mydetailMenu[i].val==val){
+                         mydetailMenu[i].txt=text;
+                    }
+                }
+            }
+
+            function onPushMsg(val,blnMsg) {
+                var contentId='<%= detail._id.toHexString()%>';
+                var pushmsgtxt
+                
+                if(blnMsg){
+                    pushmsgtxt="알람 끄기";
+                }else{
+                    pushmsgtxt="알람 켜기";
+                }
+                setMydetailMenu("pushmsg",pushmsgtxt);
+                
+                $.ajax({
+                    type: 'PUT',
+                    url: '/postpushmsg/' + contentId+'/'+blnMsg,
+                    success: function (data) {
+                        if (data.result == "ok") {
+                            
+                        } else {
+                            
+                        }
+                    }, error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+        </script>
+        <%- include('../_layouts/layout_bodyend') -%>
+    </body>
+
+</html>

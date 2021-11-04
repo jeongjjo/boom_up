@@ -4,7 +4,7 @@
 
     <head>
         <%- include('../_layouts/header')-%>
-
+        
         <%- include('../_layouts/layout_bodyscript') -%>
         <style>
 
@@ -14,12 +14,25 @@
     <body>
         <%- include('../_layouts/layout_bodystart') -%>
         <div class="app header footer" id="contentbody">
-            <%-include('../_parts/_new_header')%>
+            <%-include('../_parts/_header')%>
             <!-- Content -->
             <div id="idSearchHeaderArea" class="position-fixed" style="z-index: 1000;">
+                <div id="idSearchTab" class="d-flex flex-row p-2 justify-content-between mainmenu-line"
+                    style="background-color: white;">
+                    <div name="stabmenu" id="searchall" class="p-1 search-tab-selected" onclick="tabSelected(this)"
+                        data-type='searchall'><%= __('ALL')%></div>
+                    <div name="stabmenu" class="p-1" id="hashtag" onclick="tabSelected(this)" data-type='hashtag'>
+                        <%= __('HASHTAG')%></div class="p-1">
+                    <div name="stabmenu" class="p-1" onclick="tabSelected(this)" data-type='title'><%= __('TITLE')%>
+                    </div class="p-1">
+                    <div name="stabmenu" class="p-1" onclick="tabSelected(this)" data-type='content'><%= __('CONTENT')%>
+                    </div class="p-1">
+                    <div name="stabmenu" class="p-1" onclick="tabSelected(this)" data-type='nickname'><%= __('WRITER')%>
+                    </div class="p-1">
+                </div>
                 <div class="d-flex flex-row search-input-area">
-                    <div class="d-flex search-input-box w-100">
-                        <div class="flex-grow-1 flow-shrink-1">
+                    <div class="d-flex search-input-box pl-1 w-100">
+                        <div class="flex-grow-1 flow-shrink-1 mr-1">
                             <input id="idSearchWord" type="text" onkeypress="search(event)"
                                 onkeyup="searchwordValidation(this)" class="search-input"
                                 placeholder="<%= __('SEARCH_PLACEHOLDER')%>" value="<%=skeyword%>"/>
@@ -27,22 +40,44 @@
                         <div class="align-self-center"><span id="btnsearchword" onclick="searchWordClear()"
                                 class="search-btn-clear displayNone">x</span></div>
                     </div>
-<!--                     <div class="d-flex search-button-box"> -->
-<!--                         <div class="align-self-center ml-3 mr-3" id="btn_search" onclick="blurSearch(this)"><span -->
-<!--                                 class="icon-search2"></span></div> -->
-<!--                     </div> -->
+                    <div class="d-flex search-button-box">
+                        <div class="align-self-center ml-3 mr-3" id="btn_search" onclick="blurSearch(this)"><span
+                                class="icon-search2"></span></div>
+                    </div>
                 </div>
             </div>
 
             <div id="idSearchwordArea" class="search-list-top ">
-                <div class="d-flex flex-column">
-                    <div class="search-category-area">
-                        <div class="search-category-title"><%= __('SEARCH_RECENT_WORD')%></div>
-                        <div id="recentArea">
+                <div class="d-flex flex-column" style="background-color: #f1f1f1;">
+                    <div class="search-category-area mt-1">
+                        <div class="mt-2 ml-3 search-category-title"><%= __('SEARCH_RECENT_WORD')%></div>
+                        <div class="d-flex flex-row flex-wrap mt-1 mb-1 ml-3 mr-3" id="recentArea">
                             <% for  (var x=0 ; x<newestkeyword.length; x++  ) { %>
-                                <div class="search-inki">
-                                    <div onclick="searchwordClick('<%=newestkeyword[x].text%>', 'recently')"><%=newestkeyword[x].text %> </div>
-                                </div>
+                                <span class="search-inki">
+                                <span onclick="searchwordClick('<%=newestkeyword[x].text%>', 'recently')"
+                                    ><%=newestkeyword[x].text %> </span>
+                                    <span onclick="searchwordRemove(this)" data-txt="<%=newestkeyword[x].text %>" class="icon-x searchword-remove"></span> </span>
+                            <%  } %>
+                        </div>
+                    </div>
+                    <div class="search-category-area">
+                        <div class="mt-2 ml-3 search-category-title"><%= __('SEARCH_HOT_WORD')%></div>
+                        <div class="d-flex flex-row flex-wrap mt-1 mb-1 ml-3 mr-3">
+                            <% for  (var x=0 ; x<hotkeyword.length; x++  ) { %>
+                            <span onclick="searchwordClick('<%=hotkeyword[x].text%>', 'popularity')"
+                                class="search-gray"><%=hotkeyword[x].text %> </span>
+                            <%  } %>
+                        </div>
+                    </div>
+                    <div class="search-category-area">
+                        <div class="d-flex mt-2 ml-3 mr-3 justify-content-between">
+                            <div class="search-category-title"><%= __('SEARCH_HOT_HASHTAG')%></div>
+                            <div><span onclick="goHashList()" class="icon-right-circle icon-hash-more"></span></div>
+                        </div>
+                        <div class="d-flex flex-row flex-wrap mt-1 mb-1 ml-3 mr-3">
+                            <% for  (var x=0 ; x<hothashtag.length; x++  ) { %>
+                            <span onclick="searchwordClick('<%= hothashtag[x].text %>', 'hash')"
+                                class="search-gray">#<%= hothashtag[x].text  %> (<%= hothashtag[x].count  %>)</span>
                             <%  } %>
                         </div>
                     </div>
@@ -102,13 +137,13 @@
             }
 
             function onGoPostDetail($this, id) {
-                var pathHash = "search"
+                var pathHash = "search" 
                 location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id
             }
 
             function onGoPostDetailComment($this, id) {
                 var pathHash = window.location.hash.replace("#", "");
-                location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id+"?cyn=Y";
+                location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id+"?cyn=Y"; 
             }
 
             function onClickRecent(obj) {
@@ -175,7 +210,7 @@
                 if (keyword.length > 1) {
                     //blockPage()
                     getBoardList({
-                        kind: 'searchall',
+                        kind: maintype,
                         keyword: keyword,
                         sort: '',
                         limit: 50,
@@ -216,7 +251,7 @@
                     goSearch()
                 }, 100);
             }
-
+            
             function searchwordRemove(obj) {
                 var txt = $(obj).data("txt");
                 $.ajax({
@@ -233,7 +268,7 @@
                         console.log(error);
                     }
                 });
-
+                
             }
 
             function goHashList() {

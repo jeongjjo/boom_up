@@ -1,0 +1,89 @@
+<footer class="position-fixed">
+    <div class="mt-1 w-100 btn-group d-flex flex-wrap align-content-center ">
+        <div class="btn " onclick="goBack()">
+            <img src="/img/arrow_back.png">
+            <P></P>
+        </div>
+        <div class="btn " onclick="history.go(1)">
+            <img src="/img/arrow_next.png">
+            <P></P>
+        </div>
+        <div class="btn" onclick="goTabMenu('/', 'home')">
+            <i class="icon-home-footer footer-detail-icon-size"></i>
+            <P></P>
+        </div>
+        <div class="btn" id="idFooterKeep" onclick="putKeep()">
+            <i class="icon-keep-fill footer-detail-icon-size "></i>
+            <p></p>
+        </div>
+        <div class="btn" onclick="goTabMenu('/search/index/s', 'search')">
+            <i class="icon-search-footer footer-detail-icon-size"></i>
+            <P></P>
+        </div>
+        <div class="btn" data-action="share" onclick="clickMenu(this,function (val) {
+                                    onGoReport(val);
+                                })">
+            <img src="/img/footer_share.png">
+            <p></p>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript">
+var _auth = <%= _isAuthed %>;
+function goTabMenu(val, type){
+    cashePageClearAll();
+    <% if (_isAuthed) {%>
+        if(type == "search") location.href= val+"/"+moment().valueOf();
+        else location.href= val;
+        //location.href=val;
+    <% } else {  %>
+        if(val!='/' && val!='/search/index/s'){
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function(cb){
+                if(cb==1){
+                    location.href='/auth/login';
+                }
+            });
+        }else{
+            if(type == "search") location.href= val+"/"+moment().valueOf();
+            else location.href= val;
+            //location.href=val;
+        }
+        
+    <% } %>
+}
+
+function onFliter(obj) {
+    cashePageClearAll();
+    <% if (_isAuthed) {%>
+        if($(obj).find("i").hasClass("icon-message")){
+            location.href='/chat/chatroom';
+            return;
+        }
+    <% } else {  %>
+        if($(obj).find("i").hasClass("icon-message")){
+            onPopup("confirm", "<%- __('NEEDLOGIN')%>", function(cb){
+                if(cb==1){
+                    location.href='/auth/login';
+                    return
+                }
+            });
+        }
+    <% } %>
+    
+    var text = $("#text_filter").text();
+    
+    MenuOn(text, (val, tex) => {
+        console.log(val, tex);
+    });
+}
+
+function onGoWrite() {
+    var pathHash = window.location.hash.replace("#", "");
+    var url = '/write/' + (pathHash || 'inkiup-24rank');
+    if (_auth) {
+        location.href = url;
+    } else {
+        onPopup("confirm", "<%- __('NEEDLOGIN')%>", function (cb) { if (cb == 1) { location.href = '/auth/login'; } });
+    } 
+}
+</script>
