@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+        <%-include('../_layouts/layout_bodyscript')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header footer" id="contentbody">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="app-width-size container-fluid p-0 m-0 position-fixed" style="z-index: 1000;background-color:#ffffff" id="mainbody">
+                <% if(Userinfo.boomPower === 0){ %>
+                    <div class="empty-wrapper">
+                        <div class="empty-boom">
+                            <div class="main-title">보유중인 붐포인트가 없어요</div>
+                            <div class="sub-title">붐포인트는 아래와 같은 활동으로<br>모을 수 있어요</div>
+                        </div>
+                        <%-include('../_parts/_common_boom_info')%>
+                    </div>
+                <% }else{ %>
+                    <div class="no-empty-wrapper">
+                        <% let day
+                           if(moment().day()-7 === 0){
+                            day = 'day'
+                           } else {
+                            day = moment().day()-7
+                           }
+                        %>
+                        <div class="day">
+                            D-<%=day%>
+                        </div>
+                        <div class="point">
+                            <%=Userinfo.boomPower.toLocaleString()%>
+                        </div>
+                        <div class="info">
+                            붐포인트의 유효기간은 매주 일요일 정각!<br>
+                            적극적인 붐포인트 배팅 필수!
+                        </div>
+                        <div class="boom-box">
+                            <div class="betting-wrapper">
+                                <div class="betting-text">베팅중인 붐포인트</div>
+                                <div class="betting-point"><%= bettingPoint.toLocaleString() %></div>
+                            </div>
+                            <img src="/img/new/profile_right_arrow.svg"/>
+                        </div>
+                    </div>
+                <% } %>
+                <div id="scroll-fixed-area" class="d-flex text-center nprofile-category-tep pt-3" style="background-color:#fff;">
+                    <div id="tap_point" class="icon-excl-text flex-fill nprofile-category-highlight" onclick="onProfileTap(this, 'board');"><span>게시물</span></div>
+                    <div id="tap_betting" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'comment');"><span>댓글</span></div>
+                    <div id="tap_level" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'voting');"><span>베팅</span></div>
+                </div>
+
+                <!--ㅂㅣ공개 -->
+                <div class="nodata p-4 m-2 <%=blocked || ( !isMine && shareProfile=='N') ? '' : 'hidden' %>  ">
+                    <div>
+                        <i class="icon-excl-area-sm icon-excl"></i>
+                    </div>
+                    <div class="p-2">
+                        <%= blocked ?  __('BLOCKUSER_PROFILE')  : __('PRIVATE_USER')%>
+                    </div>
+                </div>
+                <!--ㅂㅣ공개-->
+            </div>
+             <!--list-->
+            <div class="list">
+                <div id="board_list" class="<%=blocked || ( !isMine && shareProfile=='N') ? 'hidden' : '' %>" >
+                    <div id="board-list-area">
+                        <% if(boardData.length > 0){ %>
+                        <%- include('../profile/list', {boardData: boardData, type: 'board'}) -%>
+                        <% }else{ %>
+                        <% } %>
+                    </div>
+                </div>
+                <div id="comment_list" class="hidden">
+                    <div id="board-list-area">
+                        <% if(commentData.length > 0){ %>
+                        <%- include('../profile/list', {commentData: commentData, type: 'comment'}) -%>
+                        <% }else{ %>
+                        <% } %>
+                    </div>
+                </div>
+                <div id="betting_list" class="hidden">
+                    <div id="board-list-area">
+                        <% if(bettingData.length > 0){ %>
+                        <%- include('../profile/list', {bettingData: bettingData, type: 'betting'}) -%>
+                        <% }else{ %>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nodata p-4 m-2 <%=blocked || ( !isMine && shareProfile=='N') ? '' : 'hidden' %> nprofile-list-block">
+                <div>
+                    <i class="icon-excl-area-sm icon-excl"></i>
+                </div>
+                <div class="p-2">
+                    <%= blocked ?  __('BLOCKUSER_PROFILE')  : __('PRIVATE_USER')%>
+                </div>
+            </div>
+            <!--list-->
+        </div>
+        <%-include('../_parts/_footer')%>
+        <style>
+            .list-post .point{
+                color: #2C2C2E;
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+        </style>
+
+        <script src="/js/plupload/plupload.full.min.js"></script>
+        <script type="text/javascript">
+            var isBlocked = <%= blocked %>
+            var phototype = null;
+            <%if (!_isInApp) {%>
+            var uploader = new plupload.Uploader({
+                runtimes: 'html5,html4',
+                browse_button: 'pickfiles',
+                url: "/api/attach",
+                resize: {
+                    width: 1280,
+                    quality: 95
+                },
+                filters : {
+                    max_file_size : '100mb',
+                    mime_types: [
+                        {title : "file", extensions : "jpg,png,jpeg,JPG,PNG,JPEG"}
+                    ]
+                },
+                init: {
+                    FilesAdded: function(up, files) {
+                            uploader.start();
+                            return false;
+                    },
+                    FileUploaded: function (up, file, response) {
+                        if($("#action_img").length > 0) {
+                            phototype = "edit";
+                        } else {
+                            phototype = "new";
+                        }
+                        onResultData(JSON.parse(response.response).data);
+                    },
+                    Error: function (up, err) {
+                        console.log(err);
+                        if(err.code == -600) {
+                            onPopup("alert", "<%= __('UPLOADMSG')%>", function(cb){ });
+                        }
+                    }
+                }
+            });
+                uploader.init();
+        <%}%>
+            cashePage({
+                onBeforeUnload: () => {
+                    return {
+                        selector: "#profileListArea",
+                        chk_post: $("#chk_post").attr("checked"),
+                        chk_reply: $("#chk_reply").attr("checked"),
+                        chk_vote: $("#chk_vote").attr("checked")
+                    }
+                }
+            });
+
+
+            (function () {
+                setHeader(<%=isMain %> ? '' : 'back', ['share'<% if(!isMine) { %>, 'more'<% } %>],
+                {
+                    more: (e) => {
+                        e.preventDefault();
+                        if (!<%= _isAuthed %>) return;
+                        Popup2On("profile", "<%=currUserId%>", (val, id) => { callbackPopup(val, id) });
+                    },
+                    share: (e) => {
+                        e.preventDefault();
+                        shareLink('<%=Userinfo.nickname%>', '', "/profile/main/<%=Userinfo._id.toHexString()%>", '<%=getPhoto(Userinfo.photo,1)%>');
+                    }
+                });
+
+                if (!<%= blocked %> && (<%= isMine %> || "<%=shareProfile%>" == "Y") ) {
+                    getProfileData("Y");
+                    //scroll();
+                }
+                $('.list').css('margin-top', $('#mainbody').height()+'px');
+            })();
+            function visibleBoardItem() {
+                $("div[id|=board-area]:not(.visible)").filter((i, s) => {
+                    var height = $(s).height();
+                    var docViewTop = $(".app").scrollTop();
+                    var docViewBottom = docViewTop + $(".app").height() + (height * 2);
+                    var elemTop = s.offsetTop;
+                    var elemBottom = elemTop + height;
+                    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+                }).addClass("visible");
+            }
+
+            function scroll() {
+                $("#profileListArea").scroll(function () {
+                    clearTimeout($.data(this, 'scrollTimer'));
+                    $.data(this, 'scrollTimer', setTimeout(() => {
+                        var scrollT = $("#profileListArea").scrollTop();
+                        var scrollH = $(this).height();
+                        var contentH = $('#profileListArea').height();
+                        if (scrollT + scrollH + 1 >= contentH) {
+                            getProfileData('N');
+                        }
+                    }, 250));
+                });
+            }
+
+            function onprofilePhoto($this, type) {
+                if(!(<%= _isInApp %>)) {
+                    onPopup("alert", "<%= __('AUTH_PROFILEINAPP')%>", function(cb){ });
+                } else {
+                    phototype = type;
+                    blockPage();
+                    window.Attach && window.Attach.postMessage(JSON.stringify({ count: 1, video: false, iwidth: 1280, iheight: 720, iqual: 95, vqual: 0, vdur: -1, vaud: true }));
+                }
+
+            }
+
+            function onResultData(result) {
+                if (result != null) {
+
+                    var attachList = [];
+                    result.map(att => {
+                        attachList = att.images;
+                        if (phototype == "new") {
+                            $(".profile-noimage, .pf-img-profile").remove();
+                            var html = '<img class="mr-3 ml-1 pf-img-profile" src="' + att.images[0] + '">';
+                            $("#profileimage").prepend(html);
+                        } else {
+                            $(".target_photo").attr("src", att.images[0]);
+                        }
+                    });
+                    if (attachList.length > 0) {
+                        var id = $("input[name=id]").val();
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/profile/image/' + id,
+                            data: {
+                                images: attachList[0],
+                                thumbnail: attachList[1]
+                            },
+                            success: function (data) {
+                                if (data.msg == "success") {
+
+                                    onPopup("alert", "등록에 성공하셨습니다.", function (cb) { });
+                                }
+                            }, error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    }
+                }
+            }
+
+            function onCheckVal(value){
+                var pattern = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|_|\u3130-\u3163\u4E00-\u9FFF|\u3040-\u30FC]{2,10}$/;
+                var retValue=pattern.test(value);
+                return retValue
+            }
+
+            function editNickname(obj) {
+                var objParent = $("#nicknameArea");
+                $("div[name='viewnickname']", objParent).addClass("hidden");
+                $("div[name='editnickname']", objParent).removeClass("hidden");
+            }
+
+            function onEditNickname(obj) {
+                var nickname = $("#txtNickname").val()
+                var objParent = $("#nicknameArea");
+                if(!onCheckVal(nickname)){
+                    onPopup("alert", "<%= __('VALIDATOR_INVALIDNN')%>", function(cb){ });
+                    return;
+                }
+                $("div[name='viewnickname'] span", objParent).text(nickname);
+                $("div[name='viewnickname']", objParent).removeClass("hidden");
+                $("div[name='editnickname']", objParent).addClass("hidden");
+                if (nickname.length<2){
+                    $("div[name='viewnickname']", objParent).addClass("hidden");
+                    $("div[name='editnickname']", objParent).removeClass("hidden");
+                    onPopup("alert", "<%= __('NICKNAMEDUP')%>", function(cb){ });
+                    return
+                }
+                $.ajax({
+                    method: 'put',
+                    url: '/profile/nickname',
+                    data: {
+                        nickname: nickname
+                    },
+                    success: function (data, status, xhr) {
+                        if(data.result=="dup"){
+                            var orinickname=data.data[0].nickanme;
+                            $("#txtNickname").val(orinickname)
+                            $("div[name='viewnickname'] span", objParent).text(orinickname);
+                            $("div[name='viewnickname']", objParent).addClass("hidden");
+                            $("div[name='editnickname']", objParent).removeClass("hidden");
+                            onPopup("alert", "<%= __('AUTH_ALREADYUSE')%>", function(cb){ });
+                        }
+                    },
+                    error: function (xhr, status, err) {
+
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+
+            function editMemo(obj) {
+                var objParent = $("#memoArea");
+                $("div[name='viewmemo']", objParent).addClass("hidden");
+                $("div[name='editmemo']", objParent).removeClass("hidden");
+            }
+
+            function onEditMemo() {
+                var memo = $("#txtMemo").val().trim().replaceAll("\n"," ")
+                var objParent = $("#memoArea");
+                $("div[name='viewmemo'] span", objParent).text(memo);
+                $("div[name='viewmemo']", objParent).removeClass("hidden");
+                $("div[name='editmemo']", objParent).addClass("hidden");
+                $.ajax({
+                    method: 'put',
+                    url: '/profile/memo',
+                    data: {
+                        memo: memo
+                    },
+                    success: function (data, status, xhr) {
+
+                    },
+                    error: function (xhr, status, err) {
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+
+            function showPofilePop(id) {
+                if (!<%= _isAuthed %>) return;
+                Popup2On('list', id, (val, id) => { callbackPopup(val, id) });
+            }
+
+            function onProfileMove(e, userId) {
+                e.stopPropagation();
+                <% if (_isAuthed) { %>
+                    location.href="/profile/main/" + userId
+                        <% } %>
+            }
+
+            function onGoPostDetail(id) {
+                var pathHash = 'profile'
+                //프로필에서는 카테고리 선택이 없으므로 빈값으로 던져야 함
+                location.href = '/detail/myprofile/' + id+ ""  ;
+            }
+
+            function resultPopup(val) {
+                shareLink("<%=Userinfo.nickname%>", "<%=Userinfo.message.replace(/(\r\n|\n|\r)/gm, " ") %>", "/profile/main/<%=Userinfo._id.toHexString()%>", "<%=getPhoto(user.photo,1)%>");
+            }
+
+
+            function callbackPopup(val, id) {
+
+}
+
+            var onsub = (obj) => {
+                $.ajax({
+                    method: 'put',
+                    url: '/profile/sub',
+                    data: {
+                        id: $(obj).data('id'),
+                        nm: $(obj).data('nm'),
+                        action: $(obj).data('action') // i,d
+                    },
+                    success: function (data, status, xhr) {
+                        if ($(obj).data('action') == 'i') {
+                            $(obj).addClass('btn-primary').removeClass('btn-light').html("<%= __('SUB_READY')%>").data("action", "d");
+                            $('#subscriberCount').html(parseInt($('#subscriberCount').html()) > 0 ? parseInt($('#subscriberCount').html()) - 1 : 0)
+                        } else {
+                            $(obj).removeClass('btn-primary').addClass('btn-light').html("<%= __('SUB_ING')%>").data("action", "i")
+                            $('#subscriberCount').html(parseInt($('#subscriberCount').html()) + 1)
+                        }
+                        if (data && data.length === 1) { } else { }
+                    },
+                    error: function (xhr, status, err) { },
+                    complete: function () { }
+                })
+            }
+            var _searching = false;
+            function getProfileData(first) {
+                if (loadCachPage((data) => {
+                    $("#chk_post").prop("checked", data.chk_post||null);
+                    $("#chk_reply").prop("checked", data.chk_reply || null);
+                    $("#chk_vote").prop("checked", data.chk_vote || null);
+                })) {
+                    return;
+                }
+
+                if (_searching) return;;
+                _searching = true;
+                var data = {
+                    id: '<%=Userinfo._id %>',
+                    first: first,
+                    postCheck: $('#chk_post:checked').val() ? 'Y' : 'N',
+                    lastPostId: $('._board').length > 0 ? $('._board').last().data('id') : 'none',
+                    datgulCheck: $('#chk_reply:checked').val() ? 'Y' : 'N',
+                    lastCommentId: $('._comment').length > 0 ? $('._comment').last().data('id') : 'none',
+                    lastReplyId: $('._reply').length > 0 ? $('._reply').last().data('id') : 'none',
+                    voteCheck: $('#chk_vote:checked').val() ? 'Y' : 'N',
+                    lastVoteId: $('._vote').length > 0 ? $('._vote').last().data('id') : 'none',
+                }
+                //blockPage();
+                $.get({
+                    type: 'POST',
+                    url: '/profile/profilelist/',
+                    data: data,
+                    success: function (html, status, xhr) {
+                        if (first == 'Y') $('#profileListArea').empty();
+                        var domList = $('#profileListArea');
+                        domList.append(html);
+                        //unblockPage();
+                        typeof callback === 'function' && callback(list, status, xhr);
+                        $('[data-toggle="tooltip"]').tooltip();
+                    },
+                    error: function (xhr, status, err) {
+                        //unblockPage();
+                        typeof callback === 'function' && callback(null, false, xhr);
+                    },
+                    complete: function () { _searching = false; }
+                });
+            }
+
+            function onClickChk(obj) {
+                obj&&obj.blur&&obj.blur();
+                getProfileData("Y");
+            }
+
+            function goLineup(c) {
+                location.href = '/?k=' + c + '&t=24rank&ts=' + moment().valueOf();
+                return false;
+            }
+
+            function onFullPhoto($this) {
+                var photo = $($this).attr("src");
+                onFullPhotoPopup(photo);
+            }
+
+            function onProfileTap($this, type) {
+                if(isBlocked) return
+                $("[id^=tap_]").removeClass("nprofile-category-highlight");
+                $($this).addClass("nprofile-category-highlight");
+                switch(type) {
+                    case "board":
+                        isTap = "board";
+                        $("#board_list").removeClass("hidden");
+                        $("#comment_list").addClass("hidden");
+                        $("#betting_list").addClass("hidden");
+                    break;
+                    case "comment":
+                        isTap = "comment";
+                        $("#comment_list").removeClass("hidden");
+                        $("#board_list").addClass("hidden");
+                        $("#betting_list").addClass("hidden");
+                    break;
+                    case "voting":
+                        isTap = "voting";
+                        $("#betting_list").removeClass("hidden");
+                        $("#comment_list").addClass("hidden");
+                        $("#board_list").addClass("hidden");
+                    break;
+                }
+            }
+
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

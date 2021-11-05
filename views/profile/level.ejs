@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+        <%-include('../_layouts/layout_bodyscript')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header footer" id="contentbody">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="app-width-size container-fluid p-0 m-0 position-fixed" style="z-index: 1000;background-color:#ffffff" id="mainbody">
+                <div class="level-wrapper">
+                    <div class="level-point">
+                        <%=Userinfo.boomLevel%>
+                    </div>
+                    <div class="level">
+                        Lv.<%=Userinfo.level%>
+                    </div>
+                    <img src="/img/new/level_info.svg"/>
+                    <div class="info">
+                        베팅한 게시물이 <strong>랭킹100</strong>에<br>
+                        도달할 때마다 배당금과 함께 붐레벨도 UP
+                    </div>
+                    <div class="sub-info">
+                        배당금을 모아서 붐코인으로 교환도 가능하니<br>
+                        적극적인 붐포인트 베팅은 필수!!
+                    </div>
+                </div>
+                <div id="scroll-fixed-area" class="d-flex text-center nprofile-category-tep pt-3" style="background-color:#fff;">
+                    <div id="tap_point" class="icon-excl-text flex-fill nprofile-category-highlight" onclick="onProfileTap(this, 'board');"><span>레벨 내역</span></div>
+                </div>
+                <!--ㅂㅣ공개-->
+            </div>
+            <div class="list">
+                <div id="board_list" class="<%=blocked || ( !isMine && shareProfile=='N') ? 'hidden' : '' %>" >
+                    <div id="board-list-area">
+                        <% for(let i in mileHistory){%>
+                        <div id="board-area" class="list-post d-flex" >
+                            <div class="flex-grow-1 flex-shrink-1">
+                                +<%=mileHistory[i].boomLevel.toLocaleString()%>
+                                <div class="d-flex post-sub-wrapper">
+                                    <span class="post-time">
+                                        <%=moment(mileHistory[i].createTS).format("YYYY/MM/DD")%>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <% }%>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%-include('../_parts/_footer')%>
+        <script src="/js/plupload/plupload.full.min.js"></script>
+        <script type="text/javascript">
+            (function () {
+                setHeader(<%=isMain %> ? '' : 'back', ['share'<% if(!isMine) { %>, 'more'<% } %>],
+                {
+                    more: (e) => {
+                        e.preventDefault();
+                        if (!<%= _isAuthed %>) return;
+                        Popup2On("profile", "<%=currUserId%>", (val, id) => { callbackPopup(val, id) });
+                    },
+                    share: (e) => {
+                        e.preventDefault();
+                        shareLink('<%=Userinfo.nickname%>', '', "/profile/main/<%=Userinfo._id.toHexString()%>", '<%=getPhoto(Userinfo.photo,1)%>');
+                    }
+                });
+            })();
+
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

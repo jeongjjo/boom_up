@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+        <%-include('../_layouts/layout_bodyscript')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header footer" id="contentbody">
+            <%-include('../_parts/_header')%>
+            <!-- content -->
+            <div class="app-width-size container-fluid p-0 m-0" style="z-index: 1000;background-color:#ffffff" id="mainbody">
+                <%if(Userinfo.boomCoin === 0){%>
+                    <div class="empty-wrapper">
+                        <div class="empty-boom">
+                            <div class="main-title">보유중인 붐코인이 없어요</div>
+                            <div class="sub-title">붐코인은 거래소에서 가상화페로<br>사용가능한 코인이에요</div>
+                        </div>
+                        <%-include('../_parts/_common_coin_info')%>
+                    </div>
+                <%}else{%>
+                    <%-include('../_parts/_common_coin_info')%>
+                <%}%>
+
+                <!--ㅂㅣ공개-->
+            </div>
+        </div>
+        <%-include('../_parts/_footer')%>
+        <script src="/js/plupload/plupload.full.min.js"></script>
+        <script type="text/javascript">
+            (function () {
+                setHeader(<%=isMain %> ? '' : 'back', ['share'<% if(!isMine) { %>, 'more'<% } %>],
+                {
+                    more: (e) => {
+                        e.preventDefault();
+                        if (!<%= _isAuthed %>) return;
+                        Popup2On("profile", "<%=currUserId%>", (val, id) => { callbackPopup(val, id) });
+                    },
+                    share: (e) => {
+                        e.preventDefault();
+                        shareLink('<%=Userinfo.nickname%>', '', "/profile/main/<%=Userinfo._id.toHexString()%>", '<%=getPhoto(Userinfo.photo,1)%>');
+                    }
+                });
+            })();
+
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

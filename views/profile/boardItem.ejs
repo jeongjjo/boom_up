@@ -1,0 +1,66 @@
+
+<div id="board-area-<%= data._id %>" class="list-post d-flex" >
+        <div class="flex-grow-1 flex-shrink-1">
+            <div class="point">+<%= data.userPower%></div>
+            <div class="voting-wrapper">
+            <% if (data.votingUp === data.votingDown) { %>
+                <div class="voting-common">
+                    <div class="voting-info up">
+                        <img src="/img/new/votingUp.svg"/>
+                        <span><%= data.votingUp%></span>
+                    </div>
+                </div>
+                <div class="voting-common">
+                    <div class="voting-info down">
+                        <img src="/img/new/votingDown.svg"/>
+                        <span><%= data.votingDown%></span>
+                    </div>
+                </div>
+            <% }else if(data.votingUp > data.votingDown){ %>
+                <div class="voting-common">
+                    <div class="voting-info up">
+                        <img src="/img/new/votingUp.svg"/>
+                        <span><%= data.votingUp%></span>
+                    </div>
+                </div>
+            <% }else{ %>
+                <div class="voting-common">
+                    <div class="voting-info down">
+                        <img src="/img/new/votingDown.svg"/>
+                        <span><%= data.votingDown%></span>
+                    </div>
+                </div>
+            <% } %>
+            </div>
+            <div class="list_margin_left text-break list-post-title"  onclick="onGoPostDetail(this, '<%=data._id%>');">
+                <span class="warn_text"></span>
+                <% data.lineup = data.lineup || {}; %>
+                <span class="post-lineup-<%=data.lineupKey%>">[<%= data.lineup.lineup %>]</span>
+                <span class="main-data-title">
+                <% if (data.title.length>34){ %>
+                    <%- data.title.substring(0,34) %>...
+                <% } else { %>
+                    <%- data.title %>
+                <% } %>
+                </span>
+            </div>
+            <div class="d-flex post-sub-wrapper">
+                <span class="post-time">
+                <% if (moment().add(-3,'d').valueOf()>data.createTS ){ %>
+                    <%= moment(data.createTS).format("MM/DD") %>
+                <% } else { %>
+                    <%= fn_dateTimeToFormatted(data.createTS).formatted %>
+                <% } %>
+                </span>
+                <div class="post-between-wrapper"><div class="post-between-dot"></div></div>
+                <span class="post-recount">댓글 <%= data.comment %></span>
+                <div class="post-between-wrapper"><div class="post-between-dot"></div></div>
+                <span class="post-recount">포인트 <%= data.point %></span>
+            </div>
+            </div>
+            <div class="flex-grow-0 flex-shrink-1 align-self-end list-wrapper" onclick="onGoPostDetail(this, '<%=data._id%>');">
+                <% if ( data.representationImage && data.representationImage.length > 1 && data.representationImage.indexOf("$REMOVE") == -1) { %>
+                <img src="<%=getPhotoEx(data.representationImage,3,1)%>" class="post-thumnail" onerror="this.src='/img/block.png';">
+                <% } %>
+            </div>
+</div>
