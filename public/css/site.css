@@ -3563,3 +3563,68 @@ span.post-down-icon::before {
     font-size: 12px;
     color: #8E8E93;
 }
+.complete-wrapper{
+    right: var(--app-right);
+    bottom: var(--app-bottom);
+    left: var(--app-left);
+    top: var(--app-top);
+    z-index: 8900;
+    background-color: #FFF;
+    padding-bottom: 0.5em;
+    padding-bottom: constant(safe-area-inset-bottom + 0.5em);
+    padding-bottom: env(safe-area-inset-bottom + 0.5em);
+}
+.complete-wrapper .complete-content{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    text-align: center;
+}
+.complete-wrapper .complete-content embed{
+    width: 100%;
+}
+.complete-wrapper .complete-content .complete-title{
+    font-size: 36px;
+    letter-spacing: -1.5px;
+    color: #3A3A3C;
+}
+.complete-wrapper .complete-content .complete-info{
+    margin-top: 28px;
+    font-size: 14px;
+    letter-spacing: -0.75px;
+    color:#8E8E93;
+}
+.complete-wrapper .complete-content .complete-btn-group{
+    margin: 118px 23px 0 23px;
+}
+.complete-wrapper .complete-content .complete-btn-group div{
+    cursor: pointer;
+}
+.complete-wrapper .complete-content .complete-btn-group .confirm-btn{
+    background: #FF3B30;
+    border-radius: 8px;
+    color: #FFFFFF;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    padding: 17px 0;
+}
+.complete-wrapper .complete-content .complete-btn-group .share-btn{
+    margin-top: 20px;
+    background: rgba(142, 142, 147, 0.3);
+    border-radius: 8px;
+    padding: 10px 0;
+}
+
+.complete-wrapper .complete-content .complete-btn-group .share-btn span{
+    display: block;
+}
+.complete-wrapper .complete-content .complete-btn-group .share-btn .main{
+    font-size: 18px;
+    color: #FF3B30;
+    letter-spacing: -0.5px;
+}
+.complete-wrapper .complete-content .complete-btn-group .share-btn .sub{
+     font-size: 12px;
+     color: #8E8E93;
+     letter-spacing: -0.75px;
+ }

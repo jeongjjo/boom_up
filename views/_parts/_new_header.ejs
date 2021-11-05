@@ -50,8 +50,8 @@
         <% }else{ %>
             <div class="text-center align-self-center  header-side-width-right">
         <% } %>
-            <% var searchFlag%>
-            <% if (_isAuthed && !searchFlag) {%>
+            <% var emptyFlag%>
+            <% if (_isAuthed && !emptyFlag) {%>
                 <div class="boomInfo">
                     <img src="/img/new/point_badge.svg"/>
                     <% let day
@@ -63,7 +63,7 @@
                     %>
                     <span class="point"><%= user.boomPower?user.boomPower.toLocaleString():0 %></span><span class="day">D-<%= day%></span>
                 </div>
-            <% } else if (searchFlag) {%>
+            <% } else if (emptyFlag) {%>
                 <div class="text-center align-self-center">
                 </div>
             <% } %>

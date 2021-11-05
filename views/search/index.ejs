@@ -39,12 +39,25 @@
                     <div class="search-category-area">
                         <div class="search-category-title"><%= __('SEARCH_RECENT_WORD')%></div>
                         <div id="recentArea">
-                            <% for  (var x=0 ; x<newestkeyword.length; x++  ) { %>
+                            <% newestkeyword.length>5?newestkeyword.length=5:newestkeyword.length %>
+                            <% for  (var x=0 ; x < newestkeyword.length; x++  ) { %>
                                 <div class="search-inki">
                                     <div onclick="searchwordClick('<%=newestkeyword[x].text%>', 'recently')"><%=newestkeyword[x].text %> </div>
                                 </div>
                             <%  } %>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div id="idSearchwordArea" class="search-list-top ">
+                <div class="d-flex flex-column">
+                    <div class="search-category-area">
+                        <div class="search-category-title"><%= __('SEARCH_HOT_WORD')%></div>
+                        <% for  (var x=0 ; x < concernKeywordInki.length; x++  ) { %>
+                            <div class="search-inki">
+                                <div onclick="searchwordClick('<%=concernKeywordInki[x].text%>', 'recently')"><%=concernKeywordInki[x].text %> </div>
+                            </div>
+                        <%  } %>
                     </div>
                 </div>
             </div>

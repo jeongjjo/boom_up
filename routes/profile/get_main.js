@@ -112,7 +112,9 @@ module.exports = [
             currUserId: isMine ? req.user._id.toHexString() : req.params.id,
             concernKeywordMy: concernKeywordMy,
             concernKeywordInki: concernKeywordInki,
-            contentuser: contentuser
+            contentuser: contentuser,
+            backFlag: true,
+            emptyFlag: true
         });
     }
 ];

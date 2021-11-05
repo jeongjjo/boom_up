@@ -157,6 +157,24 @@
                     </div>
                 </div>
             </div>
+
+            <div class="complete-wrapper hidden position-fixed">
+                <div class="complete-content">
+                    <embed src="/img/new/batting-complete.svg">
+                    <div class="complete-title">베팅 완료</div>
+                    <div class="complete-info">
+                        베팅 결과에 따른 배당금은<br>
+                        매주 일요일 정각에 지급됩니다
+                    </div>
+                    <div class="complete-btn-group">
+                        <div class="confirm-btn">확인</div>
+                        <div class="share-btn">
+                            <span class="main">게시글 공유하기</span>
+                            <span class="sub">지금 공유하면 +50P</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="d-flex flex-column">
                 <%- include('../comment/layout_list') -%>
             </div>
@@ -195,7 +213,6 @@
         </div>
         <% } %>
         <%- include('../_parts/_footer') -%>
-
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
         <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
@@ -233,6 +250,11 @@
             function closePopBet(){
                 $('#popuplayerAdv-betting').addClass('hidden')
             }
+            $('.confirm-btn').on('click', function(e){
+                e.preventDefault()
+                $('.complete-wrapper').addClass('hidden')
+                location.reload();
+            })
             $( "#slider" ).slider({
               value:0,
               min: 0,
@@ -261,7 +283,7 @@
                     data: data,
                      success: function (req) {
                         closePopBet();
-                        location.reload();
+                        $('.complete-wrapper').removeClass('hidden')
                     }, error: function (error) {
                         console.log(error);
                     }

@@ -88,7 +88,7 @@ module.exports = [
         //인기키워드
         
         res.render(retUrl, {
-            title: __('SEARCH_TITLE'),
+            title: __('KEYWORD_LIST'),
             lineup : lineup,
             hotkeyword: hotkeyword,
             newestkeyword: newestkeyword,
@@ -98,7 +98,9 @@ module.exports = [
             target: target || "",
             concernKeywordMy:concernKeywordMy,
             concernKeywordInki:concernKeywordInki,
-            skeyword
+            skeyword,
+            backFlag: true,
+            emptyFlag: true
         });
     }
 ];
