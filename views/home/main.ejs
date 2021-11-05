@@ -75,9 +75,7 @@
                     </div>
                     <% } %>
                 </div>
-
-
-                <div class="main-list" id="main_list">
+                <div class="main-list" id="main_list" style="<% if(type !== 'inkiup_ranking'){ %>padding-top: 5em;<% }else{ %>padding-top:49px;<% }%>">
                     <%- include('../board/layout_list', {board: typeof board !== 'undefined' ? board : null, type: type}) -%>
                 </div>
             </div>
@@ -365,18 +363,18 @@
                     if(c && c == "Y") {
                         $("#notice-area").remove();
                         var h = $("#main-category-area").height();
-                        $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                        //$("#main_list").attr("style", "padding-top: "+ h+ "px !important");
                     }
                     var c1 = getCookie(type+"-"+ismine);
                     if(c1 && c1 == "Y") {
                         $("#lineupnotice-area").remove();
                         var h = $("#main-category-area").height();
-                        $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                        //$("#main_list").attr("style", "padding-top: "+ h+ "px !important");
                     }
 
                     setTimeout(function(e) {
                         var h = $("#main-category-area").height();
-                        $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                        //$("#main_list").attr("style", "padding-top: "+ h+ "px !important");
                     }, 400);
 
                     //카테고리 갯수가 적을 경우 화살표 히든처리
@@ -499,7 +497,7 @@
                     }
 
                     var h = $("#main-category-area").height();
-                    $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                    //$("#main_list").attr("style", "padding-top: "+ h+ "px !important");
                 }
 
                 function onDeleteNotice($this, type, key, title) {
@@ -509,7 +507,7 @@
                             if (cb == 1) {
                                 $("#notice-area").remove();
                                 var h = $("#main-category-area").height();
-                                $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                                //$("#main_list").attr("style", "padding-top: "+ h+ "px !important");
                                 setCookie("entire-"+ ismine, "Y", 1);
                             }
                         });
@@ -521,7 +519,7 @@
                                 $($this).parents(".category-line").remove();
                                 $("#lineupnotice-area").remove();
                                 var h = $("#main-category-area").height();
-                                $("#main_list").attr("style", "padding-top: "+ h+ "px !important");
+                                //$("#main_list").attr("style", "padding-top: "+ h+ "px !important");
                                 setCookie(key+"-"+ ismine, "Y", 1);
                             }
                         });
