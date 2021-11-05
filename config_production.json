@@ -117,5 +117,5 @@
         "pass": "Snowman1234!"
     },
 
-    "invalidUrlRegex": "^(?!http[s]?:\\/{2}(\\w*)\\.?inkiup\\.com(:\\d)*|https:\\/{2}appleid\\.apple\\.com|https:\\/{2}d39rw2lh9ylrhv\\.cloudfront\\.net|https:\\/{2}filesinkiup\\.s3\\.ap-northeast-2\\.amazonaws\\.com|https:\\/{2}(\\w*)\\.?youtube\\.com\\/embed\\/|https:\\/{2}(\\w*)\\.?hotjar\\.com).*$"
+    "invalidUrlRegex": "^(?!http[s]?:\\/{2}(\\w*)\\.?boomup\\.com(:\\d)*|https:\\/{2}appleid\\.apple\\.com|https:\\/{2}d39rw2lh9ylrhv\\.cloudfront\\.net|https:\\/{2}filesinkiup\\.s3\\.ap-northeast-2\\.amazonaws\\.com|https:\\/{2}(\\w*)\\.?youtube\\.com\\/embed\\/|https:\\/{2}(\\w*)\\.?hotjar\\.com).*$"
 }

@@ -1,0 +1,56 @@
+<div id="comment-area-<%=data._id%>" class="list-post desc-replylist <%=(data.commentId == null ? '' : 'ml-3')%>" onclick="newOnReComment(event, '<%= data._id %>', '<%= data.userId%>')" onclick="location.href='/detail/inkiup-allrank/<%=data.contentId%>'">
+    <div class="point">+<%= data.userPower%></div>
+    <div class="d-flex list-post-profile">
+        <div onclick="event.stopPropagation();popupProfile('<%= data.userId %>');">
+            <img src="<%= getPhotoEx(data.userPhoto,3,1,'/img/pro-image.png') %>" onError="this.src='/img/pro-image.png'" class="img-profile" alt="profile">
+            <% if(data.writer == "Y") { %>
+            <span class="box-writer"><%= __('WRITER')%></span>
+            <span class="post-nickname add-writer"><%= data.nickname %></span>
+            <% }else{ %>
+            <span class="post-nickname"><%= data.nickname %></span>
+            <% } %>
+
+        </div>
+        <div class="flex-grow-1 align-self-center">
+            <% if (_isAuthed && data.userId!=user._id.toHexString() && data.userMemo ) {%>
+            <span data-toggle="tooltip" data-placement="bottom" title="<%=data.userMemo%>">
+                <i class="icon-user-memo-area icon-user-memo" <% if (_isAuthed) {%>onclick="event.stopPropagation();" <%}%>></i>
+            </span>
+            <%}%>
+        </div>
+
+    </div>
+    <div id="comment-<%=data._id%>" class="d-flex list-postdesc-reply <%if(data.delete || data.blockUser || data.block) {%> text-danger <% } %>">
+        <%
+        var comment = data.comment;
+        if (data.block) {
+            comment = __('COMMANT_BLOCK_MSG');
+        } else if (data.blockUser) {
+            comment = __('COMMANT_BLOCKUSER_MSG');
+        } else if (data.delete) {
+            comment = __('COMMANT_DELETED_MSG');
+        }
+        %>
+            <%- linkContent(comment||'').replace(/\n/mg,'<br/>') %>
+        </div>
+        <div id="comment-<%=data._id%>-button-area" class="comment-area d-flex flex-grow-1 group_voting <%= typeof data.vote === 'undefined' ? '' : (data.vote == 'UP' ? 'up' : 'down' )%>">
+            <%if(!data.delete && !data.blockUser && !data.block) {%>
+            <span class="post-time"><%= fn_dateTimeToFormatted(data.createTS).formatted %></span>
+            <div class="post-between-wrapper"><div class="post-between-dot"></div></div>
+            <span id="comment-<%=data._id%>-vote-up" class="postdesc-votecount-l post-up-down" <% if (!data.delete) { %> onclick="onCommentVotiong(event, '<%= data._id %>', 'UP');" <% } %>>좋아요<%= data.votingUp %></span>
+            <div class="post-between-wrapper"><div class="post-between-dot"></div></div>
+            <span class="post-reply-count">댓글<%= data.reply %></span>
+            <% } %>
+            <% if (_isAuthed) {%>
+            <% if(data.delete !== true) { %>
+            <div class="ml-3 hidden" name='delete-button-group'>
+                <% if (user && user && user._id.toHexString() == data.userId) { %>
+                <span class="postdesc-text-l post-time" onclick="onModifyComment(event, '<%= data._id %>', '<%= data.userId%>','<%= data.imageName||'' %>',<%= data.createTS %>);">수정</span>
+                <span class="postdesc-text-l reply-delete-report ml-3" onclick="onDeleteComment(event, '<%= data._id %>');">삭제</span>
+                <%} %>
+            </div>
+            <% }%>
+            <% } %>
+        </div>
+    </div>
+</div>
