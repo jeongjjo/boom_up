@@ -278,7 +278,7 @@
                 //console.log($('.betting-point').val());
                 let data = {
                     cId:'<%= detail._id%>',
-                    boomPower: $('.betting-point').val()
+                    boomPower: parseInt($('.betting-point').val().replace(/[^0-9-.]/g, ''))
                 }
                 $.ajax({
                     type: 'POST',

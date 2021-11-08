@@ -49,9 +49,8 @@
                     </div>
                 <% } %>
                 <div id="scroll-fixed-area" class="d-flex text-center nprofile-category-tep pt-3" style="background-color:#fff;">
-                    <div id="tap_point" class="icon-excl-text flex-fill nprofile-category-highlight" onclick="onProfileTap(this, 'board');"><span>게시물</span></div>
-                    <div id="tap_betting" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'comment');"><span>댓글</span></div>
-                    <div id="tap_level" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'voting');"><span>베팅</span></div>
+                    <div id="tap_point" class="icon-excl-text flex-fill nprofile-category-highlight" onclick="onProfileTap(this, 'board');"><span>게시물 (<%=boardData.length%>)</span></div>
+                    <div id="tap_betting" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'comment');"><span>댓글 (<%=commentData.length%>)</span></div>
                 </div>
 
                 <!--ㅂㅣ공개 -->
@@ -79,14 +78,6 @@
                     <div id="board-list-area">
                         <% if(commentData.length > 0){ %>
                         <%- include('../profile/list', {commentData: commentData, type: 'comment'}) -%>
-                        <% }else{ %>
-                        <% } %>
-                    </div>
-                </div>
-                <div id="betting_list" class="hidden">
-                    <div id="board-list-area">
-                        <% if(bettingData.length > 0){ %>
-                        <%- include('../profile/list', {bettingData: bettingData, type: 'betting'}) -%>
                         <% }else{ %>
                         <% } %>
                     </div>

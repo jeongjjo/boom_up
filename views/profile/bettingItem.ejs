@@ -1,7 +1,7 @@
 
 <div id="board-area-<%= data._id %>" class="list-post d-flex" >
         <div class="flex-grow-1 flex-shrink-1">
-            <div class="point">+<%= data.userBetting.toLocaleString()%></div>
+            <div class="point">+<%= data.userBetting.toLocaleString()%><span class="betting_date">베팅일 (<%= moment(data.userCreateTS).format('YYYY-MM-DD') %>)</span></div>
             <div class="voting-wrapper">
             <% if (data.votingUp === data.votingDown) { %>
                 <div class="voting-common">

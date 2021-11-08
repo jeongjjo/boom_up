@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+        <%-include('../_layouts/layout_bodyscript')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header footer" id="contentbody">
+            <%-include('../_parts/_new_header')%>
+            <!-- content -->
+            <div class="app-width-size container-fluid p-0 m-0" style="background-color:#ffffff" id="mainbody">
+            <div class="list">
+                <div id="betting_list">
+                    <div id="board-list-area">
+                        <% if(bettingData.length > 0){ %>
+                        <%- include('../profile/list', {bettingData: bettingData, type: 'betting'}) -%>
+                        <% }else{ %>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%-include('../_parts/_footer')%>
+
+
+        <script src="/js/plupload/plupload.full.min.js"></script>
+        <script type="text/javascript">
+            var _auth = <%= _isAuthed %>;
+
+            cashePage({
+                onBeforeUnload: () => {
+                    return {
+                        selector: "#betting_list",
+                    }
+                }
+            });
+
+
+            (function () {
+                $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).naaEvent(option);
+
+                var $mainTopArea = $("#main-hidden-menu");
+                var mainTopHeight = $mainTopArea.outerHeight();
+                $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scroll(function(){
+                    var y = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
+                    if (y >= mainTopHeight) {
+                        $("#scroll-fixed-area").addClass('scroll-fixed-area');
+                    } else {
+                        $("#scroll-fixed-area").removeClass('scroll-fixed-area')
+                    }
+                });
+
+                // $("#comm-input-area").addClass("hidden");
+                // $("#comm-more-area, #comment_more").removeClass("hidden");
+                $("#comm-input-area, #comm-more-area").addClass("hidden");
+
+                $(".icon-my-footer").addClass("font-weight-bold");
+
+                $("#board-list-area").addClass("mb-4");
+                $("#comment-list-area").addClass("mb-4");
+            })();
+
+
+            $("#contentbody").naaEvent({
+                main: '#betting_list',
+                onMore: () => {
+                    //getProfileData('N');
+                },
+                onScroll: () => {
+                    //visibleBoardItem();
+                }
+            });
+
+
+//             function scroll() {
+//                 $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scroll(function () {
+//                     clearTimeout($.data(this, 'scrollTimer'));
+//                     $.data(this, 'scrollTimer', setTimeout(() => {
+//                         var scrollT = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
+//                         var scrollH = $(this).height();
+//                         var contentH = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).height();
+//                         //console.log(scrollT + "    ////    " + scrollH + "     ////    "+ contentH);
+//                         if (scrollT + scrollH + 1 >= contentH) {
+//                             if(isTap == "post") {
+//                                 getBoardList({
+//                                     kind: 'mycontent',
+//                                     targetId: targetid,
+//                                     limit: 30
+//                                 }, (msg) => {
+//                                 });
+//                             } else if (isTap == "reply") {
+//
+//                             } else if (isTap == "updown") {
+//
+//                             }
+//                         }
+//                     }, 250));
+//                 });
+//             }
+//
+//
+            function onGoPostDetail($this, id) {
+                var url = window.location.href;
+                var parameters = (url.slice(url.indexOf('?') + 1, url.length)).split('&');
+                var keyvalue
+                var category="inkiup"
+                for (var i=0; i<parameters.length;i++){
+                    keyvalue = parameters[i].split('=');
+                    //console.log(keyvalue,keyvalue.length)
+                    if(keyvalue[0]=="k"){
+                        category=keyvalue[1]
+                    }
+                }
+
+                var pathHash = category
+                location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id;
+            }
+
+            function onGoPostDetailComment($this, id) {
+                var pathHash = window.location.hash.replace("#", "");
+                location.href = '/detail/' + (pathHash || 'inkiup-24rank') + "/" + id+"?cyn=Y";
+            }
+
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

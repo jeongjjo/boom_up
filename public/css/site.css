@@ -3654,3 +3654,11 @@ span.post-down-icon::before {
      color: #8E8E93;
      letter-spacing: -0.75px;
  }
+
+.betting_date {
+    margin-left: 5px;
+    vertical-align: middle;
+    font-size: 11px;
+    letter-spacing: -0.75px;
+    color: #8E8E93;
+}
