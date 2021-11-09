@@ -46,9 +46,13 @@
                             </div>
                             <img src="/img/new/profile_right_arrow.svg"/>
                         </div>
+                        <div class="select-area">
+                            <div class="select-content point-history active" onclick="togglePoint('point')">포인트내역</div>
+                            <div class="select-content point-info" onclick="togglePoint('info')">모으는 방법</div>
+                        </div>
                     </div>
                 <% } %>
-                <div id="scroll-fixed-area" class="d-flex text-center nprofile-category-tep pt-3" style="background-color:#fff;">
+                <div id="scroll-fixed-area" class="d-flex text-center nprofile-category-tep pt-3 point-header" style="background-color:#fff;">
                     <div id="tap_point" class="icon-excl-text flex-fill nprofile-category-highlight" onclick="onProfileTap(this, 'board');"><span>게시물 (<%=boardData.length%>)</span></div>
                     <div id="tap_betting" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'comment');"><span>댓글 (<%=commentData.length%>)</span></div>
                 </div>
@@ -65,7 +69,10 @@
                 <!--ㅂㅣ공개-->
             </div>
              <!--list-->
-            <div class="list">
+            <div class="list point-info-content hidden">
+                <%-include('../_parts/_common_boom_info')%>
+            </div>
+            <div class="list point-list">
                 <div id="board_list" class="<%=blocked || ( !isMine && shareProfile=='N') ? 'hidden' : '' %>" >
                     <div id="board-list-area">
                         <% if(boardData.length > 0){ %>
@@ -156,7 +163,6 @@
                 }
             });
 
-
             (function () {
                 setHeader(<%=isMain %> ? '' : 'back', ['share'<% if(!isMine) { %>, 'more'<% } %>],
                 {
@@ -177,6 +183,22 @@
                 }
                 $('.list').css('margin-top', $('#mainbody').height()+'px');
             })();
+            function togglePoint(val){
+                if(val === 'point'){
+                    $('.point-history').addClass('active')
+                    $('.point-info').removeClass('active')
+                    $('.point-list').removeClass('hidden')
+                    $('.point-header').removeClass('hidden')
+                    $('.point-info-content').addClass('hidden')
+                }else{
+                    $('.point-info').addClass('active')
+                    $('.point-history').removeClass('active')
+                    $('.point-list').addClass('hidden')
+                    $('.point-header').addClass('hidden')
+                    $('.point-info-content').removeClass('hidden')
+                    $('.list.point-info-content').css('margin-top', $('.no-empty-wrapper').height()+45+'px');
+                }
+            }
             function visibleBoardItem() {
                 $("div[id|=board-area]:not(.visible)").filter((i, s) => {
                     var height = $(s).height();

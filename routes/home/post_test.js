@@ -52,6 +52,10 @@ module.exports = [
                 return res.json({
                     result: result
                 });
+            case 'user': result = await betting.userInit()
+                return res.json({
+                    result: result
+                });
         }
     }
 ];

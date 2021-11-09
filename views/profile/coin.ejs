@@ -21,10 +21,30 @@
                         <%-include('../_parts/_common_coin_info')%>
                     </div>
                 <%}else{%>
-                    <%-include('../_parts/_common_coin_info')%>
+                    <div class="no-empty-wrapper">
+                        <div class="point">
+                            <%=Userinfo.boomCoin.toLocaleString()%>
+                        </div>
+                        <div class="info">
+                            현재 <%=Userinfo.boomLevel.toLocaleString()%>원의 배당금을<br>
+                            붐코인으로 교환가능해요!
+                        </div>
+                        <div class="exchange-btn">
+                            <%=Userinfo.boomLevel.toLocaleString()%> 붐코인으로 교환하기
+                        </div>
+                        <div class="select-area">
+                            <div class="select-content coin-history active" onclick="toggleCoin('coin')">붐코인 내역</div>
+                            <div class="select-content coin-info" onclick="toggleCoin('info')">모으는 방법</div>
+                        </div>
+                    </div>
                 <%}%>
 
                 <!--ㅂㅣ공개-->
+            </div>
+            <div class="list coin-info-content hidden">
+                <%-include('../_parts/_common_coin_info')%>
+            </div>
+            <div class="list coin-list">
             </div>
         </div>
         <%-include('../_parts/_footer')%>
@@ -44,6 +64,22 @@
                     }
                 });
             })();
+            
+            function toggleCoin(val){
+                if(val === 'coin'){
+                    $('.coin-history').addClass('active')
+                    $('.coin-info').removeClass('active')
+                    $('.coin-list').removeClass('hidden')
+                    $('.coin-header').removeClass('hidden')
+                    $('.coin-info-content').addClass('hidden')
+                }else{
+                    $('.coin-info').addClass('active')
+                    $('.coin-history').removeClass('active')
+                    $('.coin-list').addClass('hidden')
+                    $('.coin-header').addClass('hidden')
+                    $('.coin-info-content').removeClass('hidden')
+                }
+            }
 
         </script>
         <%-include('../_layouts/layout_bodyend')%>

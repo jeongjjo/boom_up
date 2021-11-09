@@ -74,7 +74,6 @@ module.exports = {
         );
         return !!(inResult && outResult);
     },
-
     dayInit: async function(){
         console.log('dayInit')
         //게시판 포인트 계산
@@ -141,7 +140,123 @@ module.exports = {
             await db.update("user", {_id: ObjectId(aggResult[i]._id)}, {$inc:{boomLevel: parseInt(aggResult[i].totalLevel)}}, {upsert:true})
         }
         return true
-    }
-    //await db.getList("vote", { targetId: { $in: cIdList }, userId: userId });
+    },
+    userInit: async function(){
+        let userList = await db.getList('user', {use:true}, null, null, null)
+        let level1 = []
+        let level2 = []
+        let level3 = []
+        let level4 = []
+        let level5 = []
+        let level6 = []
+        let level7 = []
+        let level8= []
+        let levelMaster = []
+        for(let i in userList){
+            let boomLevel = userList[i].boomLevel?userList[i].boomLevel:0
+            if(boomLevel <= 5000 && boomLevel >= 0){
+                level1.push(userList[i]._id)
+            }
+            if(boomLevel <= 30000 && boomLevel > 5000){
+                level2.push(userList[i]._id)
+            }
+            if(boomLevel <= 60000 && boomLevel > 30000){
+                level3.push(userList[i]._id)
+            }
+            if(boomLevel <= 120000 && boomLevel > 60000){
+                level4.push(userList[i]._id)
+            }
+            if(boomLevel <= 160000 && boomLevel > 120000){
+                level5.push(userList[i]._id)
+            }
+            if(boomLevel <= 210000 && boomLevel > 160000){
+                level6.push(userList[i]._id)
+            }
+            if(boomLevel <= 260000 && boomLevel > 210000){
+                level7.push(userList[i]._id)
+            }
+            if(boomLevel <= 300000 && boomLevel > 260000){
+                level8.push(userList[i]._id)
+            }
+            if(boomLevel > 300000 ){
+                levelMaster.push(userList[i]._id)
+            }
+        }
 
+        let result
+        if(level1.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: level1}},
+                { $set: {level: 1}},
+                { multi:true, upsert: true }
+            );
+        }
+        if(level2.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: level2}},
+                { $set: {level: 2}},
+                { multi:true, upsert: true }
+            );
+        }
+        if(level3.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: level3}},
+                { $set: {level: 3}},
+                { multi:true, upsert: true }
+            );
+        }
+        if(level4.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: level4}},
+                { $set: {level: 4}},
+                { multi:true, upsert: true }
+            );
+        }
+        if(level5.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: level5}},
+                { $set: {level: 5}},
+                { multi:true, upsert: true }
+            );
+        }
+        if(level6.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: level6}},
+                { $set: {level: 6}},
+                { multi:true, upsert: true }
+            );
+        }
+        if(level7.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: level7}},
+                { $set: {level: 7}},
+                { multi:true, upsert: true }
+            );
+        }
+        if(level8.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: level8}},
+                { $set: {level: 8}},
+                { multi:true, upsert: true }
+            );
+        }
+        if(levelMaster.length > 0){
+            result = await db.updateMany(
+                "user",
+                {_id: { $in: levelMaster}},
+                { $set: {level: 9}},
+                { multi:true, upsert: true }
+            );
+        }
+        console.log(result)
+        return !!result;
+    }
 }

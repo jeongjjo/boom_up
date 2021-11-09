@@ -16,6 +16,7 @@ var db = require("../../module/mongodbWrapper");
 var rank = require("../../module/rankingPost");
 var dbCache = require("../../module/dbCache");
 var ObjectId = require('mongodb').ObjectId;
+var power = require("../../module/funcPoint");
 
 module.exports = [
     null, // URI : /test2 (최종은 /<route module>/<page module> : /sameple/test2)
@@ -187,6 +188,7 @@ module.exports = [
             if (data.kind == "board") {
                 rank.calPoint(contentId);
             }
+            await power.setUserPoint(userId, reaultInsert._id, 'comment_'+type, 50);
         }
         
 

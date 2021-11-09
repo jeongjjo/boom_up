@@ -3463,10 +3463,10 @@ span.post-down-icon::before {
 }
 .no-empty-wrapper{
     margin-top: 45px;
-    margin-bottom: 20px;
-    padding: 0 23px;
+    padding: 0 23px 20px 23px;
     text-align: center;
     letter-spacing: -0.75px;
+    border-bottom: solid 1px rgba(142, 142, 147, 0.3);
 }
 .no-empty-wrapper .day{
     font-size: 12px;
@@ -3506,9 +3506,10 @@ span.post-down-icon::before {
 }
 .level-wrapper{
     margin-top: 50px;
-    padding: 0 23px;
+    padding: 0 23px 20px 23px;
     text-align: center;
     letter-spacing: -0.75px;
+    border-bottom: solid 1px rgba(142, 142, 147, 0.3);
 }
 .level-wrapper .level-point{
     font-size: 12px;
@@ -3518,21 +3519,24 @@ span.post-down-icon::before {
     font-size: 36px;
     color: #2C2C2E;
 }
-.level-wrapper img{
-    margin-top: 35px;
-    width: 100%;
+.level-info-wrapper {
+    text-align: center;
 }
-.level-wrapper .info{
+.level-info-wrapper img{
+    margin-top: 35px;
+    width: 90%;
+}
+.level-info-wrapper .info{
     margin-top: 60px;
     font-size: 16px;
     letter-spacing: -0.75px;
     color: #3A3A3C;
 }
-.level-wrapper .info strong{
+.level-info-wrapper .info strong{
     font-weight: normal;
     color: #FF3B30;
 }
-.level-wrapper .sub-info{
+.level-info-wrapper .sub-info{
     margin-top: 15px;
     font-size: 12px;
     letter-spacing: -0.75px;
@@ -3661,4 +3665,40 @@ span.post-down-icon::before {
     font-size: 11px;
     letter-spacing: -0.75px;
     color: #8E8E93;
+}
+
+.select-area{
+    display: flex;
+    margin-top: 40px;
+    background: #EAEAEA;
+    border-radius: 100px;
+    width: 100%;
+    height: 46px;
+    padding: 5px;
+}
+.select-area .select-content{
+    width: 50%;
+    color: #8E8E93;
+    font-size: 16px;
+    line-height: 36px;
+    cursor: pointer;
+}
+.select-area .select-content.active{
+    color: #FFF;
+    background-color: #FF3B30;
+    box-shadow: 0px 0px 10px rgba(140, 140, 140, 0.25);
+    border-radius: 100px;
+}
+
+.exchange-btn {
+    background-color: #FF3B30;
+    width: 100%;
+    height: 58px;
+    color: #FFF;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    line-height: 58px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
 }

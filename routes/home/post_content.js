@@ -15,7 +15,7 @@ https://auth0.com/blog/express-validator-tutorial/
 var db = require("../../module/mongodbWrapper");
 var dbCache = require("../../module/dbCache");
 var ObjectId = require('mongodb').ObjectId;
-
+var power = require("../../module/funcPoint");
 var common = require("../../module/common");
 
 module.exports = [
@@ -129,6 +129,7 @@ module.exports = [
             var insertmany = await db.insertMany("hotHashtag", idata);
         }
         if (insert) {
+            await power.setUserPoint(insert.userId, insert._id, 'board', 100);
             return res.json({
                 result: "ok",
                 id: insert._id

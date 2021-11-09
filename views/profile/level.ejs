@@ -14,12 +14,24 @@
             <div class="app-width-size container-fluid p-0 m-0 position-fixed" style="z-index: 1000;background-color:#ffffff" id="mainbody">
                 <div class="level-wrapper">
                     <div class="level-point">
-                        <%=Userinfo.boomLevel%>
+                        <%=Userinfo.boomLevel.toLocaleString()%>
                     </div>
                     <div class="level">
                         Lv.<%=Userinfo.level%>
                     </div>
-                    <img src="/img/new/level_info.svg"/>
+                    <div class="exchange-btn" style="margin-top:20px">
+                        <%=Userinfo.boomLevel.toLocaleString()%> 붐코인으로 교환하기
+                    </div>
+                    <div class="select-area">
+                        <div class="select-content level-history active" onclick="toggleLevel('level')">붐레벨 내역</div>
+                        <div class="select-content level-info" onclick="toggleLevel('info')">붐레벨 정보</div>
+                    </div>
+                </div>
+                <!--ㅂㅣ공개-->
+            </div>
+            <div class="list level-info-content hidden">
+                <div class="level-info-wrapper">
+                    <img src="/img/new/level_<%=Userinfo.level%>.svg"/>
                     <div class="info">
                         베팅한 게시물이 <strong>랭킹100</strong>에<br>
                         도달할 때마다 배당금과 함께 붐레벨도 UP
@@ -29,12 +41,8 @@
                         적극적인 붐포인트 베팅은 필수!!
                     </div>
                 </div>
-                <div id="scroll-fixed-area" class="d-flex text-center nprofile-category-tep pt-3" style="background-color:#fff;">
-                    <div id="tap_point" class="icon-excl-text flex-fill nprofile-category-highlight" onclick="onProfileTap(this, 'board');"><span>레벨 내역</span></div>
-                </div>
-                <!--ㅂㅣ공개-->
             </div>
-            <div class="list">
+            <div class="list level-list">
                 <div id="board_list" class="<%=blocked || ( !isMine && shareProfile=='N') ? 'hidden' : '' %>" >
                     <div id="board-list-area">
                         <% for(let i in mileHistory){%>
@@ -69,7 +77,24 @@
                         shareLink('<%=Userinfo.nickname%>', '', "/profile/main/<%=Userinfo._id.toHexString()%>", '<%=getPhoto(Userinfo.photo,1)%>');
                     }
                 });
+
+                $('.list').css('margin-top', $('#mainbody').height()+'px');
             })();
+            function toggleLevel(val){
+                if(val === 'level'){
+                    $('.level-history').addClass('active')
+                    $('.level-info').removeClass('active')
+                    $('.level-list').removeClass('hidden')
+                    $('.level-header').removeClass('hidden')
+                    $('.level-info-content').addClass('hidden')
+                }else{
+                    $('.level-info').addClass('active')
+                    $('.level-history').removeClass('active')
+                    $('.level-list').addClass('hidden')
+                    $('.level-header').addClass('hidden')
+                    $('.level-info-content').removeClass('hidden')
+                }
+            }
 
         </script>
         <%-include('../_layouts/layout_bodyend')%>
