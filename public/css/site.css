@@ -706,8 +706,9 @@ span.post-nickname.add-writer{
 .detail-voting-wrapper{
     position: absolute;
     display: inline-block;
-    width: 12%;
-    right: 22px;
+    width: 20%;
+    right: 23px;
+    text-align: right;
 }
 .voting-rank{
     display: inline-block;
