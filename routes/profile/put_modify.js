@@ -1,5 +1,5 @@
 /**
- * @file 
+ * @file
  * 개발 샘플
  *
  * GET /sample/test2
@@ -48,19 +48,25 @@ module.exports = [
         }
 
         var nickname = req.body.nickname;
-        var memo = req.body.memo;
-        var photo = JSON.parse(req.body.photo);
-        var bgPhoto = JSON.parse(req.body.BGPhoto);
+        var photo = null
+        if(req.body.photo){
+            photo = JSON.parse(req.body.photo);
+        }
 
         var where = { _id: ObjectId(req.user._id)}
-        var data = {
-            $set: {
-                nickname : nickname,
-                message: memo,
-                photo: photo.length == 1 ? photo[0] : photo,
-                BGPhoto: bgPhoto.length == 1 ? bgPhoto[0] : bgPhoto
+
+        let data = {}
+        if(nickname){
+            data= {
+                $set: {
+                    nickname: nickname
+                }
             }
-            
+        }
+        if(photo){
+            data = {
+                photo: photo.length == 1 ? photo[0] : photo,
+            }
         }
 
         var result = await db.update("user", where, data, { upsert: true });
@@ -73,6 +79,6 @@ module.exports = [
                 result : "error"
             })
         }
-        
+
     }
 ];

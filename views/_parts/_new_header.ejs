@@ -2,6 +2,8 @@
     <div class="header-left">
         <div class="text-center align-self-center  header-side-width">
             <% var backFlag %>
+            <% var emptyFlag%>
+            <% var settingFlag %>
             <% if (_isAuthed && !backFlag) {%>
                 <div class="profile" onclick="goTabMenu('/profile/main', 'mypage')">
                     <img src="<%=getPhotoEx(user.photo,3,1, '/img/new/profile.png')%>" class="img-profile2" alt="profile">
@@ -20,7 +22,7 @@
         <% if(title && title.length > 0) { %>
             <div class="centre flex-fill text-center align-self-center font-weight-bold">
                 <% if(title && title.length > 0) { %>
-                    <span onclick='location.href="/"' style="line-height:33px;">
+                    <span onclick='location.href="/"' style="line-height:33px;<% if(emptyFlag){%>margin-left:35px;<%}%>">
                         <%= title%>
                     </span>
                 <% } else { %>
@@ -50,8 +52,7 @@
         <% }else{ %>
             <div class="text-center align-self-center  header-side-width-right">
         <% } %>
-            <% var emptyFlag%>
-            <% if (_isAuthed && !emptyFlag) {%>
+            <% if (_isAuthed && !emptyFlag && !settingFlag) {%>
                 <div class="boomInfo">
                     <img src="/img/new/point_badge.svg"/>
                     <% let day
@@ -61,10 +62,14 @@
                         day = moment().day()-7
                        }
                     %>
-                    <span class="point"><%= user.boomPower?user.boomPower.toLocaleString():0 %></span><span class="day">D-<%= day%></span>
+                    <span class="point"><%= user.boomPower?user.boomPower.toLocaleString():0 %></span><span class="day">D<%= day%></span>
                 </div>
             <% } else if (emptyFlag) {%>
                 <div class="text-center align-self-center">
+                </div>
+            <% } else if (_isAuthed && settingFlag) {%>
+                <div class="text-center align-self-center">
+                    <img class="setting-btn" src="/img/new/setting_icon.svg" style="margin-top: 5px; margin-left: 10px;cursor:pointer" />
                 </div>
             <% } %>
         </div>
@@ -121,6 +126,9 @@
 
         <% } %>
     }
+    $('.setting-btn').on('click', function(){
+        location.href = '/setting/main'
+    })
 </script>
 <style>
     .profile{

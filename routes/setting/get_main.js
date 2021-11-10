@@ -36,7 +36,9 @@ module.exports = [
 
         res.render('setting/main', {
             title: __('SETTING_ENVINFO'),
-            list: []
+            list: [],
+            backFlag: true,
+            emptyFlag: true
         });
     }
 ];

@@ -10,31 +10,31 @@
         <%-include('../_layouts/layout_bodystart')%>
 
         <div class="app header footer">
-            <%-include('../_parts/_header')%>
+            <%-include('../_parts/_new_header')%>
             <!-- content -->
             <div class="container-fluid p-0 m-0 ">
                 <!--profile-->
 
                 <div class="list-group list-group-flush">
-                    <!-- <div class="setting-group">
-                        <p class="setting-group-text"> <%= __('SETTING_MEMBERINFO')%> </p>
-                    </div>
-                    <a href="changeEmail" class="list-group-item d-flex justify-content-between">
-                        <div class="py-0 my-0">
-                            <i class="icon-message setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_EMAIL')%> <%= __('MODIFY')%></span> </i>
-                        </div>
-                        <div>
-                            <i class="icon-arrow-right setting_right_icon"></i>
-                        </div>
-                    </a>
-                    <a href="changePassword" class="list-group-item d-flex justify-content-between  ">
-                        <div>
-                            <i class="icon-password setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_PASSWORD')%> <%= __('CHANGE')%></span> </i>
-                        </div>
-                        <div>
-                            <i class="icon-arrow-right setting_right_icon"></i>
-                        </div>
-                    </a> -->
+<!--                      --><!-- <div class="setting-group"> -->
+<!--                         <p class="setting-group-text"> <%= __('SETTING_MEMBERINFO')%> </p> -->
+<!--                     </div> -->
+<!--                     <a href="changeEmail" class="list-group-item d-flex justify-content-between"> -->
+<!--                         <div class="py-0 my-0"> -->
+<!--                             <i class="icon-message setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_EMAIL')%> <%= __('MODIFY')%></span> </i> -->
+<!--                         </div> -->
+<!--                         <div> -->
+<!--                             <i class="icon-arrow-right setting_right_icon"></i> -->
+<!--                         </div> -->
+<!--                     </a> -->
+<!--                     <a href="changePassword" class="list-group-item d-flex justify-content-between  "> -->
+<!--                         <div> -->
+<!--                             <i class="icon-password setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_PASSWORD')%> <%= __('CHANGE')%></span> </i> -->
+<!--                         </div> -->
+<!--                         <div> -->
+<!--                             <i class="icon-arrow-right setting_right_icon"></i> -->
+<!--                         </div> -->
+<!--                     </a> -->
                     <div class="setting-group">
                         <p class="setting-group-text"> <%= __('SETTING_AUTHINFO')%> </p>
                     </div>
@@ -44,8 +44,7 @@
                             <i class="icon-message setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_EMAIL')%> <%= __('AUTHEFICATION')%> </span> </i>
                         </div>
                         <div onclick="location.href='/auth/resetpassword';">
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHEMAILCHANGEPW')%></span>
-                            <i class="icon-arrow-right setting_right_icon"></i>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHEMAILCHANGEPW')%></span>
                         </div>
                     </div>
                     <%}%>
@@ -56,12 +55,11 @@
                         </div>
                         <%if(user.auth&&user.auth.apple&&user.auth.apple.key){%>
                         <div>
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHDONE')%></span>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHDONE')%></span>
                         </div>
                         <%}else{%>
                         <div onclick="addsigninbySNS('apple');">
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHEXE')%></span>
-                            <i class="icon-arrow-right setting_right_icon"></i>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHEXE')%></span>
                         </div>
                         <%}%>
                     </div>
@@ -71,12 +69,11 @@
                         </div>
                         <%if(user.auth&&user.auth.google&&user.auth.google.key){%>
                         <div>
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHDONE')%></span>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHDONE')%></span>
                         </div>
                         <%}else{%>
                         <div onclick="addsigninbySNS('google');">
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHEXE')%></span>
-                            <i class="icon-arrow-right setting_right_icon"></i>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHEXE')%></span>
                         </div>
                         <%}%>
                     </div>
@@ -86,12 +83,11 @@
                         </div>
                         <%if(user.auth&&user.auth.facebook&&user.auth.facebook.key){%>
                         <div>
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHDONE')%></span>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHDONE')%></span>
                         </div>
                         <%}else{%>
                         <div onclick="addsigninbySNS('facebook');">
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHEXE')%></span>
-                            <i class="icon-arrow-right setting_right_icon"></i>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHEXE')%></span>
                         </div>
                         <%}%>
                     </div>
@@ -101,12 +97,11 @@
                         </div>
                         <%if(user.auth&&user.auth.kakao&&user.auth.kakao.key){%>
                         <div>
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHDONE')%></span>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHDONE')%></span>
                         </div>
                         <%}else{%>
                         <div onclick="addsigninbySNS('kakao');">
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHEXE')%></span>
-                            <i class="icon-arrow-right setting_right_icon"></i>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHEXE')%></span>
                         </div>
                         <%}%>
                     </div>
@@ -116,73 +111,56 @@
                         </div>
                         <%if(user.auth&&user.auth.naver&&user.auth.naver.key){%>
                         <div>
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHDONE')%></span>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHDONE')%></span>
                         </div>
                         <%}else{%>
                         <div onclick="addsigninbySNS('naver');">
-                            <span class=" setting_right_texted mr-1"><%=__('SETTING_AUTHEXE')%></span>
-                            <i class="icon-arrow-right setting_right_icon"></i>
+                            <span class=" setting_right_texted"><%=__('SETTING_AUTHEXE')%></span>
                         </div>
                         <%}%>
                     </div>
                     <%}%>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span class=" setting_line_text" onclick="logout();"><%=__('SETTING_LOGOUT')%></span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span class=" setting_line_text" onclick="unregister()"><%=__('SETTING_LEAVE')%></span>
+                    </div>
+                    <div class="setting-group second">
+                        <p class="setting-group-text"> <%= __('SETTING_ENVINFO')%> </p>
+                    </div>
+                        <div id="setting-permission-notification" class="list-group-item d-flex justify-content-between">
+                            <div class="py-0 my-0">
+                                <span class="setting_line_text"><%= __('ALERT')%></span>
+                            </div>
+                            <div>
+<!--                                 <button type="button" class="btn btn-text-normal" onclick="openAppSetting();"><%= __('SETTING_DEVICESET')%></button> -->
+                                <span class=" setting_right_texted" onclick="openAppSetting();"><%=__('SETTING_DEVICESET')%></span>
+                            </div>
+                        </div>
+
+                        <div id="setting-permission-camera" class="list-group-item d-flex justify-content-between">
+                            <div class="py-0 my-0">
+                                <span class="setting_line_text"><%= __('CAMERA')%></span>
+                            </div>
+                            <div>
+<!--                                 <button type="button" class="setting_right_texted" onclick="openAppSetting();"><%= __('SETTING_DEVICESET')%></button> -->
+                                <span class=" setting_right_texted" onclick="openAppSetting();"><%=__('SETTING_DEVICESET')%></span>
+                            </div>
+                        </div>
+
+                        <div id="setting-permission-microphone" class="list-group-item d-flex justify-content-between">
+                            <div class="py-0 my-0">
+                                <span class="setting_line_text"><%= __('MIC')%></span>
+                            </div>
+                            <div>
+<!--                                 <button type="button" class="btn btn-text-normal" onclick="openAppSetting();"><%= __('SETTING_DEVICESET')%></button> -->
+                                <span class=" setting_right_texted" onclick="openAppSetting();"><%=__('SETTING_DEVICESET')%></span>
+                            </div>
+                        </div>
                 </div>
 
-                <div class="list-group list-group-flush">
-                    <div class="setting-group">
-                        <p class="setting-group-text"> <%= __('SETTING_SERVICEINFO')%> </p>
-        </div>
 
-        <div class="list-group-item d-flex justify-content-between" onclick="location.href='/chat/chatroom'">
-            <div>
-                <i class="icon-message setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_MESSAGE')%></span> </i>
-            </div>
-            <div>
-                <i class="icon-arrow-right setting_right_icon"></i>
-            </div>
-        </div>
-        <div class="list-group-item d-flex justify-content-between" onclick="location.href='/setting/memo'">
-            <div>
-                <i class="icon-memo setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_MEMO')%></span> </i>
-            </div>
-            <div>
-                <i class="icon-arrow-right setting_right_icon"></i>
-            </div>
-        </div>
-        <div class="list-group-item d-flex justify-content-between" onclick="location.href='/setting/reqlist'">
-            <div>
-                <i class="icon-idea setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_REQ')%></span> </i>
-            </div>
-            <div>
-                <i class="icon-arrow-right setting_right_icon"></i>
-            </div>
-        </div>
-        <div class="list-group-item d-flex justify-content-between" onclick="location.href='/setting/blockeduserlist'">
-            <div>
-                <i class="icon-block setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_BLOCK')%></span> </i>
-            </div>
-            <div>
-                <i class="icon-arrow-right setting_right_icon"></i>
-            </div>
-        </div>
-        </div>
-
-        <div class="list-group list-group-flush mb-4 pb-4">
-            <div class="setting-group">
-                <p class="setting-group-text"> <%= __('SETTING_ENVINFO')%> </p>
-            </div>
-            <div class="list-group-item d-flex justify-content-between" onclick="location.href='setting'">
-                <div class="py-0 my-0">
-                    <i class="icon-setting setting_line_icon"> <span class="setting_line_text"><%= __('SETTING_ALERT')%> / <%= __('SETTING_PROFILESHARE')%> <%= __('SETTING')%> </span>
-                        <p class="pl-4 ml-2 small"><%= __('SETTING_LOGOUT')%> / <%= __('SETTING_LEAVE')%></p>
-                    </i>
-
-                </div>
-                <div>
-                    <i class="icon-arrow-right setting_right_icon"></i>
-                </div>
-            </div>
-        </div>
         <div style="height:50px">
         </div>
         <!--profile-->
@@ -191,12 +169,44 @@
         <!-- content -->
         <%-include('../_parts/_footer')%>
         <%-include('../_layouts/layout_bodyscript')%>
+        <script src="//cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script src="/js/sns/naveridlogin_js_sdk_2.0.0.js"></script>
+        <script src="/js/sns/kakao.min.js"></script>
+        <script>
+//             window.fbAsyncInit = function () {
+//                 FB.init({
+//                     appId: '2780254578892203',
+//                     xfbml: true,
+//                     version: 'v6.0'
+//                 });
+//                 // FB.AppEvents.logPageView();
+//             };
+//             (function (d, s, id) {
+//                 var js, fjs = d.getElementsByTagName(s)[0];
+//                 if (d.getElementById(id)) { return; }
+//                 js = d.createElement(s); js.id = id;
+//                 js.src = "https://connect.facebook.net/en_US/sdk.js";
+//                 fjs.parentNode.insertBefore(js, fjs);
+//             }(document, 'script', 'facebook-jssdk'));
+//             Kakao.init("38ba507bd2b37d4e1c7732e408021f73");
+//             var naverLogin = new naver.LoginWithNaverId(
+//                 {
+//                     clientId: "whePhYTEtI9r7ZLQ6Ack",
+//                     callbackUrl: "<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver",
+//                 }
+//             );
+//             naverLogin.init();
+        </script>
         <script type="text/javascript">
             var isAOS = /Android/i.test(navigator.userAgent);
             var isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent) && !window.MSStream;
 
             if (isAOS) {
                 $('div.snsApple').addClass('hidden');
+            }
+            function openAppSetting() {
+                OpenAppSetting.postMessage('');
             }
             function addsigninbySNS(type) {
                 <%if (!_isInApp) {%>
@@ -248,9 +258,92 @@
                 }
             }
             (function () {
-                setHeader('back', '')
                 // TODO script
+                checkDevicePermission();
             })();
+            function checkDevicePermission() {
+                if (typeof Permission !== 'undefined') {
+                    var permissionList = [];
+                    $("[id|=setting-permission").each((i, item) => {
+                        var id = $(item).attr('id').replace("setting-permission-", "");
+                        if (id.length > 0) {
+                            permissionList.push(id);
+                        }
+                    });
+                    Permission.postMessage(JSON.stringify({ 'type': permissionList }));
+                } else {
+                    //$("[id|=setting-permission], #setting-device-permission-title").addClass("hidden");
+                }
+            }
+
+            function onRecivePermission(result) {
+                result = (typeof result === "string" ? JSON.parse(result) : result);
+                for (key in result) {
+                    var permission = result[key];
+                    if (permission == 'granted') {
+                        $("#setting-permission-" + key).addClass("hidden");
+                    } else if (permission == 'unknown') {
+                        // 아직 권한 요청이 없었던 기능에 대한 처리
+                        // 추후 기능 논의 처리 일단 숨김처리
+                        $("#setting-permission-" + key).addClass("hidden");
+                    } else {
+                        $("#setting-permission-" + key).removeClass("hidden");
+                    }
+                }
+
+                if ($("[id|=setting-permission]:not(.hidden)").length == 0) {
+                    $("#setting-device-permission-title").addClass("hidden");
+                }
+            }
+
+            function logout() {
+                onPopup("confirm", "<%= __('MESSAGE_LOGOUT')%>", function (cb) {
+                    if (cb == 1) {
+                        if (window.Auth) {
+                            window.Auth.postMessage(JSON.stringify({ type: 'signout', mode: 'signout' }));
+                        } else {
+                            FB && FB.logout(function (response) {
+                                // Person is now logged out
+                            });
+                            Kakao && Kakao.Auth && Kakao.Auth.logout(function (response) {
+                                // Person is now logged out
+                            });
+                            naverLogin && naverLogin.logout(function (response) {
+                                // Person is now logged out
+                            });
+                            if (gapi && gapi.auth2) {
+                                var auth2 = gapi.auth2.getAuthInstance();
+                                auth2.signOut().then(function () {
+                                    // Person is now logged out
+                                });
+                            }
+                            location.href = "/auth/logout";
+                        }
+                    }
+                });
+            }
+
+            function unregister() {
+                onPopup("confirm", "<%- __('SETTING_LEAVEMSG')%>", function (cb) {
+                    if (cb == 1) {
+                        $.ajax({
+                            method: 'post',
+                            url: '/auth/unregister',
+                            success: function (data, status, xhr) {
+                                console.log(data)
+                                if (data.result == "ok") {
+                                    location.href = "/";
+                                } else {
+                                }
+                            },
+                            error: function (xhr, status, err) {
+                            },
+                            complete: function () {
+                            }
+                        });
+                    }
+                });
+            }
         </script>
         <%-include('../_layouts/layout_bodyend')%>
     </body>

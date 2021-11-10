@@ -154,48 +154,6 @@
                     //scroll();
                 }
 
-                getBoardList({
-                    kind: 'mycontent',
-                    targetId: targetid,
-                    limit: 60
-                }, (msg) => {
-                });
-
-
-                var option = {
-                    onMore: () => {
-                        if(isTap == "post") {
-                            getBoardList({
-                                kind: 'mycontent',
-                                targetId: targetid,
-                                limit: 60
-                            }, (msg) => {
-                            });
-                        } else if (isTap == "reply") {
-                            getCommentList({
-                                contentId: targetid,
-                                sort: "date-down",
-                                limit: 30,
-                                isProfile: "myprofile"
-                            }, () => {
-                                $("[name=delete-button-group]").hide();
-                            });
-                        } else if (isTap == "updown") {
-                            getBoardList({
-                                kind: 'myupdown',
-                                targetId: targetid,
-                                count: 30,
-                                limit: 30
-                            }, () => {
-                                $(".ismemo").hide();
-                                $("[name=delete-button-group]").hide();
-                                unblockPage();
-                            });
-                        }
-                    }
-                };
-                $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).naaEvent(option);
-
                 var $mainTopArea = $("#main-hidden-menu");
                 var mainTopHeight = $mainTopArea.outerHeight();
                 $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scroll(function(){

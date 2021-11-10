@@ -114,7 +114,7 @@ module.exports = [
             concernKeywordInki: concernKeywordInki,
             contentuser: contentuser,
             backFlag: true,
-            emptyFlag: true
+            settingFlag: true
         });
     }
 ];
