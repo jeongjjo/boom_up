@@ -12,7 +12,7 @@
             <%-include('../_parts/_header')%>
             <!-- content -->
             <div class="app-width-size container-fluid p-0 m-0 position-fixed" style="z-index: 1000;background-color:#ffffff" id="mainbody">
-                <% if(Userinfo.boomPower){Userinfo.boomPower}else{Userinfo.boomPower=0} %>
+                <% if(!Userinfo.boomPower){Userinfo.boomPower=0} %>
                 <% if(Userinfo.boomPower === 0){ %>
                     <div class="empty-wrapper">
                         <div class="empty-boom">
@@ -31,7 +31,7 @@
                            }
                         %>
                         <div class="day">
-                            D-<%=day%>
+                            D<%=day%>
                         </div>
                         <div class="point">
                             <%=Userinfo.boomPower.toLocaleString()%>

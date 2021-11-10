@@ -83,18 +83,6 @@ module.exports = [
         for (let i in commentList){
             commentList[i].userPower = powerListComment[i].point
         }
-
-        let bettingHistory = await db.getList("bettingHistory", {userId: userid}, null, null, {createTS: -1})
-        let bettingIDs = []
-        for(let i in bettingHistory){
-            bettingIDs.push(ObjectId(bettingHistory[i].contentId))
-        }
-        let bettingBoardList = await db.getList("board", {_id: {$in:bettingIDs}}, null, null, {createTS: -1})
-        for (let i in bettingBoardList){
-            bettingBoardList[i].lineup = await db.get("lineup", {lineupKey: bettingBoardList[i].lineupKey})
-            bettingBoardList[i].userBetting = bettingHistory[i].point
-        }
-        let mileHistory = await db.getList("mileHistory", {userId: userid}, null, null, {createTS: -1})
         let data = [
             {$match:{
                     userId:userid
@@ -108,8 +96,9 @@ module.exports = [
         ]
         let bettingLevel = await db.aggregate("bettingHistory", data)
         let totalPoint = 0
-        console.log(bettingLevel)
-
+        if(bettingLevel.length > 0){
+            totalPoint = bettingLevel[0].totalPoint
+        }
         res.render('profile/point', {
             title: '나의 붐포인트',
             _metaInfo: {
@@ -119,12 +108,9 @@ module.exports = [
                 imageurl: common.getPhotoEx(Userinfo.photo, 3, 1, '/img/pro-image.png')
             },
             Userinfo: Userinfo,
-            powerHistory: powerHistory,
-            boardData: boardList,
-            commentData: commentList,
-            bettingData: bettingBoardList,
-            bettingHistory: bettingHistory,
-            mileHistory: mileHistory,
+            powerHistory: powerHistory||[],
+            boardData: boardList||[],
+            commentData: commentList||[],
             bettingPoint: totalPoint,
             isMain: !req.params.id ? true : false,
             isMine: isMine,

@@ -11,7 +11,7 @@
         <div class="app header footer" id="contentbody">
             <%-include('../_parts/_header')%>
             <!-- content -->
-            <% if(Userinfo.boomCoin){Userinfo.boomCoin}else{Userinfo.boomCoin=0} %>
+            <% if(!Userinfo.boomCoin){Userinfo.boomCoin=0} %>
             <div class="app-width-size container-fluid p-0 m-0" style="z-index: 1000;background-color:#ffffff" id="mainbody">
                 <%if(Userinfo.boomCoin === 0){%>
                     <div class="empty-wrapper">
