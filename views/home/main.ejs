@@ -101,9 +101,6 @@
                 var maintype = "inkiup_ranking";
                 var g_fliter = "<%= setting %>"//"allrank";setting
                 var offset = 0;
-//                 if(kindType === 'inkiup_ranking'){
-//                     offset = 10;
-//                 }
                 var limit = 10;
 
                 var lineupList = <%-JSON.stringify(notice ? notice || [] : []) %>;
@@ -112,6 +109,10 @@
 
                 var moreDelayFlag = false;
 
+                if(typeof kindType === 'undefined'){
+                    kindType = 'inkiup_ranking'
+                }
+                console.log(kindType)
                 function getNotificationCount() {
                 <% if (_isAuthed) {%>
                         clearTimeout(_getNotificationCountTimeout);
@@ -285,7 +286,7 @@
                 }
 
                 function onLoadContents(reset, inited = false) {
-                    var type = getQueryString('k') || 'inkiup_ranking';
+                    var type = kindType || 'inkiup_ranking';
                     g_fliter = getQueryString('f') || g_fliter;//"allrank";
                     //console.log(g_fliter);
                     var a = $(".mainmenu-line").outerWidth();
@@ -336,9 +337,9 @@
                     $("[id|=menu]").removeClass("mainmenu-line-botton");
                     $("[id|=menu]-bottom").removeClass("active-bar");
 
-                    var queryType = getQueryString('k')
-                    $("#menu-" + type).addClass("mainmenu-line-botton");
-                    $("#menu-"+ type +"-bottom").addClass("active-bar");
+                    var queryType = kindType
+                    $("#menu-" + queryType).addClass("mainmenu-line-botton");
+                    $("#menu-"+ queryType +"-bottom").addClass("active-bar");
                     maintype = type;
 
                     switch(g_fliter) {

@@ -53,6 +53,7 @@
                         </div>
                     </div>
                 <% } %>
+                <% if(Userinfo.boomPower !== 0){ %>
                 <div id="scroll-fixed-area" class="d-flex text-center nprofile-category-tep pt-3 point-header" style="background-color:#fff;">
                     <div id="tap_point" class="icon-excl-text flex-fill nprofile-category-highlight" onclick="onProfileTap(this, 'board');"><span>게시물 (<%=boardData.length%>)</span></div>
                     <div id="tap_betting" class="icon-excl-text flex-fill" onclick="onProfileTap(this, 'comment');"><span>댓글 (<%=commentData.length%>)</span></div>
@@ -68,6 +69,7 @@
                     </div>
                 </div>
                 <!--ㅂㅣ공개-->
+                <% } %>
             </div>
              <!--list-->
             <div class="list point-info-content hidden">
