@@ -372,14 +372,7 @@
                 location.href = '/detail/myprofile/' + id+ ""  ;
             }
 
-            function resultPopup(val) {
-                shareLink("<%=Userinfo.nickname%>", "<%=Userinfo.message.replace(/(\r\n|\n|\r)/gm, " ") %>", "/profile/main/<%=Userinfo._id.toHexString()%>", "<%=getPhoto(user.photo,1)%>");
-            }
-
-
-            function callbackPopup(val, id) {
-
-}
+            function callbackPopup(val, id) {}
 
             var onsub = (obj) => {
                 $.ajax({
