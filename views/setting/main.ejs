@@ -174,29 +174,29 @@
         <script src="/js/sns/naveridlogin_js_sdk_2.0.0.js"></script>
         <script src="/js/sns/kakao.min.js"></script>
         <script>
-//             window.fbAsyncInit = function () {
-//                 FB.init({
-//                     appId: '2780254578892203',
-//                     xfbml: true,
-//                     version: 'v6.0'
-//                 });
-//                 // FB.AppEvents.logPageView();
-//             };
-//             (function (d, s, id) {
-//                 var js, fjs = d.getElementsByTagName(s)[0];
-//                 if (d.getElementById(id)) { return; }
-//                 js = d.createElement(s); js.id = id;
-//                 js.src = "https://connect.facebook.net/en_US/sdk.js";
-//                 fjs.parentNode.insertBefore(js, fjs);
-//             }(document, 'script', 'facebook-jssdk'));
-//             Kakao.init("38ba507bd2b37d4e1c7732e408021f73");
-//             var naverLogin = new naver.LoginWithNaverId(
-//                 {
-//                     clientId: "whePhYTEtI9r7ZLQ6Ack",
-//                     callbackUrl: "<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver",
-//                 }
-//             );
-//             naverLogin.init();
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '2780254578892203',
+                    xfbml: true,
+                    version: 'v6.0'
+                });
+                // FB.AppEvents.logPageView();
+            };
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) { return; }
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+            Kakao.init("38ba507bd2b37d4e1c7732e408021f73");
+            var naverLogin = new naver.LoginWithNaverId(
+                {
+                    clientId: "whePhYTEtI9r7ZLQ6Ack",
+                    callbackUrl: "<%=serviceinfo.defaultUrl%>/api/auth/oauth/callback/naver",
+                }
+            );
+            naverLogin.init();
         </script>
         <script type="text/javascript">
             var isAOS = /Android/i.test(navigator.userAgent);

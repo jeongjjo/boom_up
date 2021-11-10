@@ -107,6 +107,8 @@ module.exports = [
             }
         ]
         let bettingLevel = await db.aggregate("bettingHistory", data)
+        let totalPoint = 0
+        console.log(bettingLevel)
 
         res.render('profile/point', {
             title: '나의 붐포인트',
@@ -123,7 +125,7 @@ module.exports = [
             bettingData: bettingBoardList,
             bettingHistory: bettingHistory,
             mileHistory: mileHistory,
-            bettingPoint: bettingLevel[0].totalPoint,
+            bettingPoint: totalPoint,
             isMain: !req.params.id ? true : false,
             isMine: isMine,
             followed: followed != null && followed != '' ? true : false,
