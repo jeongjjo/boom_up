@@ -11,7 +11,7 @@
     <body>
         <%- include('../_layouts/layout_bodystart') -%>
         <div class="app header footer">
-            <%-include('../_parts/_header')%>
+            <%-include('../_parts/_new_header')%>
             <!-- Content -->
             <div class="detail-section">
                 <input type="hidden" name="id" value="<%= detail._id%>" />
@@ -75,16 +75,16 @@
                     이 글을 평가해주세요
                 </div>
                 <div class="detail-vote-btn-group">
-                    <div class="detail-vote-btn up" onclick="onBoardVotiong('<%= detail._id%>', 'UP');">
+                    <div class="detail-vote-btn up newdescarrowup<%= (myvote ? (myvote[0].type == 'UP' ? '-sel' : '' ) : '')%>" id="board-<%= detail._id %>-vote-up" onclick="onBoardVotiong('<%= detail._id%>', 'UP');">
                         <img src="/img/new/vote_up.svg">
                         <span class="vote-title">좋아요</span>
-                        <span class="vote-count up"><%= detail.votingUp%></span>
+                        <span class="vote-count up" id="board-<%= detail._id %>-vote-up-count"><%= detail.votingUp%></span>
                     </div>
                     <div class="detail-vote-between"></div>
-                    <div class="detail-vote-btn down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');">
+                    <div class="detail-vote-btn down newdescarrowdown<%= (myvote ? (myvote[0].type == 'DOWN' ? '-sel' : '' ) : '')%>" id="board-<%= detail._id %>-vote-down" onclick="onBoardVotiong('<%= detail._id%>', 'DOWN');">
                         <img src="/img/new/vote_down.svg">
                         <span class="vote-title">별로에요</span>
-                        <span class="vote-count down"><%= detail.votingDown%></span>
+                        <span class="vote-count down" id="board-<%= detail._id %>-vote-down-count"><%= detail.votingDown%></span>
                     </div>
                 </div>
 <!--                 <div class="d-flex justify-content-center mt-2 mb-2 pb-2 detail-div-line " id="detail-vote-line"> -->
@@ -119,7 +119,7 @@
                     <header class="position-fixed d-flex flex-row" style="padding:22px 0;">
                         <div class="left d-flex default-header-left">
                             <div class="text-center align-self-center  header-side-width">
-                                <div id="idHeaderLeft" class="header-arrow-left" onclick="closePopBet()"></div>
+                                <div id="idHeaderLeft-betting" class="header-arrow-left" onclick="closePopBet()"></div>
                             </div>
                         </div>
                         <div class="centre flex-fill text-center align-self-center font-weight-bold">
@@ -238,7 +238,7 @@
                     data: data,
                      success: function (req) {
                         if(req.data > 0){
-                            alert('이미 베팅한 게시물 입니다.')
+                            onPopup("alert", "이미 베팅한 게시물입니다.", function(cb){});
                             return
                         }
                         $('#popuplayerAdv-betting').removeClass('hidden')
@@ -279,6 +279,11 @@
                 let data = {
                     cId:'<%= detail._id%>',
                     boomPower: parseInt($('.betting-point').val().replace(/[^0-9-.]/g, ''))
+                }
+                if(data.boomPower === 0){
+                    onPopup("alert", "0 포인트 이상 베팅을 하셔야 합니다.", function(cb){
+                    });
+                    return
                 }
                 $.ajax({
                     type: 'POST',
@@ -440,7 +445,6 @@
                 putVoting(cid, vote, 'board', (req) => {
                     if (req && req.result == 'ok') {
                         if (req.data) {
-                            console.log(req.data.votingUp,req.data.votingDown)
                             $("#board-" + cid + "-vote-up-count").text(req.data.votingUp);
                             $("#board-" + cid + "-vote-down-count").text(req.data.votingDown);
 

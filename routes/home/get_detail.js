@@ -202,7 +202,9 @@ module.exports = [
             pathhash: req.params.pathhash,
             backchangeuse: req.params.backchangeuse,
             cyn: req.query.cyn ? "Y" : "N",
-            contentuser: contentuser
+            contentuser: contentuser,
+            backFlag: true,
+            emptyFlag: true
         });
 
     }

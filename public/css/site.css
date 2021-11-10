@@ -3423,37 +3423,31 @@ span.post-down-icon::before {
 
 
 
-.newdescarrowup{
-    display: inline-block;
-    background: url('../img/new_arrow_up.svg') no-repeat center center;
-    background-size: auto;
-    min-height: 24px;
-    min-width: 24px;
-}
+/*.newdescarrowup{*/
+/*    display: inline-block;*/
+/*    background: url('../img/new_arrow_up.svg') no-repeat center center;*/
+/*    background-size: auto;*/
+/*    min-height: 24px;*/
+/*    min-width: 24px;*/
+/*}*/
 
-.newdescarrowdown{
-    display: inline-block;
-    background: url('../img/new_arrow_down.svg') no-repeat center center;
-    background-size: auto;
-    min-height: 24px;
-    min-width: 24px;
-}
+/*.newdescarrowdown{*/
+/*    display: inline-block;*/
+/*    background: url('../img/new_arrow_down.svg') no-repeat center center;*/
+/*    background-size: auto;*/
+/*    min-height: 24px;*/
+/*    min-width: 24px;*/
+/*}*/
 
 
 .newdescarrowup-sel{
     display: inline-block;
-    background: url('../img/new_arrow_up_sel.svg') no-repeat center center;
-    background-size: auto;
-    min-height: 24px;
-    min-width: 24px;
+    background-color: #C7C7CC !important;
 }
 
 .newdescarrowdown-sel{
     display: inline-block;
-    background: url('../img/new_arrow_down_sel.svg') no-repeat center center;
-    background-size: auto;
-    min-height: 24px;
-    min-width: 24px;
+    background-color: #C7C7CC !important;
 }
 
 .desc-minheight{
