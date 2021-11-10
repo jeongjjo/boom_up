@@ -22,7 +22,7 @@
         <% if(title && title.length > 0) { %>
             <div class="centre flex-fill text-center align-self-center font-weight-bold">
                 <% if(title && title.length > 0) { %>
-                    <span onclick='location.href="/"' style="line-height:33px;<% if(emptyFlag){%>margin-left:35px;<%}%>">
+                    <span onclick='location.href="/"' style="line-height:33px;<% if(emptyFlag || settingFlag){%>margin-left:35px;<%}%>">
                         <%= title%>
                     </span>
                 <% } else { %>
