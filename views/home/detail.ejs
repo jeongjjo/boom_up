@@ -115,7 +115,7 @@
                 </div>
             </div>
             <div id="popuplayerAdv-betting" class="hidden position-fixed" onclick="event.stopPropagation();">
-                <div class="popup-layer" onclick="event.stopPropagation();">
+                <div class="popup-layer" onclick="event.stopPropagation();closePopBet();">
                     <header class="position-fixed d-flex flex-row" style="padding:22px 0;">
                         <div class="left d-flex default-header-left">
                             <div class="text-center align-self-center  header-side-width">
@@ -128,15 +128,16 @@
                             </span>
                         </div>
                     </header>
-                    <div class="popup-bottom">
-                        <div class="main-title">하단의 버튼을 좌우로 움직여<br>베팅가를 정하세요.</div>
-                        <div class="boom-power">사용가능한 붐포인트 : <input type="text" class="point" readonly style="border:0; color:#AEAEB2; font-weight:bold;" value="<%=user.boomPower?user.boomPower:0%>"></div>
-                        <div id="slider">
-                            <div id="custom-handle" class="ui-slider-handle"></div>
-                        </div>
-                        <input type="text" class="betting-point betting-in-point" readonly style="border:0; color:#3C3C3C;" value="0">
-                        <div class="betting-btn"><input type="text" class="betting-point" readonly style="border:0; color:#FFF;" value="0">포인트 베팅하기</div>
+                </div>
+
+                <div class="popup-bottom">
+                    <div class="main-title">하단의 버튼을 좌우로 움직여<br>베팅가를 정하세요.</div>
+                    <div class="boom-power">사용가능한 붐포인트 : <input type="text" class="point" readonly style="border:0; color:#AEAEB2; font-weight:bold;" value="<%=user.boomPower?user.boomPower:0%>"></div>
+                    <div id="slider">
+                        <div id="custom-handle" class="ui-slider-handle"></div>
                     </div>
+                    <input type="text" class="betting-point betting-in-point" readonly style="border:0; color:#3C3C3C;" value="0">
+                    <div class="betting-btn"><input type="text" class="betting-point" readonly style="border:0; color:#FFF;" value="0">포인트 베팅하기</div>
                 </div>
             </div>
             <div id="popuplayerAdv-comment" class="hidden position-fixed" onclick="event.stopPropagation();">

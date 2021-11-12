@@ -2441,13 +2441,13 @@ span.alert-subtext {
     height: 44px;
     background: #F9F9F9;
 }
-#popuplayerAdv-betting div.popup-layer div.popup-bottom{
+#popuplayerAdv-betting div.popup-bottom{
     position: absolute;
     bottom: 0;
     height: auto;
     width: 100%;
 }
-#popuplayerAdv-betting div.popup-layer div.popup-bottom{
+#popuplayerAdv-betting div.popup-bottom{
     position: absolute;
     background: #FFF;
     box-sizing: border-box;
@@ -2458,24 +2458,24 @@ span.alert-subtext {
     padding: 0 12px;
     border-radius: 20px 20px 0px 0px;
 }
-#popuplayerAdv-betting div.popup-layer div.popup-bottom div.main-title{
+#popuplayerAdv-betting div.popup-bottom div.main-title{
     margin-top: 36px;
     font-size: 24px;
     letter-spacing: -0.5px;
     color: #C7C7C7;
 }
-#popuplayerAdv-betting div.popup-layer div.popup-bottom div.boom-power{
+#popuplayerAdv-betting div.popup-bottom div.boom-power{
     padding-top: 10px;
     font-size: 14px;
     letter-spacing: -0.75px;
     color: #C7C7C7;
     margin-bottom: 10px;
 }
-#popuplayerAdv-betting div.popup-layer div.popup-bottom div.betting-btn input{
+#popuplayerAdv-betting div.popup-bottom div.betting-btn input{
     background: transparent;
     width: 60px;
 }
-#popuplayerAdv-betting div.popup-layer div.popup-bottom div.betting-btn{
+#popuplayerAdv-betting div.popup-bottom div.betting-btn{
     margin-top: 51px;
     width: 100%;
     height: 58px;
@@ -2487,10 +2487,10 @@ span.alert-subtext {
     text-align: center;
     border-radius: 8px;
 }
-#popuplayerAdv-betting div.popup-layer div.popup-bottom div.betting-btn.betting-on{
+#popuplayerAdv-betting div.popup-bottom div.betting-btn.betting-on{
     background: #FF3B30;
 }
-#popuplayerAdv-betting div.popup-layer div.popup-bottom div.submit-btn.sub-on{
+#popuplayerAdv-betting div.popup-bottom div.submit-btn.sub-on{
     background: #FF3B30;
 }
 #slider .ui-slider-range{
