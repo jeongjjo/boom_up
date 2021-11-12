@@ -27,9 +27,9 @@ module.exports = {
     setBettingPoint: async function(userId, contentId, point){
         let result_history = null
         let result_user = null
-        let result_board = await db.update("board", {_id:ObjectId(contentId)},{$inc:{betting:point}} , {upsert:true}   );
+        let result_board = await db.update("board", {_id:ObjectId(contentId)},{$inc:{betting:point, bettingCount:1}} , {upsert:true}   );
         if(result_board !== null){
-            result_user = await db.update("user", {_id:ObjectId(userId)},{$inc:{boomPower:-point}} , {upsert:true}   );
+            result_user = await db.update("user", {_id:ObjectId(userId)},{$inc:{boomPower:-point, bettingCount:1}} , {upsert:true}   );
             result_history = await db.insert("bettingHistory", {userId:userId, contentId:contentId, point:point});
         }
         return result_board !== null && result_user !== null && result_history !== null;
