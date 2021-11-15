@@ -9,7 +9,9 @@
                     <img src="<%=getPhotoEx(user.photo,3,1, '/img/new/profile.png')%>" class="img-profile2" alt="profile">
                 </div>
             <% } else if (backFlag) {%>
-                <div class="back_btn" onclick="history.go(-1)">
+<!--                 <div class="back_btn" onclick="history.go(-1)"> -->
+                <!--        새로 고침          -->
+                <div class="back_btn" onclick="location.href = document.referrer;">
                     <img src="/img/new/arrow_back.svg"/>
                 </div>
             <% } else {  %>
@@ -53,7 +55,7 @@
             <div class="text-center align-self-center  header-side-width-right">
         <% } %>
             <% if (_isAuthed && !emptyFlag && !settingFlag) {%>
-                <div class="boomInfo">
+                <div class="boomInfo" id="boomInfo">
                     <img src="/img/new/point_badge.svg"/>
                     <% let day
                        if(moment().day()-7 === 0){
@@ -75,6 +77,7 @@
         </div>
     </div>
 </header>
+
 <%- include('_popup') -%>
 <script type="text/javascript">
     var setHeader = (left, right, cb) => {
