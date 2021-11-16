@@ -4,7 +4,7 @@
             <img src="/img/new/home.svg">
             <P><%= __('FOOTER_HOME')%></P>
         </div>
-        <div class="btn" onclick="goTabMenu('/bettingHistory', 'betting')">
+        <div class="btn" onclick="goTabMenu('/bettingHistory/<%=user._id.toHexString()%>', 'betting')">
             <img src="/img/new/betting.svg">
             <p><%= __('FOOTER_BETTING')%></p>
         </div>
@@ -22,7 +22,7 @@
             <img src="/img/new/Alarm.svg">
             <P><%= __('FOOTER_ALARM')%></P>
         </div>
-        <div class="btn" onclick="location.href='/market';">
+        <div class="btn" onclick="goTabMenu('/boomCoin', 'boom')">
             <img src="/img/new/boom_AD.svg">
             <p><%= __('FOOTER_COIN')%></p>
         </div>

@@ -55,7 +55,7 @@
             <div class="text-center align-self-center  header-side-width-right">
         <% } %>
             <% if (_isAuthed && !emptyFlag && !settingFlag) {%>
-                <div class="boomInfo" id="boomInfo">
+                <div class="boomInfo" id="boomInfo" onclick="location.href='/profile/point/<%=user._id.toHexString()%>';" style="cursor:pointer">
                     <img src="/img/new/point_badge.svg"/>
                     <% let day
                        if(moment().day()-7 === 0){

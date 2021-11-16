@@ -11,15 +11,47 @@
         <div class="app header footer" id="contentbody">
             <%-include('../_parts/_new_header')%>
             <!-- content -->
-            <div class="app-width-size container-fluid p-0 m-0" style="background-color:#ffffff" id="mainbody">
-            <div class="list">
-                <div id="betting_list">
-                    <div id="board-list-area">
-                        <% if(bettingData.length > 0){ %>
-                        <%- include('../profile/list', {bettingData: bettingData, type: 'betting'}) -%>
-                        <% }else{ %>
-                        <% } %>
+
+            <div class="app-width-size container-fluid p-0 m-0 position-fixed" style="z-index: 1000;background-color:#ffffff" id="mainbody">
+
+            <div class="no-empty-wrapper">
+                <div class="boom-box">
+                    <div class="betting-wrapper">
+                        <div class="betting-text">베팅중인 붐포인트</div>
+                        <div class="betting-point"><%= totalPoint?totalPoint.toLocaleString():0 %></div>
                     </div>
+                    <img src="/img/new/profile_right_arrow.svg"/>
+                </div>
+                <div class="select-area">
+                    <div class="select-content betting-history active" onclick="togglePoint('betting')">베팅내역</div>
+                    <div class="select-content level-history" onclick="togglePoint('level')">배당내역</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="list point-list">
+            <div id="betting_list">
+                <div id="board-list-area">
+                    <% if(bettingData.length > 0){ %>
+                    <%- include('../profile/list', {bettingData: bettingData, type: 'betting'}) -%>
+                    <% }else{ %>
+                    <% } %>
+                </div>
+            </div>
+            <div id="level_list" class="hidden">
+                <div id="board-list-area">
+                    <% for(let i in mileHistory){%>
+                    <div id="board-area" class="list-post d-flex" >
+                        <div class="flex-grow-1 flex-shrink-1">
+                            +<%=mileHistory[i].boomLevel.toLocaleString()%>
+                            <div class="d-flex post-sub-wrapper">
+                                <span class="post-time">
+                                    <%=moment(mileHistory[i].createTS).format("YYYY/MM/DD")%>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <% }%>
                 </div>
             </div>
         </div>
@@ -38,9 +70,8 @@
                 }
             });
 
-
             (function () {
-                $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).naaEvent(option);
+                $('.list').css('margin-top', $('#mainbody').height()+'px');
 
                 var $mainTopArea = $("#main-hidden-menu");
                 var mainTopHeight = $mainTopArea.outerHeight();
@@ -63,45 +94,20 @@
                 $("#comment-list-area").addClass("mb-4");
             })();
 
-
-            $("#contentbody").naaEvent({
-                main: '#betting_list',
-                onMore: () => {
-                    //getProfileData('N');
-                },
-                onScroll: () => {
-                    //visibleBoardItem();
+            function togglePoint(val){
+                if(val === 'betting'){
+                    $('.betting-history').addClass('active')
+                    $('.level-history').removeClass('active')
+                    $('#betting_list').removeClass('hidden')
+                    $('#level_list').addClass('hidden')
+                }else{
+                    $('.level-history').addClass('active')
+                    $('.betting-history').removeClass('active')
+                    $('#betting_list').addClass('hidden')
+                    $('#level_list').removeClass('hidden')
                 }
-            });
+            }
 
-
-//             function scroll() {
-//                 $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scroll(function () {
-//                     clearTimeout($.data(this, 'scrollTimer'));
-//                     $.data(this, 'scrollTimer', setTimeout(() => {
-//                         var scrollT = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
-//                         var scrollH = $(this).height();
-//                         var contentH = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).height();
-//                         //console.log(scrollT + "    ////    " + scrollH + "     ////    "+ contentH);
-//                         if (scrollT + scrollH + 1 >= contentH) {
-//                             if(isTap == "post") {
-//                                 getBoardList({
-//                                     kind: 'mycontent',
-//                                     targetId: targetid,
-//                                     limit: 30
-//                                 }, (msg) => {
-//                                 });
-//                             } else if (isTap == "reply") {
-//
-//                             } else if (isTap == "updown") {
-//
-//                             }
-//                         }
-//                     }, 250));
-//                 });
-//             }
-//
-//
             function onGoPostDetail($this, id) {
                 var url = window.location.href;
                 var parameters = (url.slice(url.indexOf('?') + 1, url.length)).split('&');

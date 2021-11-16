@@ -40,13 +40,13 @@
                             붐포인트의 유효기간은 매주 일요일 정각!<br>
                             적극적인 붐포인트 배팅 필수!
                         </div>
-                        <div class="boom-box">
-                            <div class="betting-wrapper">
-                                <div class="betting-text">베팅중인 붐포인트</div>
-                                <div class="betting-point"><%= bettingPoint.toLocaleString() %></div>
-                            </div>
-                            <img src="/img/new/profile_right_arrow.svg"/>
-                        </div>
+<!--                         <div class="boom-box"> -->
+<!--                             <div class="betting-wrapper"> -->
+<!--                                 <div class="betting-text">베팅중인 붐포인트</div> -->
+<!--                                 <div class="betting-point"><%= bettingPoint.toLocaleString() %></div> -->
+<!--                             </div> -->
+<!--                             <img src="/img/new/profile_right_arrow.svg"/> -->
+<!--                         </div> -->
                         <div class="select-area">
                             <div class="select-content point-history active" onclick="togglePoint('point')">포인트내역</div>
                             <div class="select-content point-info" onclick="togglePoint('info')">모으는 방법</div>
@@ -79,7 +79,7 @@
                 <div id="board_list" class="<%=blocked || ( !isMine && shareProfile=='N') ? 'hidden' : '' %>" >
                     <div id="board-list-area">
                         <% if(boardData.length > 0){ %>
-                        <%- include('../profile/list', {boardData: boardData, type: 'board'}) -%>
+                            <%- include('../profile/list', {boardData: boardData, type: 'board'}) -%>
                         <% }else{ %>
                         <% } %>
                     </div>
@@ -87,7 +87,7 @@
                 <div id="comment_list" class="hidden">
                     <div id="board-list-area">
                         <% if(commentData.length > 0){ %>
-                        <%- include('../profile/list', {commentData: commentData, type: 'comment'}) -%>
+                            <%- include('../profile/list', {commentData: commentData, type: 'comment'}) -%>
                         <% }else{ %>
                         <% } %>
                     </div>

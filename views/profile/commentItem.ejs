@@ -9,7 +9,6 @@
             <% }else{ %>
             <span class="post-nickname"><%= data.nickname %></span>
             <% } %>
-
         </div>
         <div class="flex-grow-1 align-self-center">
             <% if (_isAuthed && data.userId!=user._id.toHexString() && data.userMemo ) {%>
@@ -18,7 +17,6 @@
             </span>
             <%}%>
         </div>
-
     </div>
     <div id="comment-<%=data._id%>" class="d-flex list-postdesc-reply <%if(data.delete || data.blockUser || data.block) {%> text-danger <% } %>">
         <%
@@ -42,15 +40,14 @@
             <span class="post-reply-count">댓글<%= data.reply %></span>
             <% } %>
             <% if (_isAuthed) {%>
-            <% if(data.delete !== true) { %>
-            <div class="ml-3 hidden" name='delete-button-group'>
-                <% if (user && user && user._id.toHexString() == data.userId) { %>
-                <span class="postdesc-text-l post-time" onclick="onModifyComment(event, '<%= data._id %>', '<%= data.userId%>','<%= data.imageName||'' %>',<%= data.createTS %>);">수정</span>
-                <span class="postdesc-text-l reply-delete-report ml-3" onclick="onDeleteComment(event, '<%= data._id %>');">삭제</span>
-                <%} %>
-            </div>
-            <% }%>
+                <% if(data.delete !== true) { %>
+                    <div class="ml-3 hidden" name='delete-button-group'>
+                        <% if (user && user && user._id.toHexString() == data.userId) { %>
+                        <span class="postdesc-text-l post-time" onclick="onModifyComment(event, '<%= data._id %>', '<%= data.userId%>','<%= data.imageName||'' %>',<%= data.createTS %>);">수정</span>
+                        <span class="postdesc-text-l reply-delete-report ml-3" onclick="onDeleteComment(event, '<%= data._id %>');">삭제</span>
+                        <%} %>
+                    </div>
+                <% }%>
             <% } %>
         </div>
     </div>
-</div>

@@ -62,6 +62,24 @@ module.exports = [
             bettingBoardList[i].userBetting = bettingHistory[i].point
             bettingBoardList[i].userCreateTS = bettingHistory[i].createTS
         }
+
+        let data = [
+            {$match:{
+                    userId:userid
+                }
+            },
+            {$group:{
+                    _id: {$toObjectId:"$userId"},
+                    totalPoint: {$sum: "$point"}
+                }
+            }
+        ]
+        let bettingLevel = await db.aggregate("bettingHistory", data)
+        let totalPoint = 0
+        if(bettingLevel.length > 0){
+            totalPoint = bettingLevel[0].totalPoint
+        }
+        let mileHistory = await db.getList("mileHistory", {userId: userid}, null, null, {createTS: -1})
         // bettingBoardList.sort(function(a, b)  {
         //     return b - a;
         // });
@@ -70,6 +88,8 @@ module.exports = [
             title: '베팅 내역',
             bettingData: bettingBoardList,
             bettingHistory: bettingHistory,
+            totalPoint: totalPoint,
+            mileHistory: mileHistory,
             backFlag: true,
             emptyFlag: true
         });

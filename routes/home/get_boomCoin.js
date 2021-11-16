@@ -21,7 +21,7 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 module.exports = [
-    '/main/:id?',  // URI : /test2 (최종은 /<route module>/<page module> : /sameple/test2)
+    '/boomCoin/:id?',  // URI : /test2 (최종은 /<route module>/<page module> : /sameple/test2)
     null, // 권한 : null은 권한 미체크, [] array 형태로 권한 지정
     [
         // Validation 처리 ------------------------------------
@@ -53,6 +53,7 @@ module.exports = [
         }
         var Userinfo = await db.getById("user", userid);
 
+
         var followed = [];
         var blocked = [];
 
@@ -62,9 +63,36 @@ module.exports = [
             followed = await db.get('subscription', { userId: req.user._id.toHexString(), targetUserId: targetUserId });
             blocked = await db.get('blockUser', { userId: req.user._id.toHexString(), targetUserId: req.params.id });
         }
+        var lineup = await dbCache.get('lineup', function () {
+            return db.getList("lineup", { "delete": false }, 0, 0, { sort: 1 });
+        });
 
-        res.render('profile/main', {
-            title: isMine ? __('MY_PROFILE') : Userinfo.nickname,
+        //인기키워드
+        var keywordHash = await db.getList('hotHashtag', {}, 0, 15, { count: -1 });
+        var keywordHot = await db.getList('hotKeyword', {}, 0, 15, { count: -1 });
+        var concernKeywordInki = [];
+        for (var i = 0; i < keywordHash.length; i++) {
+            concernKeywordInki.push({ "type": "hash", "text": keywordHash[i].text, "count": keywordHash[i].count });
+        }
+        for (var i = 0; i < keywordHot.length; i++) {
+            var blnExit = false;
+            for (var j = 0; j < concernKeywordInki.length; j++) {
+                if (keywordHot[i].text == concernKeywordInki[j].text) {
+                    blnExit = true;
+                }
+            }
+            if (!blnExit)
+                concernKeywordInki.push({ "type": "hot", "text": keywordHot[i].text, "count": keywordHot[i].count });
+        }
+        var sortingField = "count";
+        concernKeywordInki.sort(function (a, b) {
+            return b[sortingField] - a[sortingField];
+        });
+        concernKeywordInki = concernKeywordInki.slice(undefined, 8);
+        //인기키워드
+
+        res.render('home/boomCoin', {
+            title: isMine ? '붐 코인' : Userinfo.nickname,
             _metaInfo: {
                 title: Userinfo.nickname,
                 content: Userinfo.message || '',
@@ -72,13 +100,15 @@ module.exports = [
                 imageurl: common.getPhotoEx(Userinfo.photo, 3, 1, '/img/pro-image.png')
             },
             Userinfo: Userinfo,
+            lineup: lineup,
             isMine: isMine,
             followed: followed != null && followed != '' ? true : false,
             blocked: blocked != null && blocked != '' ? true : false,
             isMain: !req.params.id ? true : false,
             currUserId: isMine ? req.user._id.toHexString() : req.params.id,
             backFlag: true,
-            settingFlag: true
+            settingFlag: false,
+            emptyFlag: true
         });
     }
 ];
