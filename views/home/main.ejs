@@ -18,7 +18,7 @@
                         <!-- flex-fill 제거-->
 <!--                         <div class="category-arrow-left hidden" id="category_left" onclick="moveCategory('left');"><i class="icon-arrow-left"></i></div> -->
                         <!-- <div class="cagegory-check pt-2 pb-2 pl-2 pr-2 font-weight-bold text-center <% if (!_isAuthed) {%>hidden<%}%>" id="menu-myinkiup" onclick="location.href = '/?k=myinkiup&f='+g_fliter+'&ts='+moment().valueOf();" style="margin-left: 4px;"><%= __('MENU_MYINKIUP')%></div>-->
-                        <div class="cagegory-check text-center" id="menu-inkiup_ranking" onclick="location.href = '/?k=inkiup_ranking&f='+g_fliter+'&ts='+moment().valueOf();">랭킹 100</div>
+                        <div class="cagegory-check text-center" id="menu-inkiup_ranking" onclick="location.href = '/?k=inkiup_ranking'">랭킹 100</div>
                         <div class="cagegory-check text-center" id="menu-inkiup" onclick="location.href = '/?k=inkiup&f='+g_fliter+'&ts='+moment().valueOf();"><%= __('MENU_INKIUP')%></div>
                         <!-- <div class="cagegory-check pt-2 pb-2 pl-4 pr-4 text-center" id="menu-event" onclick="location.href = '/?k=event&f='+g_fliter+'&ts='+moment().valueOf();"><%= __('EVENT')%></div> -->
                         <% for (var i=0; i < lineup.length; i++) { %>
@@ -28,7 +28,8 @@
                     </div>
                     <div class="menu-bar mainmenu-line">
                         <div class="default-bar" id="menu-inkiup_ranking-bottom"></div>
-                        <div class="default-bar" id="menu-inkiup-bottom"></div>
+                        <div class
+                        ="default-bar" id="menu-inkiup-bottom"></div>
                         <% for (var i=0; i < lineup.length; i++) { %>
                         <div class="default-bar" id="menu-<%= lineup[i].lineupKey %>-bottom"></div>
                         <% } %>
