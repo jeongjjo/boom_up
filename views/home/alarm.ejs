@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" class="default-style layout-fixed layout-navbar-fixed navbar-fixed-bottom">
+
+    <head>
+        <%-include('../_layouts/header')%>
+        <%-include('../_layouts/layout_bodyscript')%>
+    </head>
+
+    <body>
+        <%-include('../_layouts/layout_bodystart')%>
+        <div class="app header footer" id="contentbody">
+            <%-include('../_parts/_new_header')%>
+            <!-- content -->
+            <div class="app-width-size container-fluid p-0 m-0" style="background-color:#ffffff" id="mainbody">
+                <div class="alarm-list">
+                    <div id="alarm_list">
+                        <% for(let i in alarmData){%>
+                            <div id="board-area" class="list-post d-flex" >
+                                    <div class="alarm-wrapper">
+                                        <div class="read-icon">
+                                            <% if(alarmData[i].status == 0){ %>
+                                                <embed src="/img/new/unread.svg">
+                                            <% }else{ %>
+                                                <embed src="/img/new/read.svg">
+                                            <%}%>
+                                        </div>
+                                        <div class="alarm-type">
+                                            <% if(alarmData[i].type == 0){ %>
+                                                <span>베팅 결과 알림</span>
+                                                <div class="alarm-content">
+                                                    <span><%= alarmData[i].content.point.toLocaleString() %> 포인트 베팅 완료 되었습니다</span>
+                                                </div>
+                                            <% }else{ %>
+                                                <span>댓글 결과 알림</span>
+                                            <%}%>
+                                        </div>
+
+                                        <span class="post-time">
+                                            <%=moment(alarmData[i].createTS).format("MM/DD")%>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }%>
+                </div>
+            </div>
+        </div>
+        <%-include('../_parts/_footer')%>
+
+
+        <script src="/js/plupload/plupload.full.min.js"></script>
+        <script type="text/javascript">
+            (function () {
+                setHeader(<%=isMain %> ? '' : 'back', 'more',
+                {
+                    more: (e) => {
+                        e.preventDefault();
+                    }
+                });
+
+                var $mainTopArea = $("#main-hidden-menu");
+                var mainTopHeight = $mainTopArea.outerHeight();
+                $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scroll(function(){
+                    var y = $(<% if (_isInApp) { %>".app"<%} else {%>window<%}%>).scrollTop();
+                    if (y >= mainTopHeight) {
+                        $("#scroll-fixed-area").addClass('scroll-fixed-area');
+                    } else {
+                        $("#scroll-fixed-area").removeClass('scroll-fixed-area')
+                    }
+                });
+
+                // $("#comm-input-area").addClass("hidden");
+                // $("#comm-more-area, #comment_more").removeClass("hidden");
+                $("#comm-input-area, #comm-more-area").addClass("hidden");
+
+                $(".icon-my-footer").addClass("font-weight-bold");
+
+                $("#board-list-area").addClass("mb-4");
+                $("#comment-list-area").addClass("mb-4");
+            })();
+
+
+            $("#contentbody").naaEvent({
+                main: '#main_list',
+                onMore: () => {
+                    //getProfileData('N');
+                },
+                onScroll: () => {
+                    //visibleBoardItem();
+                }
+            });
+
+
+        </script>
+        <%-include('../_layouts/layout_bodyend')%>
+    </body>
+
+</html>

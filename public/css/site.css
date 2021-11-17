@@ -3724,3 +3724,17 @@ span.post-down-icon::before {
     border-radius: 8px;
     cursor: pointer;
 }
+
+.alarm-wrapper .read-icon embed{
+    vertical-align: middle;
+}
+.alarm-type>span{
+    letter-spacing: -0.75px;
+    color: #8E8E93;
+    font-size: 11px;
+}
+.alarm-type .alarm-content>span{
+    letter-spacing: -0.5px;
+    color: #3A3A3C;
+    font-size: 14px;
+}

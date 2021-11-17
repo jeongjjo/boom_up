@@ -1,6 +1,8 @@
 var db = require("./mongodbWrapper");
 var ObjectId = require('mongodb').ObjectId;
 
+var alarm = require('./data/alarm')
+
 module.exports = {
     initUserPoint: async function(userId){
         //일주일 지났을 시 붐파워 초기화
@@ -32,6 +34,11 @@ module.exports = {
             result_user = await db.update("user", {_id:ObjectId(userId)},{$inc:{boomPower:-point, bettingCount:1}} , {upsert:true}   );
             result_history = await db.insert("bettingHistory", {userId:userId, contentId:contentId, point:point});
         }
+        let alarmData = {
+            contentId:contentId,
+            point:point
+        }
+        await alarm.setAlarm(userId, 0, alarmData)
         return result_board !== null && result_user !== null && result_history !== null;
     },
     bettingCheck: async function (userId, contentId){

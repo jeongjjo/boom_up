@@ -12,19 +12,6 @@
             <%-include('../_parts/_new_header')%>
             <!-- content -->
             <div class="app-width-size container-fluid p-0 m-0" style="background-color:#ffffff" id="mainbody">
-                <div class="main-profile-wrapper">
-                    <div class="flex-fill <% if (Userinfo.photo == undefined || Userinfo.photo === null || Userinfo.photo == "" ) { %> nprofile-bg-photo1 <% } else { %> nprofile-bg-photo1 <% } %> ">
-                        <% if (Userinfo.photo == undefined || Userinfo.photo === null || Userinfo.photo == "" ) { %>
-                            <img class="npf-img-profile target_photo" alt="..." src="/img/pro-image.png" onclick="onprofilePhoto(this, 'new');">
-                        <% } else { %>
-                            <img class="npf-img-profile target_photo" alt="..." src="<%=getPhotoEx(Userinfo.photo,2,0)%>" onclick="onprofilePhoto(this, 'edit');">
-                        <% } %>
-                        <div class="nickname-wrapper" onclick="javascript:void(0);modNick()">
-                            <img src="/img/new/ID_reform.svg"/>
-                            <span class="profile-name"><%= Userinfo ? Userinfo.nickname : '' %></span>
-                        </div>
-                    </div>
-                </div>
                 <div class="main-point-wrapper">
                     <div class="point-title">
                         <embed src="/img/new/point_badge2.svg"/>
@@ -67,59 +54,6 @@
             var limit = 20;
             var isBlocked = <%= blocked %>
             var isTap = "post";
-
-            <%if (!_isInApp) {%>
-            var uploader = new plupload.Uploader({
-                runtimes: 'html5,html4',
-                browse_button: 'pickfiles',
-                url: "/api/attach",
-                resize: {
-                    width: 1280,
-                    quality: 95
-                },
-                filters : {
-                    max_file_size : '100mb',
-                    mime_types: [
-                        {title : "file", extensions : "jpg,png,jpeg,JPG,PNG,JPEG"}
-                    ]
-                },
-                init: {
-                    FilesAdded: function(up, files) {
-                            uploader.start();
-                            return false;
-                    },
-                    FileUploaded: function (up, file, response) {
-                        if($("#action_img").length > 0) {
-                            photoVBtype = "edit";
-                        } else {
-                            phototype = "new";
-                        }
-                        onResultData(JSON.parse(response.response).data);
-                    },
-                    Error: function (up, err) {
-                        console.log(err);
-                        if(err.code == -600) {
-                            onPopup("alert", "<%= __('UPLOADMSG')%>", function(cb){ });
-                        }
-                    }
-                }
-            });
-                uploader.init();
-        <%}%>
-
-
-
-            cashePage({
-                onBeforeUnload: () => {
-                    return {
-                        selector: "#main_list",
-                        chk_post: $("#chk_post").attr("checked"),
-                        chk_reply: $("#chk_reply").attr("checked"),
-                        chk_vote: $("#chk_vote").attr("checked")
-                    }
-                }
-            });
-
 
             (function () {
                 setHeader(<%=isMain %> ? '' : 'back', 'more',
