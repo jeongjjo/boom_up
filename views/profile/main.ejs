@@ -27,10 +27,10 @@
                         </div>
                         <div class="level-info">
                             <div class="level-point">
-                                <%=parseInt(Userinfo.boomLevel).toLocaleString()%>
+                                <%=Userinfo.level?parseInt(Userinfo.boomLevel).toLocaleString():0%>
                             </div>
                             <div class="level">
-                                Lv.<%=Userinfo.level%>
+                                Lv.<%=Userinfo.level?Userinfo.level:1%>
                             </div>
                         </div>
                     </div>
@@ -38,9 +38,9 @@
                 <div class="app-width-size container-fluid p-0 m-0" style="z-index: 1000;background-color:#ffffff" id="mainbody">
                     <div class="level-wrapper">
                         <div class="level-info-wrapper">
-                            <img src="/img/new/level_<%=Userinfo.level%>.svg"/>
+                            <img src="/img/new/level_<%=Userinfo.level?Userinfo.level:1%>.svg"/>
                             <div class="exchange-btn" style="margin-top:20px">
-                                <%=parseInt(Userinfo.boomLevel).toLocaleString()%> 붐코인으로 교환하기
+                                <%=Userinfo.level?parseInt(Userinfo.boomLevel).toLocaleString():0%> 붐코인으로 교환하기
                             </div>
                             <div class="sub-boom-btn" style="margin-top:20px">
                                 서브붐 개설하기
