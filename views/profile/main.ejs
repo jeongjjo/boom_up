@@ -48,6 +48,31 @@
                         </div>
                     </div>
                     <!--ㅂㅣ공개-->
+                    <div id="popuplayerAdv-subboom" class="position-fixed hidden" onclick="event.stopPropagation();">
+                        <div class="popup-layer" onclick="event.stopPropagation();closePopSub();">
+                            <header class="position-fixed d-flex flex-row" style="padding:22px 0;">
+                                <div class="left d-flex default-header-left">
+                                    <div class="text-center align-self-center  header-side-width">
+                                        <div id="idHeaderLeft-betting" class="header-arrow-left" onclick="closePopSub()"></div>
+                                    </div>
+                                </div>
+                                <div class="centre flex-fill text-center align-self-center font-weight-bold">
+                                    <span>
+                                        서브붐 개설하기
+                                    </span>
+                                </div>
+                            </header>
+                        </div>
+
+                        <div class="popup-bottom">
+                            <div class="main-title">서브붐 URL과 이름을 입력해주세요</div>
+                            <div class="subboom-wrapper">
+                                <input class="subboom-key" placeholder="서브붐 URL을 영문으로만 입력 해주세요"/>
+                                <input class="subboom-name" placeholder="서브붐 명을 입력 해주세요"/>
+                            </div>
+                            <div class="sub-btn">서브붐 개설하기</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,6 +90,56 @@
             var limit = 20;
             var isBlocked = <%= blocked %>
             var isTap = "post";
+            var boomPoint = <%= Userinfo.boomLevel? parseInt(Userinfo.boomLevel): 0 %>
+            if(boomPoint > 300000){
+                $('.sub-boom-btn').addClass('active')
+                $('.sub-btn').addClass('active')
+            }
+            function closePopSub(){
+                $('#popuplayerAdv-subboom').addClass('hidden')
+            }
+            $('.sub-boom-btn').on('click', function(){
+                if(boomPoint < 300000){
+                    onPopup("alert", "붐 포인트가 부족합니다.", function(cb){});
+                    return false
+                }
+                $('#popuplayerAdv-subboom').removeClass('hidden')
+            });
+            $('.sub-btn').on('click', function(){
+                if(boomPoint < 300000){
+                    onPopup("alert", "붐 포인트가 부족합니다.", function(cb){});
+                    return false
+                }
+                let key = $('.subboom-key').val()
+                let name = $('.subboom-name').val()
+                let data = {
+                    lineupKey: key,
+                    lineup: name,
+                    userId: '<%=Userinfo._id%>'
+                }
+                $.ajax({
+                    method: 'post',
+                    url: '/profile/subboom',
+                    data: data,
+                    success: function (data, status, xhr) {
+                        if(data.result=="ok"){
+                            location.reload()
+                        }
+                        else if(data.result == "exist"){
+                            onPopup("alert", "이미 존재하는 키 입니다", function(cb){});
+                            return false
+                        }
+                        else {
+                            onPopup("alert", "서브붐 생성에 실패 했습니다", function(cb){});
+                            return false
+                        }
+                    },
+                    error: function (xhr, status, err) {
+                    },
+                    complete: function () {
+                    }
+                });
+            })
 
             <%if (!_isInApp) {%>
             var uploader = new plupload.Uploader({

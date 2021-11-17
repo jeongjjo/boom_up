@@ -2496,6 +2496,89 @@ span.alert-subtext {
 #slider .ui-slider-range{
     background: #FF3B30; !important;
 }
+
+#popuplayerAdv-subboom {
+    right: var(--app-right);
+    bottom: var(--app-bottom);
+    left: var(--app-left);
+    top: var(--app-top);
+    z-index: 8900;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-bottom: 0.5em;
+    padding-bottom: constant(safe-area-inset-bottom + 0.5em);
+    padding-bottom: env(safe-area-inset-bottom + 0.5em);
+}
+#popuplayerAdv-subboom ul li > div > img {
+    width: 3em;
+    border-radius: 7px;
+    border: 1px solid #E2E2E2;
+    padding: 7px;
+}
+#popuplayerAdv-subboom div.popup-layer {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    /* margin: 0px 10px; */
+}
+#popuplayerAdv-subboom div.popup-layer div.popup-top{
+    height: 44px;
+    background: #F9F9F9;
+}
+#popuplayerAdv-subboom div.popup-bottom{
+    position: absolute;
+    bottom: 0;
+    height: auto;
+    width: 100%;
+}
+#popuplayerAdv-subboom div.popup-bottom{
+    position: absolute;
+    background: #FFF;
+    box-sizing: border-box;
+    resize: none;
+    width: 100%;
+    min-height: 400px;
+    height: auto;
+    padding: 0 12px;
+    border-radius: 20px 20px 0px 0px;
+}
+#popuplayerAdv-subboom div.popup-bottom div.main-title{
+    margin-top: 36px;
+    font-size: 24px;
+    letter-spacing: -0.5px;
+    color: #C7C7C7;
+}
+#popuplayerAdv-subboom div.popup-bottom div.boom-power{
+    padding-top: 10px;
+    font-size: 14px;
+    letter-spacing: -0.75px;
+    color: #C7C7C7;
+    margin-bottom: 10px;
+}
+#popuplayerAdv-subboom div.popup-bottom div.betting-btn input{
+    background: transparent;
+    width: 60px;
+}
+#popuplayerAdv-subboom div.subboom-wrapper input{
+    margin-top : 20px;
+    width: 100%;
+    padding: 15px;
+}
+#popuplayerAdv-subboom div.popup-bottom div.sub-btn{
+    margin-top: 51px;
+    width: 100%;
+    height: 58px;
+    background: #C7C7C7;
+    color: #FFF;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    line-height: 58px;
+    text-align: center;
+    border-radius: 8px;
+}
+#popuplayerAdv-subboom div.popup-bottom div.sub-btn.active{
+    background: #FF3B30;
+}
+
 .ui-widget.ui-widget-content{
     margin-top: 60px;
     background: rgba(120, 120, 128, 0.2);
@@ -3713,7 +3796,7 @@ span.post-down-icon::before {
 }
 
 .sub-boom-btn {
-    background-color: #FF3B30;
+    background-color: #C7C7CC;
     width: 100%;
     height: 58px;
     color: #FFF;
@@ -3723,6 +3806,9 @@ span.post-down-icon::before {
     text-align: center;
     border-radius: 8px;
     cursor: pointer;
+}
+.sub-boom-btn.active{
+    background-color: #FF3B30;
 }
 
 .alarm-wrapper .read-icon embed{
