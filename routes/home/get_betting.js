@@ -21,7 +21,7 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 module.exports = [
-    '/bettingHistory/:id',  // URI : /test2 (최종은 /<route module>/<page module> : /sameple/test2)
+    '/bettingHistory',  // URI : /test2 (최종은 /<route module>/<page module> : /sameple/test2)
     [], // 권한 : null은 권한 미체크, [] array 형태로 권한 지정
     [
         // Validation 처리 ------------------------------------
