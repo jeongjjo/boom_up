@@ -90,7 +90,7 @@
             var limit = 20;
             var isBlocked = <%= blocked %>
             var isTap = "post";
-            var boomPoint = <%= Userinfo.boomLevel? parseInt(Userinfo.boomLevel): 0 %>
+            var boomPoint = <%= Userinfo.boomPower? parseInt(Userinfo.boomPower): 0 %>
             if(boomPoint > 300000){
                 $('.sub-boom-btn').addClass('active')
                 $('.sub-btn').addClass('active')
