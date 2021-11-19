@@ -1394,6 +1394,9 @@ img.reply-more {
     text-align: center;
     padding-top: 20px;
     color: #AEAEB2;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 .cagegory-check.mainmenu-line-botton{
     color: #1C1C1E;
