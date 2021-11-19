@@ -24,6 +24,10 @@ var app = express();
 
 var moment = require('moment');
 
+var schedule = require('node-schedule')
+var db = require('./module/mongodbWrapper');
+var betting = require('./module/data/betting');
+
 if (!fs.existsSync(path.join(__dirname, 'locales'))) {
 	fs.mkdirsSync(path.join(__dirname, 'locales'))
 }
@@ -326,5 +330,30 @@ app.use(function (err, req, res, next) {
 		error: (app.get('env') === 'development') ? err : {}
 	});
 });
+//매일 23시 59분마다
+schedule.scheduleJob('59 23 * * *', async () => {
+	let count = await db.count("board", {delete: false})
+	let pageCount = Math.ceil(count / 100)
+	let limit = 100
+	let procCount = 0;
+	for (let i = 0; i < pageCount; i++) {
+		await betting.rankInit(i * limit, 100)
+		procCount ++
+	}
+	if(procCount === pageCount){
+		await betting.rankPointInit()
+		console.log('rankInit')
+	}
+	await betting.dayInit()
+	console.log('dayInit')
+	await betting.userInit()
+	console.log('userInit')
+	//await betting.weekInit()
+})
+//일요일 23시 59분마다
+schedule.scheduleJob('59 23 * * 0', async () => {
+	await betting.weekInit()
+	console.log('weekInit')
+})
 
 module.exports = app;

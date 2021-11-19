@@ -134,11 +134,12 @@ module.exports = {
         ]
 
         let aggResult = await db.aggregate("mileHistory", data)
-        console.log(aggResult)
         for(let i in aggResult){
             console.log(aggResult[i])
             await db.update("user", {_id: ObjectId(aggResult[i]._id)}, {$inc:{boomLevel: parseInt(aggResult[i].totalLevel)}}, {upsert:true})
         }
+        //붐 파워 초기화
+        await db.update("user", {_id: ObjectId(aggResult[i]._id)}, {$set:{boomPower: 0}}, {upsert:true})
         return true
     },
     userInit: async function(){
@@ -256,7 +257,6 @@ module.exports = {
                 { multi:true, upsert: true }
             );
         }
-        console.log(result)
         return !!result;
     }
 }
