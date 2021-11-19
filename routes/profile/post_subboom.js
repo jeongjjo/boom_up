@@ -52,7 +52,7 @@ module.exports = [
         }
         result = await db.insert("lineup", data);
         if (result) {
-            await db.update("user", {_id:ObjectId(data.userId)},{$inc:{boomPower:-300000}} , {upsert:true});
+            await db.update("user", {_id:ObjectId(data.userId)},{$inc:{boomLevel:-300000}} , {upsert:true});
             return res.json({
                 result: "ok"
             });

@@ -90,8 +90,8 @@
             var limit = 20;
             var isBlocked = <%= blocked %>
             var isTap = "post";
-            var boomPoint = <%= Userinfo.boomPower? parseInt(Userinfo.boomPower): 0 %>
-            if(boomPoint > 300000){
+            var boomLevel = <%= Userinfo.boomLevel? parseInt(Userinfo.boomLevel): 0 %>
+            if(boomLevel > 300000){
                 $('.sub-boom-btn').addClass('active')
                 $('.sub-btn').addClass('active')
             }
@@ -99,15 +99,15 @@
                 $('#popuplayerAdv-subboom').addClass('hidden')
             }
             $('.sub-boom-btn').on('click', function(){
-                if(boomPoint < 300000){
-                    onPopup("alert", "붐 포인트가 부족합니다.", function(cb){});
+                if(boomLevel < 300000){
+                    onPopup("alert", "붐 레벨이 부족합니다.", function(cb){});
                     return false
                 }
                 $('#popuplayerAdv-subboom').removeClass('hidden')
             });
             $('.sub-btn').on('click', function(){
-                if(boomPoint < 300000){
-                    onPopup("alert", "붐 포인트가 부족합니다.", function(cb){});
+                if(boomLevel < 300000){
+                    onPopup("alert", "붐 레벨이 부족합니다.", function(cb){});
                     return false
                 }
                 let key = $('.subboom-key').val()
@@ -123,6 +123,7 @@
                     data: data,
                     success: function (data, status, xhr) {
                         if(data.result=="ok"){
+                            onPopup("alert", "생성 되었습니다.", function(cb){});
                             location.reload()
                         }
                         else if(data.result == "exist"){
