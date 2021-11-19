@@ -2476,10 +2476,10 @@ span.alert-subtext {
 }
 #popuplayerAdv-betting div.popup-bottom div.betting-btn input{
     background: transparent;
-    width: 60px;
+    width: 80px;
 }
 #popuplayerAdv-betting div.popup-bottom div.betting-btn{
-    margin-top: 51px;
+    margin-top: 40px;
     width: 100%;
     height: 58px;
     background: #C7C7C7;
