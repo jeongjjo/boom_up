@@ -330,8 +330,10 @@ app.use(function (err, req, res, next) {
 		error: (app.get('env') === 'development') ? err : {}
 	});
 });
+
 //매일 23시 59분마다
-schedule.scheduleJob('59 23 * * *', async () => {
+schedule.scheduleJob('55 23 * * *', async () => {
+	console.log('test Module2')
 	let count = await db.count("board", {delete: false})
 	let pageCount = Math.ceil(count / 100)
 	let limit = 100
@@ -348,7 +350,6 @@ schedule.scheduleJob('59 23 * * *', async () => {
 	console.log('dayInit')
 	await betting.userInit()
 	console.log('userInit')
-	//await betting.weekInit()
 })
 //일요일 23시 59분마다
 schedule.scheduleJob('59 23 * * 0', async () => {

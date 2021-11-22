@@ -64,19 +64,18 @@ module.exports = {
             "board",
             {_id: { $in: inRankingIds}},
             { $inc: {rankPoint: 1}},
-            { multi:true, upsert: true }
+            { upsert: true }
         );
         let outResult = await db.updateMany(
             "board",
             {_id: { $in: outRankingIds}},
             { $set: {rankPoint: 0}},
-            { multi:true, upsert: true }
+            { upsert: true }
         );
         return !!(inResult && outResult);
     },
-    dayInit: async function(){
-        console.log('dayInit')
 
+    dayInit: async function(){
         //베팅한 유저들만 찾아서 포인트에 따른 마일 계산 후 유저에게 적립
         //100위 리스트 라인업
         let boardList = await db.getList("board", {delete:false}, null, 100, {point: -1})
