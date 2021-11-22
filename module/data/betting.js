@@ -76,12 +76,12 @@ module.exports = {
     },
     dayInit: async function(){
         console.log('dayInit')
-        //게시판 포인트 계산
-        //let boardList = await db.getList("board", null, null, null, null)
+
         //베팅한 유저들만 찾아서 포인트에 따른 마일 계산 후 유저에게 적립
         //100위 리스트 라인업
+        let boardList = await db.getList("board", {delete:false}, null, 100, {point: -1})
         //매일 랭킹 확인 및 DB 저장//
-        await db.insert("rankingHistory",  {ranking:rankingList})
+        await db.insert("rankingHistory",  {ranking:boardList})
 
 
         //console.log(dateQuery)
@@ -139,7 +139,8 @@ module.exports = {
             await db.update("user", {_id: ObjectId(aggResult[i]._id)}, {$inc:{boomLevel: parseInt(aggResult[i].totalLevel)}}, {upsert:true})
         }
         //붐 파워 초기화
-        await db.update("user", {_id: ObjectId(aggResult[i]._id)}, {$set:{boomPower: 0}}, {upsert:true})
+        let powerInit = await db.updateMany("user", {use:true}, {$set:{boomPower: 0}}, {upsert:true})
+        console.log(powerInit)
         return true
     },
     userInit: async function(){
