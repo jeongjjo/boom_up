@@ -87,7 +87,8 @@ screen\9 {
     }
     #app-pc-bg>.tree-bg>img {
         position: absolute;
-        top: calc(45% - (524.6px / 2));
+        top: 30%;
+        left: 100px;
     }
 
     .category-arrow-right {
@@ -188,25 +189,32 @@ screen\9 {
 }
 .logotitle {
     display: inline-block;
-    background: url('../img/boomup_logotitle.svg') no-repeat center center;
     background-size: auto;
-    min-height: 28px;
-    min-width: 92px;
+    max-height: 28px;
+    max-width: 92px;
+}
+.logotitle img{
+    width: 100%;
+    height: auto;
 }
 .logotitle2 {
     display: inline-block;
-    background: url('../img/boomup_logotitle.svg') no-repeat center center;
     background-size: auto;
-    min-height: 50px;
-    min-width: 163px;
+    max-height: 50px;
+    max-width: 163px;
+}
+.logotitle2 img{
+    width: 100%;
+    height: auto;
 }
 .logotitle3 {
     display: inline-block;
-    /* background: url('../img/logotitle.svg') no-repeat center center; */
-    background: url('../img/boomup_logotitle.svg') no-repeat center center;
-    background-size: auto;
-    min-height: 36.1px;
-    min-width: 153.2px;
+    max-height: 36.1px;
+    max-width: 153.2px;
+}
+.logotitle3 img{
+    width: 100%;
+    height: auto;
 }
 
 .app {
