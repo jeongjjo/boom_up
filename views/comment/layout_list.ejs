@@ -19,14 +19,14 @@
 </div>
 <% } %>
 
-<div id="comm-btn-area" class="detail-bottom-button hidden btn-detail-updown">
-    <div class="mb-3 text-center">
-        <button type="button" class="btn rounded-circle border btn-border-color detail-bottom-btn-bg" style="width:48px;height:48px;" onclick="onGoDetailMove('UP');"><img src="/img/detail_arrow_up.png"></button>
-    </div>
-    <div class="mb-3 text-center">
-        <button type="button" class="btn rounded-circle border btn-border-color detail-bottom-btn-bg" style="width:48px;height:48px;" onclick="onGoDetailMove('DOWN');"><img src="/img/detail_memo.png"></button>
-    </div>
-</div>
+<!-- <div id="comm-btn-area" class="detail-bottom-button hidden btn-detail-updown"> -->
+<!--     <div class="mb-3 text-center"> -->
+<!--         <button type="button" class="btn rounded-circle border btn-border-color detail-bottom-btn-bg" style="width:48px;height:48px;" onclick="onGoDetailMove('UP');"><img src="/img/detail_arrow_up.png"></button> -->
+<!--     </div> -->
+<!--     <div class="mb-3 text-center"> -->
+<!--         <button type="button" class="btn rounded-circle border btn-border-color detail-bottom-btn-bg" style="width:48px;height:48px;" onclick="onGoDetailMove('DOWN');"><img src="/img/detail_memo.png"></button> -->
+<!--     </div> -->
+<!-- </div> -->
 
 <script src="/js/plupload/plupload.full.min.js"></script>
 <script type="text/javascript">
@@ -236,7 +236,7 @@
                 $("footer").removeClass("hidden");
                 $("#comm-more-area").removeClass("hidden");
 
-                $("#comm-btn-area").addClass("hidden");
+                //$("#comm-btn-area").addClass("hidden");
             }, 50);
 
         }
@@ -320,7 +320,7 @@
         $("#comm-input-area").removeClass("hidden");
         $("footer").removeClass("hidden");
         $("#comm-more-area").removeClass("hidden");
-        $("#comm-btn-area").addClass("hidden");
+        //$("#comm-btn-area").addClass("hidden");
 
         onClosePhoto();
     }
@@ -546,7 +546,7 @@
                         $("footer").removeClass("hidden");
                         $("#comm-more-area").removeClass("hidden");
                         
-                        $("#comm-btn-area").addClass("hidden");
+                        //$("#comm-btn-area").addClass("hidden");
                     }, 50);
                 }
             },
@@ -653,7 +653,7 @@
             $("#comm-input-area").removeClass("hidden");
             $("footer").removeClass("hidden");
             $("#comm-more-area").removeClass("hidden");
-            $("#comm-btn-area").addClass("hidden");
+            //$("#comm-btn-area").addClass("hidden");
         });
 
     }
