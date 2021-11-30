@@ -79,7 +79,7 @@ module.exports = [
         if(bettingLevel.length > 0){
             totalPoint = bettingLevel[0].totalPoint
         }
-        let mileHistory = await db.getList("mileHistory", {userId: userid}, null, null, {createTS: -1})
+        let mileHistory = await db.getList("mileHistory", {userId: userid, boomLevel:{$gt:0}}, null, null, {createTS: -1})
         // bettingBoardList.sort(function(a, b)  {
         //     return b - a;
         // });
