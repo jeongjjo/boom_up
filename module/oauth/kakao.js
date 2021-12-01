@@ -21,10 +21,10 @@ async function signup(deviceId, userId, token, nickname, req) {
       }
     })
 
-    console.log('kakaoDATA', response)
     if (response && response.status === 200 && response.data && response.data.id) {
       // 사용자 정보를 필요에 따라서 저장함
       // 상시 업데이트와 초기에만 업데이트하는 것을 구분해야 함(setOnInsert)
+      console.log('kakaoDATA1', response)
       const userInfo = await db.update('user', $where, {
         $set: {
           "auth": {
@@ -330,7 +330,7 @@ async function webSignup(req, res, rStat) {
           // 사용자 정보를 필요에 따라서 저장함
           var $where = {};
           $where[`auth.kakao.key`] = response.data.id + "";
-
+          console.log('kakaoDATA2', response)
           // 상시 업데이트와 초기에만 업데이트하는 것을 구분해야 함(setOnInsert)
           const userInfo = await db.update('user', $where, {
             $set: {
