@@ -330,6 +330,13 @@ async function webSignup(req, res, rStat) {
           var $where = {};
           $where[`auth.kakao.key`] = response.data.id + "";
           // 상시 업데이트와 초기에만 업데이트하는 것을 구분해야 함(setOnInsert)
+          let photoArr = null
+          if(response.data.properties.profile_image && response.data.properties.thumbnail_image){
+            photoArr = [
+              response.data.properties.profile_image,
+              response.data.properties.thumbnail_image
+            ]
+          }
           const userInfo = await db.update('user', $where, {
             $set: {
               "auth": {
@@ -341,7 +348,7 @@ async function webSignup(req, res, rStat) {
               "nickname": rStat.nn,// response.data.properties.nickname || '',
               "use": true,
               "firstRun": true, // 가입 후 초기 설정 진행 여부
-              "photo": response.data.properties.profile_image||null,
+              "photo": photoArr||null,
               "block": false,
             },
             $setOnInsert: {
