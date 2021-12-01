@@ -24,6 +24,7 @@ async function signup(deviceId, userId, token, nickname, req) {
     if (response && response.status === 200 && response.data && response.data.id) {
       // 사용자 정보를 필요에 따라서 저장함
       // 상시 업데이트와 초기에만 업데이트하는 것을 구분해야 함(setOnInsert)
+      console.log('kakaoDATA', response.data)
       const userInfo = await db.update('user', $where, {
         $set: {
           "auth": {
@@ -35,7 +36,7 @@ async function signup(deviceId, userId, token, nickname, req) {
           "nickname": nickname,// response.data.properties.nickname || '',
           "use": true,
           "firstRun": true, // 가입 후 초기 설정 진행 여부
-          "photo": null,
+          "photo": response.data.properties.profile_image_url||null,
           "block": false,
         },
         $setOnInsert: {
