@@ -302,7 +302,7 @@
             <%if (!_isInApp) {%>
                 var popuplayerAdvYN = getCookie('popuplayerAdv');
                 if ((isIOS || isAOS) && popuplayerAdvYN !== 'Y') {
-                    $('#popuplayerAdv').removeClass('hidden');//.find('img').attr('src', isIOS ? '/img/appstore.svg' : isAOS ? '/img/googleplay.svg' : '/android-chrome-192x192.png');
+                    //$('#popuplayerAdv').removeClass('hidden');//.find('img').attr('src', isIOS ? '/img/appstore.svg' : isAOS ? '/img/googleplay.svg' : '/android-chrome-192x192.png');
                 }
                 $('a[href]').attr('target','_blank');
             <%}%>
