@@ -18,6 +18,7 @@ var common = require("../../module/common");
 var db = require("../../module/mongodbWrapper");
 var dbCache = require("../../module/dbCache");
 var ObjectId = require('mongodb').ObjectId;
+var moment = require('moment');
 
 
 module.exports = [
@@ -73,8 +74,10 @@ module.exports = [
         for(let i in powerListComment){
             commentIDs.push(powerListComment[i].contentId)
         }
-        let boardList = await db.getList("board", {_id: {$in:boardIDs}}, null, null, {createTS: -1})
-        let commentList = await db.getList("comment", {_id: {$in:commentIDs}}, null, null, {createTS: -1})
+        let weekStart = moment().startOf('week').valueOf();
+        let weekEnd = moment(weekStart).add('7', 'days').valueOf()
+        let boardList = await db.getList("board", {$and:[{_id: {$in:boardIDs}}, {createTS: {$gte: weekStart, $lte: weekEnd}}]}, null, null, {createTS: -1})
+        let commentList = await db.getList("comment", {$and:[{_id: {$in:commentIDs}}, {createTS: {$gte: weekStart, $lte: weekEnd}}]}, null, null, {createTS: -1})
 
         for (let i in boardList){
             boardList[i].lineup = await db.get("lineup", {lineupKey: boardList[i].lineupKey})
